@@ -1,9 +1,12 @@
 import express from "express";
 import { checkConnection } from "./database/connection.js";
+import { taskRoutes } from "./modules/tasks/task.routes.js";
 
 const app = express();
 
 app.use(express.json());
+
+app.use("/api/tasks", taskRoutes);
 
 app.get("/health", async (_req, res) => {
     const dbConnected = await checkConnection();
