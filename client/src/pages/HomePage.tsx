@@ -1,13 +1,29 @@
+import { TaskComposer } from "../components/TaskComposer/TaskComposer";
 import { useTasks } from "../hooks/useTasks";
 import styles from "./HomePage.module.css";
 
 export function HomePage() {
-    const { tasks, isLoading, error } = useTasks();
+    const {
+        tasks,
+        isLoading,
+        error,
+        isCreating,
+        createError,
+        createTask,
+        clearCreateError,
+    } = useTasks();
 
     return (
         <main className={styles.container}>
             <h1 className={styles.title}>Clarity</h1>
             <p className={styles.subtitle}>Task management made clear</p>
+
+            <TaskComposer
+                createTask={createTask}
+                isCreating={isCreating}
+                createError={createError}
+                clearCreateError={clearCreateError}
+            />
 
             {isLoading && (
                 <p className={styles.status}>Carregando tarefas...</p>
