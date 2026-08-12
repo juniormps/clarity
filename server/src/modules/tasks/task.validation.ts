@@ -1,5 +1,7 @@
 import type { CreateTaskInput } from "./task.types.js";
 
+
+//Valida a entrada para criar uma nova tarefa.
 export function validateCreateTaskInput(
     body: unknown,
 ): { valid: true; data: CreateTaskInput } | { valid: false; error: string } {

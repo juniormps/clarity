@@ -20,6 +20,7 @@ function mapTaskRow(row: TaskRow): Task {
     };
 }
 
+//Resgata todas as tarefas do banco de dados.
 export async function listAll(): Promise<Task[]> {
     const [rows] = await pool.execute<TaskRow[]>(
         "SELECT id, title, completed, created_at, updated_at FROM tasks ORDER BY created_at DESC, id DESC",
@@ -28,6 +29,8 @@ export async function listAll(): Promise<Task[]> {
     return rows.map(mapTaskRow);
 }
 
+
+//Cria uma nova tarefa no banco de dados.
 export async function create(input: CreateTaskInput): Promise<Task> {
     const [result] = await pool.execute<ResultSetHeader>(
         "INSERT INTO tasks (title) VALUES (?)",

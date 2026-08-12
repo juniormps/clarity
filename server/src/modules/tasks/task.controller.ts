@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
 import { createTask, listTasks } from "./task.service.js";
 
+
+//Resgata todas as tarefas do banco de dados.
 export async function list(_req: Request, res: Response): Promise<void> {
     try {
         const tasks = await listTasks();
@@ -10,6 +12,8 @@ export async function list(_req: Request, res: Response): Promise<void> {
     }
 }
 
+
+//Cria uma nova tarefa no banco de dados.
 export async function create(req: Request, res: Response): Promise<void> {
     try {
         const task = await createTask(req.body);
