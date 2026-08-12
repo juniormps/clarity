@@ -18,3 +18,42 @@
   font-size: 1.125rem;
   color: #666;
 }
+
+.status {
+  margin-top: 2rem;
+  color: #666;
+}
+
+.error {
+  margin-top: 2rem;
+  color: #b91c1c;
+}
+
+.list {
+  list-style: none;
+  width: 100%;
+  max-width: 28rem;
+  margin-top: 2rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  margin-bottom: 0.5rem;
+}
+
+.itemTitle {
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.itemStatus {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  color: #666;
+}
