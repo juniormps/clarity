@@ -1,6 +1,10 @@
-import { create as createInRepository } from "./task.repository.js";
+import { create as createInRepository, listAll } from "./task.repository.js";
 import type { Task } from "./task.types.js";
 import { validateCreateTaskInput } from "./task.validation.js";
+
+export async function listTasks(): Promise<Task[]> {
+    return listAll();
+}
 
 export async function createTask(body: unknown): Promise<Task> {
     const validation = validateCreateTaskInput(body);

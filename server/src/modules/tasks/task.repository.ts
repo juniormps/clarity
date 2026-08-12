@@ -10,6 +10,24 @@ interface TaskRow extends RowDataPacket {
     updated_at: Date;
 }
 
+function mapTaskRow(row: TaskRow): Task {
+    return {
+        id: row.id,
+        title: row.title,
+        completed: Boolean(row.completed),
+        createdAt: row.created_at.toISOString(),
+        updatedAt: row.updated_at.toISOString(),
+    };
+}
+
+export async function listAll(): Promise<Task[]> {
+    const [rows] = await pool.execute<TaskRow[]>(
+        "SELECT id, title, completed, created_at, updated_at FROM tasks ORDER BY created_at DESC, id DESC",
+    );
+
+    return rows.map(mapTaskRow);
+}
+
 export async function create(input: CreateTaskInput): Promise<Task> {
     const [result] = await pool.execute<ResultSetHeader>(
         "INSERT INTO tasks (title) VALUES (?)",
@@ -27,13 +45,5 @@ export async function create(input: CreateTaskInput): Promise<Task> {
         throw new Error("Failed to retrieve created task.");
     }
 
-    const row = rows[0];
-
-    return {
-        id: row.id,
-        title: row.title,
-        completed: Boolean(row.completed),
-        createdAt: row.created_at.toISOString(),
-        updatedAt: row.updated_at.toISOString(),
-    };
+    return mapTaskRow(rows[0]);
 }

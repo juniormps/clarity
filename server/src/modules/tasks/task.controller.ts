@@ -1,5 +1,14 @@
 import type { Request, Response } from "express";
-import { createTask } from "./task.service.js";
+import { createTask, listTasks } from "./task.service.js";
+
+export async function list(_req: Request, res: Response): Promise<void> {
+    try {
+        const tasks = await listTasks();
+        res.status(200).json({ data: tasks });
+    } catch {
+        res.status(500).json({ error: "Internal server error." });
+    }
+}
 
 export async function create(req: Request, res: Response): Promise<void> {
     try {
