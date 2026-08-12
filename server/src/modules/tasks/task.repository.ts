@@ -1,4 +1,4 @@
-import type { RowDataPacket } from "mysql2/promise";
+import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { pool } from "../../database/connection.js";
 import type { CreateTaskInput, Task } from "./task.types.js";
 
@@ -11,7 +11,7 @@ interface TaskRow extends RowDataPacket {
 }
 
 export async function create(input: CreateTaskInput): Promise<Task> {
-    const [result] = await pool.execute<import("mysql2/promise").ResultSetHeader>(
+    const [result] = await pool.execute<ResultSetHeader>(
         "INSERT INTO tasks (title) VALUES (?)",
         [input.title],
     );
