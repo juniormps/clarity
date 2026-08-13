@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { createTask as createTaskRequest, listTasks } from "../services/taskService";
+import {
+    createTask as createTaskRequest,
+    listTasks,
+    updateTaskCompleted as updateTaskCompletedRequest,
+} from "../services/taskService";
 import type { Task } from "../types/task";
 
 export function useTasks() {
@@ -8,6 +12,8 @@ export function useTasks() {
     const [error, setError] = useState<string | null>(null);
     const [isCreating, setIsCreating] = useState(false);
     const [createError, setCreateError] = useState<string | null>(null);
+    const [updatingTaskId, setUpdatingTaskId] = useState<number | null>(null);
+    const [updateError, setUpdateError] = useState<string | null>(null);
 
     // Carrega a lista de tarefas.
     useEffect(() => {
@@ -59,6 +65,28 @@ export function useTasks() {
         setCreateError(null);
     }
 
+    // Atualiza o status completed de uma tarefa.
+    async function updateTaskCompleted(id: number, completed: boolean): Promise<Task> {
+
+        setUpdatingTaskId(id);
+        setUpdateError(null);
+
+        try {
+            const updatedTask = await updateTaskCompletedRequest(id, completed);
+            setTasks((current) =>
+                current.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
+            );
+            return updatedTask;
+
+        } catch (error) {
+            setUpdateError("Não foi possível atualizar a tarefa.");
+            throw error;
+            
+        } finally {
+            setUpdatingTaskId(null);
+        }
+    }
+
     return {
         tasks,
         isLoading,
@@ -67,5 +95,8 @@ export function useTasks() {
         createError,
         createTask,
         clearCreateError,
+        updatingTaskId,
+        updateError,
+        updateTaskCompleted,
     };
 }

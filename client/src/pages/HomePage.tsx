@@ -1,4 +1,5 @@
 import { TaskComposer } from "../components/TaskComposer/TaskComposer";
+import { TaskItem } from "../components/TaskItem/TaskItem";
 import { useTasks } from "../hooks/useTasks";
 import styles from "./HomePage.module.css";
 
@@ -11,6 +12,9 @@ export function HomePage() {
         createError,
         createTask,
         clearCreateError,
+        updatingTaskId,
+        updateError,
+        updateTaskCompleted,
     } = useTasks();
 
     return (
@@ -25,9 +29,7 @@ export function HomePage() {
                 clearCreateError={clearCreateError}
             />
 
-            {isLoading && (
-                <p className={styles.status}>Carregando tarefas...</p>
-            )}
+            {isLoading && <p className={styles.status}>Carregando tarefas...</p>}
 
             {!isLoading && error && <p className={styles.error}>{error}</p>}
 
@@ -38,16 +40,20 @@ export function HomePage() {
             {!isLoading && !error && tasks.length > 0 && (
                 <ul className={styles.list}>
                     {tasks.map((task) => (
-                        <li key={task.id} className={styles.item}>
-                            <span className={styles.itemTitle}>
-                                {task.title}
-                            </span>
-                            <span className={styles.itemStatus}>
-                                {task.completed ? "Concluída" : "Pendente"}
-                            </span>
-                        </li>
+                        <TaskItem
+                            key={task.id}
+                            task={task}
+                            isUpdating={updatingTaskId === task.id}
+                            onToggleCompleted={updateTaskCompleted}
+                        />
                     ))}
                 </ul>
+            )}
+
+            {updateError && (
+                <p className={styles.error} role="alert">
+                    {updateError}
+                </p>
             )}
         </main>
     );

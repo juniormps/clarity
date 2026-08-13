@@ -8,6 +8,10 @@ interface CreateTaskResponse {
     data: Task;
 }
 
+interface UpdateTaskCompletedResponse {
+    data: Task;
+}
+
 //Faz uma requisição para OBTER a lista de tarefas do backend
 export async function listTasks(): Promise<Task[]> {
     const response = await fetch("/api/tasks");
@@ -36,6 +40,26 @@ export async function createTask(title: string): Promise<Task> {
     }
 
     const body = (await response.json()) as CreateTaskResponse;
+
+    return body.data;
+}
+
+//Faz a requisição para ATUALIZAR o status completed de uma tarefa
+export async function updateTaskCompleted(id: number, completed: boolean): Promise<Task> {
+    
+    const response = await fetch(`/api/tasks/${id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ completed }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to update task (${response.status}).`);
+    }
+
+    const body = (await response.json()) as UpdateTaskCompletedResponse;
 
     return body.data;
 }
