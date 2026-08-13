@@ -65,6 +65,25 @@ export async function updateCompleted(id: number, completed: boolean): Promise<T
     return mapTaskRow(rows[0]);
 }
 
+//Atualiza o título de uma tarefa e retorna o estado persistido.
+export async function updateTitle(id: number, title: string): Promise<Task | null> {
+
+    await pool.execute("UPDATE tasks SET title = ? WHERE id = ?", 
+        [title, id]
+    );
+
+    const [rows] = await pool.execute<TaskRow[]>(
+        "SELECT id, title, completed, created_at, updated_at FROM tasks WHERE id = ?",
+        [id],
+    );
+
+    if (rows.length === 0) {
+        return null;
+    }
+
+    return mapTaskRow(rows[0]);
+}
+
 //Exclui uma tarefa pelo id e informa se alguma linha foi realmente removida.
 export async function deleteById(id: number): Promise<boolean> {
     

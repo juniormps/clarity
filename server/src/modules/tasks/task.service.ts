@@ -3,12 +3,14 @@ import {
     deleteById,
     listAll,
     updateCompleted as updateCompletedInRepository,
+    updateTitle as updateTitleInRepository,
 } from "./task.repository.js";
 import type { Task } from "./task.types.js";
 import {
     validateCreateTaskInput,
     validateTaskId,
     validateUpdateTaskCompletedInput,
+    validateUpdateTaskTitleInput,
 } from "./task.validation.js";
 
 //Resgata todas as tarefas do banco de dados.
@@ -67,9 +69,46 @@ export async function updateTaskCompleted(idInput: unknown, body: unknown): Prom
     return task;
 }
 
+//Atualiza o título de uma tarefa.
+export async function updateTaskTitle(idInput: unknown, body: unknown): Promise<Task> {
+    const idValidation = validateTaskId(idInput);
+
+    if (!idValidation.valid) {
+        const error = new Error(idValidation.error) as Error & {
+            status: number;
+        };
+        error.status = 400;
+        throw error;
+    }
+
+    const bodyValidation = validateUpdateTaskTitleInput(body);
+
+    if (!bodyValidation.valid) {
+        const error = new Error(bodyValidation.error) as Error & {
+            status: number;
+        };
+        error.status = 400;
+        throw error;
+    }
+
+    const task = await updateTitleInRepository(
+        idValidation.data,
+        bodyValidation.data.title,
+    );
+
+    if (task === null) {
+        const error = new Error("Task not found.") as Error & {
+            status: number;
+        };
+        error.status = 404;
+        throw error;
+    }
+
+    return task;
+}
+
 //Exclui uma tarefa existente pelo id.
 export async function deleteTask(idInput: unknown): Promise<void> {
-    
     const idValidation = validateTaskId(idInput);
 
     if (!idValidation.valid) {

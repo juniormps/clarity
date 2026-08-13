@@ -13,3 +13,7 @@ export interface CreateTaskInput {
 export interface UpdateTaskCompletedInput {
     completed: boolean;
 }
+
+export interface UpdateTaskTitleInput {
+    title: string;
+}
