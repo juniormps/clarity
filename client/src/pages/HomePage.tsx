@@ -15,6 +15,9 @@ export function HomePage() {
         updatingTaskId,
         updateError,
         updateTaskCompleted,
+        deletingTaskId,
+        deleteError,
+        deleteTask,
     } = useTasks();
 
     return (
@@ -44,7 +47,9 @@ export function HomePage() {
                             key={task.id}
                             task={task}
                             isUpdating={updatingTaskId === task.id}
+                            isDeleting={deletingTaskId === task.id}
                             onToggleCompleted={updateTaskCompleted}
+                            onDelete={deleteTask}
                         />
                     ))}
                 </ul>
@@ -53,6 +58,12 @@ export function HomePage() {
             {updateError && (
                 <p className={styles.error} role="alert">
                     {updateError}
+                </p>
+            )}
+
+            {deleteError && (
+                <p className={styles.error} role="alert">
+                    {deleteError}
                 </p>
             )}
         </main>

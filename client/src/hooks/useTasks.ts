@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
     createTask as createTaskRequest,
+    deleteTask as deleteTaskRequest,
     listTasks,
     updateTaskCompleted as updateTaskCompletedRequest,
 } from "../services/taskService";
@@ -14,6 +15,8 @@ export function useTasks() {
     const [createError, setCreateError] = useState<string | null>(null);
     const [updatingTaskId, setUpdatingTaskId] = useState<number | null>(null);
     const [updateError, setUpdateError] = useState<string | null>(null);
+    const [deletingTaskId, setDeletingTaskId] = useState<number | null>(null);
+    const [deleteError, setDeleteError] = useState<string | null>(null);
 
     // Carrega a lista de tarefas.
     useEffect(() => {
@@ -87,6 +90,25 @@ export function useTasks() {
         }
     }
 
+    // Exclui uma tarefa.
+    async function deleteTask(id: number): Promise<void> {
+
+        setDeletingTaskId(id);
+        setDeleteError(null);
+
+        try {
+            await deleteTaskRequest(id);
+            setTasks((current) => current.filter((task) => task.id !== id));
+
+        } catch (error) {
+            setDeleteError("Não foi possível excluir a tarefa.");
+            throw error;
+            
+        } finally {
+            setDeletingTaskId(null);
+        }
+    }
+
     return {
         tasks,
         isLoading,
@@ -98,5 +120,8 @@ export function useTasks() {
         updatingTaskId,
         updateError,
         updateTaskCompleted,
+        deletingTaskId,
+        deleteError,
+        deleteTask,
     };
 }
