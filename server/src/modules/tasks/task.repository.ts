@@ -64,3 +64,14 @@ export async function updateCompleted(id: number, completed: boolean): Promise<T
 
     return mapTaskRow(rows[0]);
 }
+
+//Exclui uma tarefa pelo id e informa se alguma linha foi realmente removida.
+export async function deleteById(id: number): Promise<boolean> {
+    
+    const [result] = await pool.execute<ResultSetHeader>(
+        "DELETE FROM tasks WHERE id = ?",
+        [id],
+    );
+
+    return result.affectedRows > 0;
+}

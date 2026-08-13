@@ -1,5 +1,6 @@
 import {
     create as createInRepository,
+    deleteById,
     listAll,
     updateCompleted as updateCompletedInRepository,
 } from "./task.repository.js";
@@ -30,7 +31,6 @@ export async function createTask(body: unknown): Promise<Task> {
 
 //Atualiza o status completed de uma tarefa.
 export async function updateTaskCompleted(idInput: unknown, body: unknown): Promise<Task> {
-    
     const idValidation = validateTaskId(idInput);
 
     if (!idValidation.valid) {
@@ -65,4 +65,28 @@ export async function updateTaskCompleted(idInput: unknown, body: unknown): Prom
     }
 
     return task;
+}
+
+//Exclui uma tarefa existente pelo id.
+export async function deleteTask(idInput: unknown): Promise<void> {
+    
+    const idValidation = validateTaskId(idInput);
+
+    if (!idValidation.valid) {
+        const error = new Error(idValidation.error) as Error & {
+            status: number;
+        };
+        error.status = 400;
+        throw error;
+    }
+
+    const removed = await deleteById(idValidation.data);
+
+    if (!removed) {
+        const error = new Error("Task not found.") as Error & {
+            status: number;
+        };
+        error.status = 404;
+        throw error;
+    }
 }
