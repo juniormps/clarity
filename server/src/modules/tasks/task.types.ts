@@ -9,3 +9,7 @@ export interface Task {
 export interface CreateTaskInput {
     title: string;
 }
+
+export interface UpdateTaskCompletedInput {
+    completed: boolean;
+}

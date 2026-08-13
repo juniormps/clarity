@@ -1,5 +1,4 @@
-import type { CreateTaskInput } from "./task.types.js";
-
+import type { CreateTaskInput, UpdateTaskCompletedInput } from "./task.types.js";
 
 //Valida a entrada para criar uma nova tarefa.
 export function validateCreateTaskInput(
@@ -37,4 +36,45 @@ export function validateCreateTaskInput(
     }
 
     return { valid: true, data: { title: trimmed } };
+}
+
+//Valida o id de uma tarefa vindo de um parâmetro de rota.
+export function validateTaskId(raw: unknown): { valid: true; data: number } | { valid: false; error: string } {
+    if (typeof raw !== "string" || !/^\d+$/.test(raw)) {
+        return { valid: false, error: "Task id must be a positive integer." };
+    }
+
+    const id = Number(raw);
+
+    if (!Number.isSafeInteger(id) || id <= 0) {
+        return { valid: false, error: "Task id must be a positive integer." };
+    }
+
+    return { valid: true, data: id };
+}
+
+//Valida a entrada para atualizar o status completed de uma tarefa.
+export function validateUpdateTaskCompletedInput(
+    body: unknown,
+): { valid: true; data: UpdateTaskCompletedInput } | { valid: false; error: string } {
+    
+    if (body === null || body === undefined) {
+        return { valid: false, error: "Request body is required." };
+    }
+
+    if (typeof body !== "object" || Array.isArray(body)) {
+        return { valid: false, error: "Request body must be a JSON object." };
+    }
+
+    if (!("completed" in body)) {
+        return { valid: false, error: '"completed" is required.' };
+    }
+
+    const { completed } = body as Record<string, unknown>;
+
+    if (typeof completed !== "boolean") {
+        return { valid: false, error: '"completed" must be a boolean.' };
+    }
+
+    return { valid: true, data: { completed } };
 }

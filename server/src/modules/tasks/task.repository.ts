@@ -29,13 +29,10 @@ export async function listAll(): Promise<Task[]> {
     return rows.map(mapTaskRow);
 }
 
-
 //Cria uma nova tarefa no banco de dados.
 export async function create(input: CreateTaskInput): Promise<Task> {
-    const [result] = await pool.execute<ResultSetHeader>(
-        "INSERT INTO tasks (title) VALUES (?)",
-        [input.title],
-    );
+    
+    const [result] = await pool.execute<ResultSetHeader>("INSERT INTO tasks (title) VALUES (?)", [input.title]);
 
     const insertId = result.insertId;
 
@@ -46,6 +43,23 @@ export async function create(input: CreateTaskInput): Promise<Task> {
 
     if (rows.length === 0) {
         throw new Error("Failed to retrieve created task.");
+    }
+
+    return mapTaskRow(rows[0]);
+}
+
+//Atualiza o status completed de uma tarefa e retorna o estado persistido.
+export async function updateCompleted(id: number, completed: boolean): Promise<Task | null> {
+
+    await pool.execute("UPDATE tasks SET completed = ? WHERE id = ?", [completed, id]);
+
+    const [rows] = await pool.execute<TaskRow[]>(
+        "SELECT id, title, completed, created_at, updated_at FROM tasks WHERE id = ?",
+        [id],
+    );
+
+    if (rows.length === 0) {
+        return null;
     }
 
     return mapTaskRow(rows[0]);

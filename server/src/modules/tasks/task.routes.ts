@@ -8,3 +8,6 @@ taskRoutes.get("/", taskController.list);
 
 //Cria uma nova tarefa no banco de dados.
 taskRoutes.post("/", taskController.create);
+
+//Atualiza o status completed de uma tarefa existente.
+taskRoutes.patch("/:id", taskController.updateCompleted);
