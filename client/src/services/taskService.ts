@@ -12,6 +12,10 @@ interface UpdateTaskCompletedResponse {
     data: Task;
 }
 
+interface UpdateTaskTitleResponse {
+    data: Task;
+}
+
 //Faz uma requisição para OBTER a lista de tarefas do backend
 export async function listTasks(): Promise<Task[]> {
     const response = await fetch("/api/tasks");
@@ -60,6 +64,25 @@ export async function updateTaskCompleted(id: number, completed: boolean): Promi
     }
 
     const body = (await response.json()) as UpdateTaskCompletedResponse;
+
+    return body.data;
+}
+
+//Faz a requisição para ATUALIZAR o título de uma tarefa
+export async function updateTaskTitle(id: number, title: string): Promise<Task> {
+    const response = await fetch(`/api/tasks/${id}/title`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to update task title (${response.status}).`);
+    }
+
+    const body = (await response.json()) as UpdateTaskTitleResponse;
 
     return body.data;
 }

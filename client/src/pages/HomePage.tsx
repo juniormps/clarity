@@ -18,6 +18,11 @@ export function HomePage() {
         deletingTaskId,
         deleteError,
         deleteTask,
+        editingTaskId,
+        editError,
+        editErrorTaskId,
+        updateTaskTitle,
+        clearEditError,
     } = useTasks();
 
     return (
@@ -48,8 +53,12 @@ export function HomePage() {
                             task={task}
                             isUpdating={updatingTaskId === task.id}
                             isDeleting={deletingTaskId === task.id}
+                            isSavingTitle={editingTaskId === task.id}
+                            editError={editErrorTaskId === task.id ? editError : null}
                             onToggleCompleted={updateTaskCompleted}
                             onDelete={deleteTask}
+                            onUpdateTitle={updateTaskTitle}
+                            onClearEditError={clearEditError}
                         />
                     ))}
                 </ul>

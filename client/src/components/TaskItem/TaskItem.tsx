@@ -1,3 +1,5 @@
+import type { FormEvent } from "react";
+import { useState } from "react";
 import type { Task } from "../../types/task";
 import styles from "./TaskItem.module.css";
 
@@ -5,24 +7,34 @@ interface TaskItemProps {
     task: Task;
     isUpdating: boolean;
     isDeleting: boolean;
+    isSavingTitle: boolean;
+    editError: string | null;
     onToggleCompleted: (id: number, completed: boolean) => Promise<Task>;
     onDelete: (id: number) => Promise<void>;
+    onUpdateTitle: (id: number, title: string) => Promise<Task>;
+    onClearEditError: (id: number) => void;
 }
 
 export function TaskItem({
     task,
     isUpdating,
     isDeleting,
+    isSavingTitle,
+    editError,
     onToggleCompleted,
     onDelete,
+    onUpdateTitle,
+    onClearEditError,
 }: TaskItemProps) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [draftTitle, setDraftTitle] = useState("");
+    const [validationError, setValidationError] = useState<string | null>(null);
 
     const nextCompleted = !task.completed;
     const actionLabel = task.completed ? "Reabrir" : "Concluir";
-    const isBusy = isUpdating || isDeleting;
+    const isBusy = isUpdating || isDeleting || isSavingTitle;
 
     async function handleToggleCompleted() {
-
         try {
             await onToggleCompleted(task.id, nextCompleted);
         } catch {
@@ -31,7 +43,6 @@ export function TaskItem({
     }
 
     async function handleDelete() {
-        
         const confirmed = window.confirm(
             "Tem certeza de que deseja excluir esta tarefa?",
         );
@@ -47,15 +58,125 @@ export function TaskItem({
         }
     }
 
+    function handleStartEdit() {
+        setDraftTitle(task.title);
+        setValidationError(null);
+        onClearEditError(task.id);
+        setIsEditing(true);
+    }
+
+    function handleCancel() {
+        setDraftTitle(task.title);
+        setValidationError(null);
+        onClearEditError(task.id);
+        setIsEditing(false);
+    }
+
+    async function handleSave(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        const trimmed = draftTitle.trim();
+
+        if (trimmed.length === 0) {
+            setValidationError("O título não pode ficar vazio.");
+            return;
+        }
+
+        if (trimmed.length > 140) {
+            setValidationError("O título deve ter no máximo 140 caracteres.");
+            return;
+        }
+
+        setValidationError(null);
+
+        try {
+            await onUpdateTitle(task.id, trimmed);
+            setIsEditing(false);
+        } catch {
+            // Falha: permanece em modo de edição e mantém o texto digitado.
+            // A mensagem de erro é exibida via editError.
+        }
+    }
+
+    const inputId = `task-title-${task.id}`;
+    const errorId = `task-title-error-${task.id}`;
+    const errorMessage = validationError ?? editError;
+
+    if (isEditing) {
+        return (
+            <li className={styles.item}>
+                <form className={styles.editForm} onSubmit={handleSave} noValidate>
+                    <label className={styles.visuallyHidden} htmlFor={inputId}>
+                        Editar título da tarefa
+                    </label>
+
+                    <input
+                        id={inputId}
+                        className={styles.editInput}
+                        type="text"
+                        value={draftTitle}
+                        maxLength={140}
+                        autoFocus
+                        aria-invalid={errorMessage ? true : undefined}
+                        aria-describedby={errorMessage ? errorId : undefined}
+                        onChange={(event) => {
+                            setDraftTitle(event.target.value);
+                            if (validationError) {
+                                setValidationError(null);
+                            }
+                            if (editError) {
+                                onClearEditError(task.id);
+                            }
+                        }}
+                    />
+
+                    <div className={styles.editActions}>
+                        <button
+                            type="submit"
+                            className={styles.saveButton}
+                            disabled={isSavingTitle}
+                        >
+                            {isSavingTitle ? "Salvando..." : "Salvar"}
+                        </button>
+
+                        <button
+                            type="button"
+                            className={styles.cancelButton}
+                            disabled={isSavingTitle}
+                            onClick={handleCancel}
+                        >
+                            Cancelar
+                        </button>
+                    </div>
+
+                    {errorMessage && (
+                        <p id={errorId} className={styles.editError} role="alert">
+                            {errorMessage}
+                        </p>
+                    )}
+                </form>
+            </li>
+        );
+    }
+
     return (
         <li className={styles.item}>
             <span className={styles.title}>{task.title}</span>
 
             <div className={styles.actions}>
-
                 <span className={styles.status}>
                     {task.completed ? "Concluída" : "Pendente"}
                 </span>
+
+                <button
+                    type="button"
+                    className={styles.editButton}
+                    aria-label={`Editar a tarefa "${task.title}"`}
+                    disabled={isBusy}
+                    onClick={handleStartEdit}
+                >
+                    Editar
+                </button>
 
                 <button
                     type="button"
@@ -77,7 +198,6 @@ export function TaskItem({
                 >
                     {isDeleting ? "Excluindo..." : "Excluir"}
                 </button>
-
             </div>
         </li>
     );

@@ -4,6 +4,7 @@ import {
     deleteTask as deleteTaskRequest,
     listTasks,
     updateTaskCompleted as updateTaskCompletedRequest,
+    updateTaskTitle as updateTaskTitleRequest,
 } from "../services/taskService";
 import type { Task } from "../types/task";
 
@@ -17,6 +18,9 @@ export function useTasks() {
     const [updateError, setUpdateError] = useState<string | null>(null);
     const [deletingTaskId, setDeletingTaskId] = useState<number | null>(null);
     const [deleteError, setDeleteError] = useState<string | null>(null);
+    const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+    const [editError, setEditError] = useState<string | null>(null);
+    const [editErrorTaskId, setEditErrorTaskId] = useState<number | null>(null);
 
     // Carrega a lista de tarefas.
     useEffect(() => {
@@ -92,7 +96,6 @@ export function useTasks() {
 
     // Exclui uma tarefa.
     async function deleteTask(id: number): Promise<void> {
-
         setDeletingTaskId(id);
         setDeleteError(null);
 
@@ -109,6 +112,37 @@ export function useTasks() {
         }
     }
 
+    // Atualiza o título de uma tarefa.
+    async function updateTaskTitle(id: number, title: string): Promise<Task> {
+        setEditingTaskId(id);
+        setEditError(null);
+        setEditErrorTaskId(null);
+
+        try {
+            const updatedTask = await updateTaskTitleRequest(id, title);
+            setTasks((current) =>
+                current.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
+            );
+            return updatedTask;
+        } catch (error) {
+            setEditError("Não foi possível editar o título da tarefa.");
+            setEditErrorTaskId(id);
+            throw error;
+        } finally {
+            setEditingTaskId(null);
+        }
+    }
+
+    // Limpa o erro de edição quando ele pertence à tarefa indicada.
+    function clearEditError(id: number) {
+        if (editErrorTaskId !== id) {
+            return;
+        }
+
+        setEditError(null);
+        setEditErrorTaskId(null);
+    }
+
     return {
         tasks,
         isLoading,
@@ -123,5 +157,10 @@ export function useTasks() {
         deletingTaskId,
         deleteError,
         deleteTask,
+        editingTaskId,
+        editError,
+        editErrorTaskId,
+        updateTaskTitle,
+        clearEditError,
     };
 }
