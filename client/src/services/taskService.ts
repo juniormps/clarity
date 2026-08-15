@@ -70,6 +70,7 @@ export async function updateTaskCompleted(id: number, completed: boolean): Promi
 
 //Faz a requisição para ATUALIZAR o título de uma tarefa
 export async function updateTaskTitle(id: number, title: string): Promise<Task> {
+    
     const response = await fetch(`/api/tasks/${id}/title`, {
         method: "PATCH",
         headers: {

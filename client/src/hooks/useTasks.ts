@@ -114,6 +114,7 @@ export function useTasks() {
 
     // Atualiza o título de uma tarefa.
     async function updateTaskTitle(id: number, title: string): Promise<Task> {
+
         setEditingTaskId(id);
         setEditError(null);
         setEditErrorTaskId(null);
@@ -124,10 +125,12 @@ export function useTasks() {
                 current.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
             );
             return updatedTask;
+
         } catch (error) {
             setEditError("Não foi possível editar o título da tarefa.");
             setEditErrorTaskId(id);
             throw error;
+            
         } finally {
             setEditingTaskId(null);
         }
