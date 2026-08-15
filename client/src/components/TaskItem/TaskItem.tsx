@@ -29,6 +29,7 @@ export function TaskItem({
     const [isEditing, setIsEditing] = useState(false);
     const [draftTitle, setDraftTitle] = useState("");
     const [validationError, setValidationError] = useState<string | null>(null);
+    const [limitMessage, setLimitMessage] = useState<string | null>(null);
 
     const nextCompleted = !task.completed;
     const actionLabel = task.completed ? "Reabrir" : "Concluir";
@@ -61,6 +62,7 @@ export function TaskItem({
     function handleStartEdit() {
         setDraftTitle(task.title);
         setValidationError(null);
+        setLimitMessage(null);
         onClearEditError(task.id);
         setIsEditing(true);
     }
@@ -68,6 +70,7 @@ export function TaskItem({
     function handleCancel() {
         setDraftTitle(task.title);
         setValidationError(null);
+        setLimitMessage(null);
         onClearEditError(task.id);
         setIsEditing(false);
     }
@@ -88,6 +91,7 @@ export function TaskItem({
         }
 
         setValidationError(null);
+        setLimitMessage(null);
 
         try {
             await onUpdateTitle(task.id, trimmed);
@@ -100,7 +104,7 @@ export function TaskItem({
 
     const inputId = `task-title-${task.id}`;
     const errorId = `task-title-error-${task.id}`;
-    const errorMessage = validationError ?? editError;
+    const errorMessage = validationError ?? limitMessage ?? editError;
 
     if (isEditing) {
         return (
@@ -119,10 +123,33 @@ export function TaskItem({
                         autoFocus
                         aria-invalid={errorMessage ? true : undefined}
                         aria-describedby={errorMessage ? errorId : undefined}
+                        onBeforeInput={() => {
+                            if (draftTitle.length >= 140) {
+                                setLimitMessage(
+                                    "O título deve ter no máximo 140 caracteres.",
+                                );
+                            }
+                        }}
+                        onPaste={(event) => {
+                            const pasted = event.clipboardData.getData("text");
+                            const start = event.currentTarget.selectionStart ?? 0;
+                            const end = event.currentTarget.selectionEnd ?? start;
+                            const resultLength =
+                                draftTitle.length - (end - start) + pasted.length;
+                            if (resultLength > 140) {
+                                setLimitMessage(
+                                    "O título deve ter no máximo 140 caracteres.",
+                                );
+                            }
+                        }}
                         onChange={(event) => {
-                            setDraftTitle(event.target.value);
+                            const value = event.target.value;
+                            setDraftTitle(value);
                             if (validationError) {
                                 setValidationError(null);
+                            }
+                            if (limitMessage && value.length < 140) {
+                                setLimitMessage(null);
                             }
                             if (editError) {
                                 onClearEditError(task.id);

@@ -18,6 +18,7 @@ export function TaskComposer({
 }: TaskComposerProps) {
     const [title, setTitle] = useState("");
     const [validationError, setValidationError] = useState<string | null>(null);
+    const [limitMessage, setLimitMessage] = useState<string | null>(null);
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -30,6 +31,7 @@ export function TaskComposer({
         }
 
         setValidationError(null);
+        setLimitMessage(null);
 
         try {
             await createTask(trimmed);
@@ -39,7 +41,7 @@ export function TaskComposer({
         }
     }
 
-    const errorMessage = validationError ?? createError;
+    const errorMessage = validationError ?? limitMessage ?? createError;
 
     return (
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
@@ -58,10 +60,33 @@ export function TaskComposer({
                     aria-describedby={
                         errorMessage ? "task-composer-error" : undefined
                     }
+                    onBeforeInput={() => {
+                        if (title.length >= 140) {
+                            setLimitMessage(
+                                "O título deve ter no máximo 140 caracteres.",
+                            );
+                        }
+                    }}
+                    onPaste={(event) => {
+                        const pasted = event.clipboardData.getData("text");
+                        const start = event.currentTarget.selectionStart ?? 0;
+                        const end = event.currentTarget.selectionEnd ?? start;
+                        const resultLength =
+                            title.length - (end - start) + pasted.length;
+                        if (resultLength > 140) {
+                            setLimitMessage(
+                                "O título deve ter no máximo 140 caracteres.",
+                            );
+                        }
+                    }}
                     onChange={(event) => {
-                        setTitle(event.target.value);
+                        const value = event.target.value;
+                        setTitle(value);
                         if (validationError) {
                             setValidationError(null);
+                        }
+                        if (limitMessage && value.length < 140) {
+                            setLimitMessage(null);
                         }
                         if (createError) {
                             clearCreateError();
