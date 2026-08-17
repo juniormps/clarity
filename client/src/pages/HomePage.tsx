@@ -12,8 +12,8 @@ export function HomePage() {
         createError,
         createTask,
         clearCreateError,
-        updatingTaskId,
-        updateError,
+        updatingCompletedTaskId,
+        updateCompletedError,
         updateTaskCompleted,
         deletingTaskId,
         deleteError,
@@ -51,9 +51,9 @@ export function HomePage() {
                         <TaskItem
                             key={task.id}
                             task={task}
-                            isUpdating={updatingTaskId === task.id}
+                            isUpdating={updatingCompletedTaskId === task.id}
                             isDeleting={deletingTaskId === task.id}
-                            isSavingTitle={editingTaskId === task.id}
+                            isEditingTitle={editingTaskId === task.id}
                             editError={editErrorTaskId === task.id ? editError : null}
                             onToggleCompleted={updateTaskCompleted}
                             onDelete={deleteTask}
@@ -64,9 +64,9 @@ export function HomePage() {
                 </ul>
             )}
 
-            {updateError && (
+            {updateCompletedError && (
                 <p className={styles.error} role="alert">
-                    {updateError}
+                    {updateCompletedError}
                 </p>
             )}
 

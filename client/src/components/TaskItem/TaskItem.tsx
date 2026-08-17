@@ -7,7 +7,7 @@ interface TaskItemProps {
     task: Task;
     isUpdating: boolean;
     isDeleting: boolean;
-    isSavingTitle: boolean;
+    isEditingTitle: boolean;
     editError: string | null;
     onToggleCompleted: (id: number, completed: boolean) => Promise<Task>;
     onDelete: (id: number) => Promise<void>;
@@ -19,7 +19,7 @@ export function TaskItem({
     task,
     isUpdating,
     isDeleting,
-    isSavingTitle,
+    isEditingTitle,
     editError,
     onToggleCompleted,
     onDelete,
@@ -33,13 +33,13 @@ export function TaskItem({
 
     const nextCompleted = !task.completed;
     const actionLabel = task.completed ? "Reabrir" : "Concluir";
-    const isBusy = isUpdating || isDeleting || isSavingTitle;
+    const isBusy = isUpdating || isDeleting || isEditingTitle;
 
     async function handleToggleCompleted() {
         try {
             await onToggleCompleted(task.id, nextCompleted);
         } catch {
-            // A mensagem de erro é exibida pelo useTasks (updateError).
+            // A mensagem de erro é exibida pelo useTasks (updateCompletedError).
         }
     }
 
@@ -161,15 +161,15 @@ export function TaskItem({
                         <button
                             type="submit"
                             className={styles.saveButton}
-                            disabled={isSavingTitle}
+                            disabled={isEditingTitle}
                         >
-                            {isSavingTitle ? "Salvando..." : "Salvar"}
+                            {isEditingTitle ? "Salvando..." : "Salvar"}
                         </button>
 
                         <button
                             type="button"
                             className={styles.cancelButton}
-                            disabled={isSavingTitle}
+                            disabled={isEditingTitle}
                             onClick={handleCancel}
                         >
                             Cancelar
