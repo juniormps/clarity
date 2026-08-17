@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { TaskComposer } from "../components/TaskComposer/TaskComposer";
 import { TaskItem } from "../components/TaskItem/TaskItem";
 import { useTasks } from "../hooks/useTasks";
 import styles from "./HomePage.module.css";
 
 export function HomePage() {
+
     const {
         tasks,
         isLoading,
@@ -24,6 +26,9 @@ export function HomePage() {
         updateTaskTitle,
         clearEditError,
     } = useTasks();
+
+    // Estado utilizado para controlar qual tarefa está sendo editada no momento.
+    const [openEditTaskId, setOpenEditTaskId] = useState<number | null>(null);
 
     return (
         <main className={styles.container}>
@@ -55,6 +60,9 @@ export function HomePage() {
                             isDeleting={deletingTaskId === task.id}
                             isEditingTitle={editingTaskId === task.id}
                             editError={editErrorTaskId === task.id ? editError : null}
+                            isEditing={openEditTaskId === task.id}
+                            onStartEdit={() => setOpenEditTaskId(task.id)}
+                            onCancelEdit={() => setOpenEditTaskId(null)}
                             onToggleCompleted={updateTaskCompleted}
                             onDelete={deleteTask}
                             onUpdateTitle={updateTaskTitle}
