@@ -8,19 +8,19 @@ export function HomePage() {
 
     const {
         tasks,
-        isLoading,
+        isLoadingTasks,
         error,
         isCreating,
         createError,
         createTask,
         clearCreateError,
-        updatingCompletedTaskId,
-        updateCompletedError,
+        updatingCompletedTaskIds,
+        updateCompletedErrors,
         updateTaskCompleted,
-        deletingTaskId,
-        deleteError,
+        deletingTaskIds,
+        deleteErrors,
         deleteTask,
-        editingTaskId,
+        editingTaskIds,
         editError,
         updateTaskTitle,
         clearEditError,
@@ -41,23 +41,25 @@ export function HomePage() {
                 clearCreateError={clearCreateError}
             />
 
-            {isLoading && <p className={styles.status}>Carregando tarefas...</p>}
+            {isLoadingTasks && <p className={styles.status}>Carregando tarefas...</p>}
 
-            {!isLoading && error && <p className={styles.error}>{error}</p>}
+            {!isLoadingTasks && error && <p className={styles.error}>{error}</p>}
 
-            {!isLoading && !error && tasks.length === 0 && (
+            {!isLoadingTasks && !error && tasks.length === 0 && (
                 <p className={styles.status}>Nenhuma tarefa cadastrada.</p>
             )}
 
-            {!isLoading && !error && tasks.length > 0 && (
+            {!isLoadingTasks && !error && tasks.length > 0 && (
                 <ul className={styles.list}>
                     {tasks.map((task) => (
                         <TaskItem
                             key={task.id}
                             task={task}
-                            isUpdating={updatingCompletedTaskId === task.id}
-                            isDeleting={deletingTaskId === task.id}
-                            isEditingTitle={editingTaskId === task.id}
+                            isUpdating={updatingCompletedTaskIds.has(task.id)}
+                            isDeleting={deletingTaskIds.has(task.id)}
+                            isEditingTitle={editingTaskIds.has(task.id)}
+                            updateError={updateCompletedErrors[task.id] ?? null}
+                            deleteError={deleteErrors[task.id] ?? null}
                             editError={openEditTaskId === task.id ? editError : null}
                             isEditing={openEditTaskId === task.id}
                             onStartEdit={() => setOpenEditTaskId(task.id)}
@@ -69,18 +71,6 @@ export function HomePage() {
                         />
                     ))}
                 </ul>
-            )}
-
-            {updateCompletedError && (
-                <p className={styles.error} role="alert">
-                    {updateCompletedError}
-                </p>
-            )}
-
-            {deleteError && (
-                <p className={styles.error} role="alert">
-                    {deleteError}
-                </p>
             )}
         </main>
     );

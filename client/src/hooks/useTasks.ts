@@ -11,7 +11,7 @@ import type { Task } from "../types/task";
 export function useTasks() {
     // Estado das tarefas e do carregamento.
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingTasks, setIsLoadingTasks] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     // Estado de criação de tarefa.
@@ -19,15 +19,15 @@ export function useTasks() {
     const [createError, setCreateError] = useState<string | null>(null);
 
     // Estado de atualização do status "completed" de cada tarefa.
-    const [updatingCompletedTaskId, setUpdatingCompletedTaskId] = useState<number | null>(null);
-    const [updateCompletedError, setUpdateCompletedError] = useState<string | null>(null);
+    const [updatingCompletedTaskIds, setUpdatingCompletedTaskIds] = useState<Set<number>>(new Set());
+    const [updateCompletedErrors, setUpdateCompletedErrors] = useState<Record<number, string>>({});
 
     // Estado de exclusão de cada tarefa.
-    const [deletingTaskId, setDeletingTaskId] = useState<number | null>(null);
-    const [deleteError, setDeleteError] = useState<string | null>(null);
+    const [deletingTaskIds, setDeletingTaskIds] = useState<Set<number>>(new Set());
+    const [deleteErrors, setDeleteErrors] = useState<Record<number, string>>({});
 
     // Estado de edição do título de cada tarefa.
-    const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
+    const [editingTaskIds, setEditingTaskIds] = useState<Set<number>>(new Set());
     const [editError, setEditError] = useState<string | null>(null);
 
     // Carrega a lista de tarefas.
@@ -46,7 +46,7 @@ export function useTasks() {
                 }
             } finally {
                 if (!cancelled) {
-                    setIsLoading(false);
+                    setIsLoadingTasks(false);
                 }
             }
         }
@@ -82,8 +82,12 @@ export function useTasks() {
 
     // Atualiza o status completed de uma tarefa.
     async function updateTaskCompleted(id: number, completed: boolean): Promise<Task> {
-        setUpdatingCompletedTaskId(id);
-        setUpdateCompletedError(null);
+        setUpdatingCompletedTaskIds((current) => new Set(current).add(id));
+        setUpdateCompletedErrors((current) => {
+            const next = { ...current };
+            delete next[id];
+            return next;
+        });
 
         try {
             const updatedTask = await updateTaskCompletedRequest(id, completed);
@@ -92,32 +96,50 @@ export function useTasks() {
             );
             return updatedTask;
         } catch (error) {
-            setUpdateCompletedError("Não foi possível atualizar a tarefa.");
+            setUpdateCompletedErrors((current) => ({
+                ...current,
+                [id]: "Não foi possível atualizar a tarefa.",
+            }));
             throw error;
         } finally {
-            setUpdatingCompletedTaskId(null);
+            setUpdatingCompletedTaskIds((current) => {
+                const next = new Set(current);
+                next.delete(id);
+                return next;
+            });
         }
     }
 
     // Exclui uma tarefa.
     async function deleteTask(id: number): Promise<void> {
-        setDeletingTaskId(id);
-        setDeleteError(null);
+        setDeletingTaskIds((current) => new Set(current).add(id));
+        setDeleteErrors((current) => {
+            const next = { ...current };
+            delete next[id];
+            return next;
+        });
 
         try {
             await deleteTaskRequest(id);
             setTasks((current) => current.filter((task) => task.id !== id));
         } catch (error) {
-            setDeleteError("Não foi possível excluir a tarefa.");
+            setDeleteErrors((current) => ({
+                ...current,
+                [id]: "Não foi possível excluir a tarefa.",
+            }));
             throw error;
         } finally {
-            setDeletingTaskId(null);
+            setDeletingTaskIds((current) => {
+                const next = new Set(current);
+                next.delete(id);
+                return next;
+            });
         }
     }
 
     // Atualiza o título de uma tarefa.
     async function updateTaskTitle(id: number, title: string): Promise<Task> {
-        setEditingTaskId(id);
+        setEditingTaskIds((current) => new Set(current).add(id));
         setEditError(null);
 
         try {
@@ -130,7 +152,11 @@ export function useTasks() {
             setEditError("Não foi possível editar o título da tarefa.");
             throw error;
         } finally {
-            setEditingTaskId(null);
+            setEditingTaskIds((current) => {
+                const next = new Set(current);
+                next.delete(id);
+                return next;
+            });
         }
     }
 
@@ -141,19 +167,19 @@ export function useTasks() {
 
     return {
         tasks,
-        isLoading,
+        isLoadingTasks,
         error,
         isCreating,
         createError,
         createTask,
         clearCreateError,
-        updatingCompletedTaskId,
-        updateCompletedError,
+        updatingCompletedTaskIds,
+        updateCompletedErrors,
         updateTaskCompleted,
-        deletingTaskId,
-        deleteError,
+        deletingTaskIds,
+        deleteErrors,
         deleteTask,
-        editingTaskId,
+        editingTaskIds,
         editError,
         updateTaskTitle,
         clearEditError,

@@ -10,6 +10,8 @@ interface TaskItemProps {
     isEditingTitle: boolean;
     isEditing: boolean;
     editError: string | null;
+    updateError: string | null;
+    deleteError: string | null;
     onToggleCompleted: (id: number, completed: boolean) => Promise<Task>;
     onDelete: (id: number) => Promise<void>;
     onUpdateTitle: (id: number, title: string) => Promise<Task>;
@@ -25,6 +27,8 @@ export function TaskItem({
     isEditingTitle,
     isEditing,
     editError,
+    updateError,
+    deleteError,
     onToggleCompleted,
     onDelete,
     onUpdateTitle,
@@ -232,44 +236,52 @@ export function TaskItem({
 
     return (
         <li className={styles.item}>
-            <span className={styles.title}>{task.title}</span>
+            <div className={styles.itemRow}>
+                <span className={styles.title}>{task.title}</span>
 
-            <div className={styles.actions}>
-                <span className={styles.status}>
-                    {task.completed ? "Concluída" : "Pendente"}
-                </span>
+                <div className={styles.actions}>
+                    <span className={styles.status}>
+                        {task.completed ? "Concluída" : "Pendente"}
+                    </span>
 
-                <button
-                    type="button"
-                    className={styles.editButton}
-                    aria-label={`Editar a tarefa "${task.title}"`}
-                    disabled={isBusy}
-                    onClick={handleStartEdit}
-                >
-                    Editar
-                </button>
+                    <button
+                        type="button"
+                        className={styles.editButton}
+                        aria-label={`Editar a tarefa "${task.title}"`}
+                        disabled={isBusy}
+                        onClick={handleStartEdit}
+                    >
+                        Editar
+                    </button>
 
-                <button
-                    type="button"
-                    className={styles.toggleButton}
-                    aria-pressed={task.completed}
-                    aria-label={`${actionLabel} a tarefa "${task.title}"`}
-                    disabled={isBusy}
-                    onClick={handleToggleCompleted}
-                >
-                    {isUpdating ? "Salvando..." : actionLabel}
-                </button>
+                    <button
+                        type="button"
+                        className={styles.toggleButton}
+                        aria-pressed={task.completed}
+                        aria-label={`${actionLabel} a tarefa "${task.title}"`}
+                        disabled={isBusy}
+                        onClick={handleToggleCompleted}
+                    >
+                        {isUpdating ? "Salvando..." : actionLabel}
+                    </button>
 
-                <button
-                    type="button"
-                    className={styles.deleteButton}
-                    aria-label={`Excluir a tarefa "${task.title}"`}
-                    disabled={isBusy}
-                    onClick={handleDelete}
-                >
-                    {isDeleting ? "Excluindo..." : "Excluir"}
-                </button>
+                    <button
+                        type="button"
+                        className={styles.deleteButton}
+                        aria-label={`Excluir a tarefa "${task.title}"`}
+                        disabled={isBusy}
+                        onClick={handleDelete}
+                    >
+                        {isDeleting ? "Excluindo..." : "Excluir"}
+                    </button>
+                </div>
             </div>
+
+            {(updateError || deleteError) && (
+                <p className={styles.itemError} role="alert">
+                    {updateError ?? deleteError}
+                </p>
+            )}
         </li>
     );
 }
