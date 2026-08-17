@@ -13,7 +13,7 @@ interface TaskItemProps {
     onToggleCompleted: (id: number, completed: boolean) => Promise<Task>;
     onDelete: (id: number) => Promise<void>;
     onUpdateTitle: (id: number, title: string) => Promise<Task>;
-    onClearEditError: (id: number) => void;
+    onClearEditError: () => void;
     onStartEdit: () => void;
     onCancelEdit: () => void;
 }
@@ -75,7 +75,7 @@ export function TaskItem({
         setDraftTitle(task.title);
         setValidationError(null);
         setLimitMessage(null);
-        onClearEditError(task.id);
+        onClearEditError();
         onStartEdit();
     }
 
@@ -84,7 +84,7 @@ export function TaskItem({
         setDraftTitle(task.title);
         setValidationError(null);
         setLimitMessage(null);
-        onClearEditError(task.id);
+        onClearEditError();
         onCancelEdit();
     }
 
@@ -196,7 +196,7 @@ export function TaskItem({
                                 setLimitMessage(null);
                             }
                             if (editError) {
-                                onClearEditError(task.id);
+                                onClearEditError();
                             }
                         }}
                     />

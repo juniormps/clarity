@@ -29,7 +29,6 @@ export function useTasks() {
     // Estado de edição do título de cada tarefa.
     const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
     const [editError, setEditError] = useState<string | null>(null);
-    const [editErrorTaskId, setEditErrorTaskId] = useState<number | null>(null);
 
     // Carrega a lista de tarefas.
     useEffect(() => {
@@ -120,7 +119,6 @@ export function useTasks() {
     async function updateTaskTitle(id: number, title: string): Promise<Task> {
         setEditingTaskId(id);
         setEditError(null);
-        setEditErrorTaskId(null);
 
         try {
             const updatedTask = await updateTaskTitleRequest(id, title);
@@ -130,21 +128,15 @@ export function useTasks() {
             return updatedTask;
         } catch (error) {
             setEditError("Não foi possível editar o título da tarefa.");
-            setEditErrorTaskId(id);
             throw error;
         } finally {
             setEditingTaskId(null);
         }
     }
 
-    // Limpa o erro de edição quando ele pertence à tarefa indicada.
-    function clearEditError(id: number) {
-        if (editErrorTaskId !== id) {
-            return;
-        }
-
+    // Limpa o erro de edição.
+    function clearEditError() {
         setEditError(null);
-        setEditErrorTaskId(null);
     }
 
     return {
@@ -163,7 +155,6 @@ export function useTasks() {
         deleteTask,
         editingTaskId,
         editError,
-        editErrorTaskId,
         updateTaskTitle,
         clearEditError,
     };

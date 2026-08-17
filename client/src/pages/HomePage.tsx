@@ -22,7 +22,6 @@ export function HomePage() {
         deleteTask,
         editingTaskId,
         editError,
-        editErrorTaskId,
         updateTaskTitle,
         clearEditError,
     } = useTasks();
@@ -59,7 +58,7 @@ export function HomePage() {
                             isUpdating={updatingCompletedTaskId === task.id}
                             isDeleting={deletingTaskId === task.id}
                             isEditingTitle={editingTaskId === task.id}
-                            editError={editErrorTaskId === task.id ? editError : null}
+                            editError={openEditTaskId === task.id ? editError : null}
                             isEditing={openEditTaskId === task.id}
                             onStartEdit={() => setOpenEditTaskId(task.id)}
                             onCancelEdit={() => setOpenEditTaskId(null)}
