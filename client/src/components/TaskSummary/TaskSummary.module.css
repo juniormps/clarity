@@ -1,0 +1,57 @@
+.summary {
+  width: 100%;
+  max-width: 28rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: #f9fafb;
+  text-align: left;
+}
+
+.heading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.statValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.progressRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress {
+  width: 100%;
+  height: 0.75rem;
+  accent-color: #4f46e5;
+}
+
+.progressText {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #333;
+}

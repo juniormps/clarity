@@ -3,6 +3,7 @@ import TaskComposer from "../components/TaskComposer/TaskComposer";
 import TaskFilters from "../components/TaskFilters/TaskFilters";
 import TaskItem from "../components/TaskItem/TaskItem";
 import TaskSearch from "../components/TaskSearch/TaskSearch";
+import TaskSummary from "../components/TaskSummary/TaskSummary";
 import { useTasks } from "../hooks/useTasks";
 import type { TaskFilter } from "../types/taskFilter";
 import styles from "./HomePage.module.css";
@@ -66,6 +67,8 @@ function HomePage() {
         <main className={styles.container}>
             <h1 className={styles.title}>Clarity</h1>
             <p className={styles.subtitle}>Task management made clear</p>
+
+            <TaskSummary tasks={tasks} />
 
             <TaskComposer
                 createTask={createTask}
