@@ -2,6 +2,7 @@ import { useState } from "react";
 import TaskComposer from "../components/TaskComposer/TaskComposer";
 import TaskFilters from "../components/TaskFilters/TaskFilters";
 import TaskItem from "../components/TaskItem/TaskItem";
+import TaskSearch from "../components/TaskSearch/TaskSearch";
 import { useTasks } from "../hooks/useTasks";
 import type { TaskFilter } from "../types/taskFilter";
 import styles from "./HomePage.module.css";
@@ -34,20 +35,32 @@ function HomePage() {
     // Filtro de visualização das tarefas (estado local de interface).
     const [filter, setFilter] = useState<TaskFilter>("all");
 
+    // Termo de busca por título (estado local de interface).
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+
     const visibleTasks = tasks.filter((task) => {
-        if (filter === "pending") {
-            return !task.completed;
-        }
-        if (filter === "completed") {
-            return task.completed;
-        }
-        return true;
+        const matchesFilter =
+            filter === "pending"
+                ? !task.completed
+                : filter === "completed"
+                    ? task.completed
+                    : true;
+
+        const matchesSearch =
+            normalizedSearch.length === 0 ||
+            task.title.toLowerCase().includes(normalizedSearch);
+
+        return matchesFilter && matchesSearch;
     });
 
-    const emptyFilterMessage =
-        filter === "pending"
-            ? "Nenhuma tarefa pendente."
-            : "Nenhuma tarefa concluída.";
+    const emptyMessage =
+        normalizedSearch.length > 0
+            ? "Nenhuma tarefa encontrada."
+            : filter === "pending"
+                ? "Nenhuma tarefa pendente."
+                : "Nenhuma tarefa concluída.";
 
     return (
         <main className={styles.container}>
@@ -61,6 +74,8 @@ function HomePage() {
                 clearCreateError={clearCreateError}
             />
 
+            <TaskSearch value={searchTerm} onChange={setSearchTerm} />
+
             <TaskFilters activeFilter={filter} onFilterChange={setFilter} />
 
             {isLoadingTasks && <p className={styles.status}>Carregando tarefas...</p>}
@@ -72,7 +87,7 @@ function HomePage() {
             )}
 
             {!isLoadingTasks && !error && tasks.length > 0 && visibleTasks.length === 0 && (
-                <p className={styles.status}>{emptyFilterMessage}</p>
+                <p className={styles.status}>{emptyMessage}</p>
             )}
 
             {!isLoadingTasks && !error && visibleTasks.length > 0 && (
