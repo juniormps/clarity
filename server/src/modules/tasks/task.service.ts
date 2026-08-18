@@ -1,6 +1,7 @@
 import {
     create as createInRepository,
     deleteById,
+    deleteCompleted as deleteCompletedInRepository,
     listAll,
     updateCompleted as updateCompletedInRepository,
     updateTitle as updateTitleInRepository,
@@ -128,4 +129,9 @@ export async function deleteTask(idInput: unknown): Promise<void> {
         error.status = 404;
         throw error;
     }
+}
+
+//Exclui todas as tarefas concluídas.
+export async function deleteCompletedTasks(): Promise<void> {
+    await deleteCompletedInRepository();
 }

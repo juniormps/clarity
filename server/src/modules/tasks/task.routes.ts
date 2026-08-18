@@ -15,5 +15,8 @@ taskRoutes.patch("/:id", taskController.updateCompleted);
 //Atualiza o título de uma tarefa existente.
 taskRoutes.patch("/:id/title", taskController.updateTitle);
 
+//Exclui todas as tarefas concluídas.
+taskRoutes.delete("/completed", taskController.removeCompleted);
+
 //Exclui uma tarefa existente.
 taskRoutes.delete("/:id", taskController.remove);

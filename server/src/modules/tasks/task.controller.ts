@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import {
     createTask,
+    deleteCompletedTasks,
     deleteTask,
     listTasks,
     updateTaskCompleted,
@@ -93,6 +94,16 @@ export async function remove(req: Request, res: Response): Promise<void> {
             res.status(status).json({ error: err.message });
             return;
         }
+        res.status(500).json({ error: "Internal server error." });
+    }
+}
+
+//Exclui todas as tarefas concluídas.
+export async function removeCompleted(_req: Request, res: Response): Promise<void> {
+    try {
+        await deleteCompletedTasks();
+        res.status(204).send();
+    } catch {
         res.status(500).json({ error: "Internal server error." });
     }
 }

@@ -94,3 +94,12 @@ export async function deleteById(id: number): Promise<boolean> {
 
     return result.affectedRows > 0;
 }
+
+//Exclui todas as tarefas concluídas e informa a quantidade de linhas removidas.
+export async function deleteCompleted(): Promise<number> {
+    const [result] = await pool.execute<ResultSetHeader>(
+        "DELETE FROM tasks WHERE completed = TRUE",
+    );
+
+    return result.affectedRows;
+}
