@@ -10,7 +10,7 @@ interface TaskComposerProps {
     clearCreateError: () => void;
 }
 
-export function TaskComposer({
+function TaskComposer({
     createTask,
     isCreating,
     createError,
@@ -113,3 +113,5 @@ export function TaskComposer({
         </form>
     );
 }
+
+export default TaskComposer;

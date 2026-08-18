@@ -1,5 +1,5 @@
 import type { Task } from "../../types/task";
-import { TaskEditForm } from "../TaskEditForm/TaskEditForm";
+import TaskEditForm from "../TaskEditForm/TaskEditForm";
 import styles from "./TaskItem.module.css";
 
 interface TaskItemProps {
@@ -19,7 +19,7 @@ interface TaskItemProps {
     onCancelEdit: () => void;
 }
 
-export function TaskItem({
+function TaskItem({
     task,
     isUpdating,
     isDeleting,
@@ -136,3 +136,5 @@ export function TaskItem({
         </li>
     );
 }
+
+export default TaskItem;

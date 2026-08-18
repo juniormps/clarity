@@ -13,7 +13,7 @@ interface TaskEditFormProps {
     onClearServerError: () => void;
 }
 
-export function TaskEditForm({
+function TaskEditForm({
     task,
     isSaving,
     serverError,
@@ -145,3 +145,5 @@ export function TaskEditForm({
         </li>
     );
 }
+
+export default TaskEditForm;
