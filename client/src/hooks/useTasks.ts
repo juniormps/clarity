@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
     createTask as createTaskRequest,
+    deleteCompletedTasks as deleteCompletedTasksRequest,
     deleteTask as deleteTaskRequest,
     listTasks,
     updateTaskCompleted as updateTaskCompletedRequest,
@@ -25,6 +26,10 @@ export function useTasks() {
     // Estado de exclusão de cada tarefa.
     const [deletingTaskIds, setDeletingTaskIds] = useState<Set<number>>(new Set());
     const [deleteErrors, setDeleteErrors] = useState<Record<number, string>>({});
+
+    // Estado de exclusão em massa das tarefas concluídas.
+    const [isDeletingCompleted, setIsDeletingCompleted] = useState(false);
+    const [deleteCompletedError, setDeleteCompletedError] = useState<string | null>(null);
 
     // Estado de edição do título de cada tarefa.
     const [editingTaskIds, setEditingTaskIds] = useState<Set<number>>(new Set());
@@ -165,6 +170,25 @@ export function useTasks() {
         setEditError(null);
     }
 
+    // Exclui todas as tarefas concluídas.
+    async function deleteCompletedTasks(): Promise<void> {
+
+        setIsDeletingCompleted(true);
+        setDeleteCompletedError(null);
+
+        try {
+            await deleteCompletedTasksRequest();
+            setTasks((current) => current.filter((task) => !task.completed));
+
+        } catch (error) {
+            setDeleteCompletedError("Não foi possível limpar as tarefas concluídas.");
+            throw error;
+
+        } finally {
+            setIsDeletingCompleted(false);
+        }
+    }
+
     return {
         tasks,
         isLoadingTasks,
@@ -179,6 +203,9 @@ export function useTasks() {
         deletingTaskIds,
         deleteErrors,
         deleteTask,
+        isDeletingCompleted,
+        deleteCompletedError,
+        deleteCompletedTasks,
         editingTaskIds,
         editError,
         updateTaskTitle,

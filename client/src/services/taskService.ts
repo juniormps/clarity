@@ -99,3 +99,15 @@ export async function deleteTask(id: number): Promise<void> {
         throw new Error(`Failed to delete task (${response.status}).`);
     }
 }
+
+//Faz a requisição para EXCLUIR todas as tarefas concluídas
+export async function deleteCompletedTasks(): Promise<void> {
+    
+    const response = await fetch("/api/tasks/completed", {
+        method: "DELETE",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to delete completed tasks (${response.status}).`);
+    }
+}

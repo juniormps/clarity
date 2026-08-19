@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ClearCompletedTasks from "../components/ClearCompletedTasks/ClearCompletedTasks";
 import TaskComposer from "../components/TaskComposer/TaskComposer";
 import TaskFilters from "../components/TaskFilters/TaskFilters";
 import TaskItem from "../components/TaskItem/TaskItem";
@@ -24,6 +25,9 @@ function HomePage() {
         deletingTaskIds,
         deleteErrors,
         deleteTask,
+        isDeletingCompleted,
+        deleteCompletedError,
+        deleteCompletedTasks,
         editingTaskIds,
         editError,
         updateTaskTitle,
@@ -40,6 +44,8 @@ function HomePage() {
     const [searchTerm, setSearchTerm] = useState("");
 
     const normalizedSearch = searchTerm.trim().toLowerCase();
+
+    const hasCompletedTasks = tasks.some((task) => task.completed);
 
     const visibleTasks = tasks.filter((task) => {
         const matchesFilter =
@@ -63,6 +69,20 @@ function HomePage() {
                 ? "Nenhuma tarefa pendente."
                 : "Nenhuma tarefa concluída.";
 
+    //Exclusão em massa de todas as tarefas concluídas. 
+    //Se houver uma tarefa entre as concluídas, aberta em edição, o modo de edição é encerrado.            
+    async function handleClearCompleted() {
+        const editingCompletedTask =
+            openEditTaskId !== null &&
+            tasks.some((task) => task.id === openEditTaskId && task.completed);
+
+        await deleteCompletedTasks();
+
+        if (editingCompletedTask) {
+            setOpenEditTaskId(null);
+        }
+    }
+
     return (
         <main className={styles.container}>
             <h1 className={styles.title}>Clarity</h1>
@@ -80,6 +100,13 @@ function HomePage() {
             <TaskSearch value={searchTerm} onChange={setSearchTerm} />
 
             <TaskFilters activeFilter={filter} onFilterChange={setFilter} />
+
+            <ClearCompletedTasks
+                hasCompletedTasks={hasCompletedTasks}
+                isDeleting={isDeletingCompleted}
+                error={deleteCompletedError}
+                onDeleteCompleted={handleClearCompleted}
+            />
 
             {isLoadingTasks && <p className={styles.status}>Carregando tarefas...</p>}
 
