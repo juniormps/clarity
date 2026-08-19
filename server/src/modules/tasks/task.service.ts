@@ -1,3 +1,4 @@
+import { AppError } from "../../errors/AppError.js";
 import {
     create as createInRepository,
     deleteById,
@@ -24,9 +25,7 @@ export async function createTask(body: unknown): Promise<Task> {
     const validation = validateCreateTaskInput(body);
 
     if (!validation.valid) {
-        const error = new Error(validation.error) as Error & { status: number };
-        error.status = 400;
-        throw error;
+        throw new AppError(400, validation.error);
     }
 
     return createInRepository(validation.data);
@@ -37,21 +36,13 @@ export async function updateTaskCompleted(idInput: unknown, body: unknown): Prom
     const idValidation = validateTaskId(idInput);
 
     if (!idValidation.valid) {
-        const error = new Error(idValidation.error) as Error & {
-            status: number;
-        };
-        error.status = 400;
-        throw error;
+        throw new AppError(400, idValidation.error);
     }
 
     const bodyValidation = validateUpdateTaskCompletedInput(body);
 
     if (!bodyValidation.valid) {
-        const error = new Error(bodyValidation.error) as Error & {
-            status: number;
-        };
-        error.status = 400;
-        throw error;
+        throw new AppError(400, bodyValidation.error);
     }
 
     const task = await updateCompletedInRepository(
@@ -60,11 +51,7 @@ export async function updateTaskCompleted(idInput: unknown, body: unknown): Prom
     );
 
     if (task === null) {
-        const error = new Error("Task not found.") as Error & {
-            status: number;
-        };
-        error.status = 404;
-        throw error;
+        throw new AppError(404, "Task not found.");
     }
 
     return task;
@@ -75,34 +62,19 @@ export async function updateTaskTitle(idInput: unknown, body: unknown): Promise<
     const idValidation = validateTaskId(idInput);
 
     if (!idValidation.valid) {
-        const error = new Error(idValidation.error) as Error & {
-            status: number;
-        };
-        error.status = 400;
-        throw error;
+        throw new AppError(400, idValidation.error);
     }
 
     const bodyValidation = validateUpdateTaskTitleInput(body);
 
     if (!bodyValidation.valid) {
-        const error = new Error(bodyValidation.error) as Error & {
-            status: number;
-        };
-        error.status = 400;
-        throw error;
+        throw new AppError(400, bodyValidation.error);
     }
 
-    const task = await updateTitleInRepository(
-        idValidation.data,
-        bodyValidation.data.title,
-    );
+    const task = await updateTitleInRepository(idValidation.data, bodyValidation.data.title);
 
     if (task === null) {
-        const error = new Error("Task not found.") as Error & {
-            status: number;
-        };
-        error.status = 404;
-        throw error;
+        throw new AppError(404, "Task not found.");
     }
 
     return task;
@@ -113,21 +85,13 @@ export async function deleteTask(idInput: unknown): Promise<void> {
     const idValidation = validateTaskId(idInput);
 
     if (!idValidation.valid) {
-        const error = new Error(idValidation.error) as Error & {
-            status: number;
-        };
-        error.status = 400;
-        throw error;
+        throw new AppError(400, idValidation.error);
     }
 
     const removed = await deleteById(idValidation.data);
 
     if (!removed) {
-        const error = new Error("Task not found.") as Error & {
-            status: number;
-        };
-        error.status = 404;
-        throw error;
+        throw new AppError(404, "Task not found.");
     }
 }
 

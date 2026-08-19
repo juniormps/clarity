@@ -1,5 +1,6 @@
 import express from "express";
 import { checkConnection } from "./database/connection.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 import { taskRoutes } from "./modules/tasks/task.routes.js";
 
 const app = express();
@@ -24,5 +25,7 @@ app.get("/health", async (_req, res) => {
         database: "connected",
     });
 });
+
+app.use(errorHandler);
 
 export { app };
