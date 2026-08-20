@@ -7,9 +7,9 @@ import TaskSearch from "../components/TaskSearch/TaskSearch";
 import TaskSummary from "../components/TaskSummary/TaskSummary";
 import { useTasks } from "../hooks/useTasks";
 import type { TaskFilter } from "../types/taskFilter";
-import styles from "./HomePage.module.css";
+import styles from "./TasksPage.module.css";
 
-function HomePage() {
+function TasksPage() {
 
     const {
         tasks,
@@ -147,4 +147,4 @@ function HomePage() {
     );
 }
 
-export default HomePage;
+export default TasksPage;
