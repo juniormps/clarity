@@ -4,7 +4,8 @@ import type { CreateUserRepositoryInput, User } from "./user.types.js";
 
 interface UserRow extends RowDataPacket {
     id: number;
-    name: string;
+    first_name: string;
+    last_name: string;
     email: string;
     created_at: Date;
     updated_at: Date;
@@ -13,7 +14,8 @@ interface UserRow extends RowDataPacket {
 function mapUserRow(row: UserRow): User {
     return {
         id: row.id,
-        name: row.name,
+        firstName: row.first_name,
+        lastName: row.last_name,
         email: row.email,
         createdAt: row.created_at.toISOString(),
         updatedAt: row.updated_at.toISOString(),
@@ -35,14 +37,14 @@ export async function create(input: CreateUserRepositoryInput): Promise<User | n
 
     try {
         const [result] = await pool.execute<ResultSetHeader>(
-            "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
-            [input.name, input.email, input.passwordHash],
+            "INSERT INTO users (first_name, last_name, email, password_hash) VALUES (?, ?, ?, ?)",
+            [input.firstName, input.lastName, input.email, input.passwordHash],
         );
 
         const insertId = result.insertId;
 
         const [rows] = await pool.execute<UserRow[]>(
-            "SELECT id, name, email, created_at, updated_at FROM users WHERE id = ?",
+            "SELECT id, first_name, last_name, email, created_at, updated_at FROM users WHERE id = ?",
             [insertId],
         );
 

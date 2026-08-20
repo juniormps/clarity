@@ -1,19 +1,23 @@
 export interface User {
     id: number;
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     createdAt: string;
     updatedAt: string;
 }
 
 export interface CreateUserInput {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
+    passwordConfirmation: string;
 }
 
 export interface CreateUserRepositoryInput {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     passwordHash: string;
 }

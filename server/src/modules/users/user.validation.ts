@@ -2,22 +2,23 @@ import type { CreateUserInput } from "./user.types.js";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-//Valida e normaliza o campo name, removendo espaços das extremidades.
+//Valida e normaliza um campo de nome, removendo espaços das extremidades.
 function validateName(
     value: unknown,
+    field: "firstName" | "lastName",
 ): { valid: true; data: string } | { valid: false; error: string } {
     if (typeof value !== "string") {
-        return { valid: false, error: '"name" must be a string.' };
+        return { valid: false, error: `"${field}" must be a string.` };
     }
 
     const trimmed = value.trim();
 
     if (trimmed.length === 0) {
-        return { valid: false, error: '"name" cannot be empty.' };
+        return { valid: false, error: `"${field}" cannot be empty.` };
     }
 
     if (trimmed.length > 120) {
-        return { valid: false, error: '"name" must be at most 120 characters.' };
+        return { valid: false, error: `"${field}" must be at most 120 characters.` };
     }
 
     return { valid: true, data: trimmed };
@@ -71,6 +72,22 @@ function validatePassword(
     return { valid: true, data: value };
 }
 
+//Valida que a confirmação de senha seja idêntica à senha informada.
+function validatePasswordConfirmation(
+    value: unknown,
+    password: string,
+): { valid: true; data: string } | { valid: false; error: string } {
+    if (typeof value !== "string") {
+        return { valid: false, error: '"passwordConfirmation" must be a string.' };
+    }
+
+    if (value !== password) {
+        return { valid: false, error: '"passwordConfirmation" must match "password".' };
+    }
+
+    return { valid: true, data: value };
+}
+
 //Valida a entrada para criar um novo usuário.
 export function validateCreateUserInput(
     body: unknown,
@@ -83,8 +100,12 @@ export function validateCreateUserInput(
         return { valid: false, error: "Request body must be a JSON object." };
     }
 
-    if (!("name" in body)) {
-        return { valid: false, error: '"name" is required.' };
+    if (!("firstName" in body)) {
+        return { valid: false, error: '"firstName" is required.' };
+    }
+
+    if (!("lastName" in body)) {
+        return { valid: false, error: '"lastName" is required.' };
     }
 
     if (!("email" in body)) {
@@ -95,12 +116,23 @@ export function validateCreateUserInput(
         return { valid: false, error: '"password" is required.' };
     }
 
-    const { name, email, password } = body as Record<string, unknown>;
+    if (!("passwordConfirmation" in body)) {
+        return { valid: false, error: '"passwordConfirmation" is required.' };
+    }
 
-    const nameValidation = validateName(name);
+    const { firstName, lastName, email, password, passwordConfirmation } =
+        body as Record<string, unknown>;
 
-    if (!nameValidation.valid) {
-        return nameValidation;
+    const firstNameValidation = validateName(firstName, "firstName");
+
+    if (!firstNameValidation.valid) {
+        return firstNameValidation;
+    }
+
+    const lastNameValidation = validateName(lastName, "lastName");
+
+    if (!lastNameValidation.valid) {
+        return lastNameValidation;
     }
 
     const emailValidation = validateEmail(email);
@@ -115,12 +147,23 @@ export function validateCreateUserInput(
         return passwordValidation;
     }
 
+    const passwordConfirmationValidation = validatePasswordConfirmation(
+        passwordConfirmation,
+        passwordValidation.data,
+    );
+
+    if (!passwordConfirmationValidation.valid) {
+        return passwordConfirmationValidation;
+    }
+
     return {
         valid: true,
         data: {
-            name: nameValidation.data,
+            firstName: firstNameValidation.data,
+            lastName: lastNameValidation.data,
             email: emailValidation.data,
             password: passwordValidation.data,
+            passwordConfirmation: passwordConfirmationValidation.data,
         },
     };
 }

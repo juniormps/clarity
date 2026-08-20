@@ -25,7 +25,8 @@ function createMockResponse() {
 
 const existingUser: User = {
     id: 1,
-    name: "Márcio Júnior",
+    firstName: "Márcio",
+    lastName: "Pereira",
     email: "user@example.com",
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z",
@@ -35,7 +36,15 @@ describe("userController.create", () => {
     it("responde 201 com { data: user } em caso de sucesso", async () => {
         mockedCreateUser.mockResolvedValueOnce(existingUser);
 
-        const req = { body: { name: "Márcio", email: "user@example.com", password: "senha-segura" } } as Request;
+        const req = {
+            body: {
+                firstName: "Márcio",
+                lastName: "Pereira",
+                email: "user@example.com",
+                password: "senha-segura",
+                passwordConfirmation: "senha-segura",
+            },
+        } as Request;
         const res = createMockResponse();
         const next = vi.fn();
 

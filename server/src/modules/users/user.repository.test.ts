@@ -8,7 +8,8 @@ vi.mock("../../database/connection.js", () => ({
 }));
 
 const input = {
-    name: "Márcio Júnior",
+    firstName: "Márcio",
+    lastName: "Pereira",
     email: "user@example.com",
     passwordHash: "$argon2id$fake",
 };
@@ -51,7 +52,8 @@ describe("create", () => {
             [
                 {
                     id: 7,
-                    name: "Márcio Júnior",
+                    first_name: "Márcio",
+                    last_name: "Pereira",
                     email: "user@example.com",
                     created_at: new Date("2026-01-01T00:00:00.000Z"),
                     updated_at: new Date("2026-01-01T00:00:00.000Z"),
@@ -63,7 +65,8 @@ describe("create", () => {
 
         expect(user).toEqual({
             id: 7,
-            name: "Márcio Júnior",
+            firstName: "Márcio",
+            lastName: "Pereira",
             email: "user@example.com",
             createdAt: "2026-01-01T00:00:00.000Z",
             updatedAt: "2026-01-01T00:00:00.000Z",

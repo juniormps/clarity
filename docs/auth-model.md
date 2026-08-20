@@ -24,7 +24,8 @@ User 1 ─────────── N Task
 ```text
 users
 ├── id
-├── name
+├── first_name
+├── last_name
 ├── email
 ├── password_hash
 ├── created_at
@@ -35,7 +36,8 @@ Tipos conceituais para MySQL:
 
 ```sql
 id            BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY
-name          VARCHAR(120) NOT NULL
+first_name    VARCHAR(120) NOT NULL
+last_name     VARCHAR(120) NOT NULL
 email         VARCHAR(255) NOT NULL
 password_hash VARCHAR(255) NOT NULL
 created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -54,11 +56,21 @@ A migration será criada no Passo 25.
 
 ## Regras do usuário
 
-### Name
+### FirstName
 
 - obrigatório;
 - armazenado sem espaços desnecessários nas extremidades;
-- limite máximo compatível com `VARCHAR(120)`.
+- limite máximo compatível com `VARCHAR(120)`;
+- preserva maiúsculas/minúsculas.
+
+### LastName
+
+- obrigatório;
+- armazenado sem espaços desnecessários nas extremidades;
+- limite máximo compatível com `VARCHAR(120)`;
+- preserva maiúsculas/minúsculas;
+- o valor é o sobrenome completo informado pelo usuário, sem separação
+  interna.
 
 A validação exata será implementada no Passo 25.
 
@@ -220,7 +232,8 @@ Representação segura conceitual de um usuário dentro da aplicação:
 ```ts
 interface User {
     id: number;
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     createdAt: string;
     updatedAt: string;

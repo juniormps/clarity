@@ -12,14 +12,17 @@ vi.mock("./user.repository.js", () => ({
 const mockedCreate = vi.mocked(create);
 
 const validBody = {
-    name: "  Márcio Júnior  ",
+    firstName: "  Márcio  ",
+    lastName: "  Pereira  ",
     email: "  User@Example.COM  ",
     password: "senha-segura",
+    passwordConfirmation: "senha-segura",
 };
 
 const existingUser: User = {
     id: 1,
-    name: "Márcio Júnior",
+    firstName: "Márcio",
+    lastName: "Pereira",
     email: "user@example.com",
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z",
@@ -54,9 +57,11 @@ describe("createUser", () => {
 
         const repositoryInput = mockedCreate.mock.calls[0][0];
 
-        expect(repositoryInput.name).toBe("Márcio Júnior");
+        expect(repositoryInput.firstName).toBe("Márcio");
+        expect(repositoryInput.lastName).toBe("Pereira");
         expect(repositoryInput.email).toBe("user@example.com");
         expect(repositoryInput).not.toHaveProperty("password");
+        expect(repositoryInput).not.toHaveProperty("passwordConfirmation");
         expect(repositoryInput.passwordHash).not.toBe(validBody.password);
 
         const { passwordHash } = repositoryInput;

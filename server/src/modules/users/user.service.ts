@@ -23,7 +23,8 @@ export async function createUser(body: unknown): Promise<User> {
     const passwordHash = await argon2.hash(validation.data.password, ARGON2_OPTIONS);
 
     const user = await createInRepository({
-        name: validation.data.name,
+        firstName: validation.data.firstName,
+        lastName: validation.data.lastName,
         email: validation.data.email,
         passwordHash,
     });
