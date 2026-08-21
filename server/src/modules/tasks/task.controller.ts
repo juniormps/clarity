@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { getAuthUserId } from "../../middlewares/getAuthUserId.js";
 import {
     createTask,
     deleteCompletedTasks,
@@ -8,60 +9,66 @@ import {
     updateTaskTitle,
 } from "./task.service.js";
 
-//Resgata todas as tarefas do banco de dados.
-export async function list(_req: Request, res: Response, next: NextFunction): Promise<void> {
+//Resgata as tarefas do usuário autenticado.
+export async function list(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const tasks = await listTasks();
+        const userId = getAuthUserId(req);
+        const tasks = await listTasks(userId);
         res.status(200).json({ data: tasks });
     } catch (error) {
         next(error);
     }
 }
 
-//Cria uma nova tarefa no banco de dados.
+//Cria uma nova tarefa associada ao usuário autenticado.
 export async function create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const task = await createTask(req.body);
+        const userId = getAuthUserId(req);
+        const task = await createTask(userId, req.body);
         res.status(201).json({ data: task });
     } catch (error) {
         next(error);
     }
 }
 
-//Atualiza o status completed de uma tarefa existente.
+//Atualiza o status completed de uma tarefa do usuário autenticado.
 export async function updateCompleted(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const task = await updateTaskCompleted(req.params.id, req.body);
+        const userId = getAuthUserId(req);
+        const task = await updateTaskCompleted(userId, req.params.id, req.body);
         res.status(200).json({ data: task });
     } catch (error) {
         next(error);
     }
 }
 
-//Atualiza o título de uma tarefa existente.
+//Atualiza o título de uma tarefa do usuário autenticado.
 export async function updateTitle(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const task = await updateTaskTitle(req.params.id, req.body);
+        const userId = getAuthUserId(req);
+        const task = await updateTaskTitle(userId, req.params.id, req.body);
         res.status(200).json({ data: task });
     } catch (error) {
         next(error);
     }
 }
 
-//Exclui uma tarefa existente.
+//Exclui uma tarefa do usuário autenticado.
 export async function remove(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        await deleteTask(req.params.id);
+        const userId = getAuthUserId(req);
+        await deleteTask(userId, req.params.id);
         res.status(204).send();
     } catch (error) {
         next(error);
     }
 }
 
-//Exclui todas as tarefas concluídas.
-export async function removeCompleted(_req: Request, res: Response, next: NextFunction): Promise<void> {
+//Exclui as tarefas concluídas do usuário autenticado.
+export async function removeCompleted(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        await deleteCompletedTasks();
+        const userId = getAuthUserId(req);
+        await deleteCompletedTasks(userId);
         res.status(204).send();
     } catch (error) {
         next(error);

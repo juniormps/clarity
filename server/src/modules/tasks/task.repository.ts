@@ -20,25 +20,31 @@ function mapTaskRow(row: TaskRow): Task {
     };
 }
 
-//Resgata todas as tarefas do banco de dados.
-export async function listAll(): Promise<Task[]> {
+//Resgata as tarefas pertencentes ao usuário autenticado.
+export async function listAll(userId: number): Promise<Task[]> {
     const [rows] = await pool.execute<TaskRow[]>(
-        "SELECT id, title, completed, created_at, updated_at FROM tasks ORDER BY created_at DESC, id DESC",
+        "SELECT id, title, completed, created_at, updated_at " +
+            "FROM tasks WHERE user_id = ? ORDER BY created_at DESC, id DESC",
+        [userId],
     );
 
     return rows.map(mapTaskRow);
 }
 
-//Cria uma nova tarefa no banco de dados.
-export async function create(input: CreateTaskInput): Promise<Task> {
+//Cria uma nova tarefa associada ao usuário autenticado.
+export async function create(userId: number, input: CreateTaskInput): Promise<Task> {
     
-    const [result] = await pool.execute<ResultSetHeader>("INSERT INTO tasks (title) VALUES (?)", [input.title]);
+    const [result] = await pool.execute<ResultSetHeader>(
+        "INSERT INTO tasks (user_id, title) VALUES (?, ?)",
+        [userId, input.title],
+    );
 
     const insertId = result.insertId;
 
     const [rows] = await pool.execute<TaskRow[]>(
-        "SELECT id, title, completed, created_at, updated_at FROM tasks WHERE id = ?",
-        [insertId],
+        "SELECT id, title, completed, created_at, updated_at " +
+            "FROM tasks WHERE id = ? AND user_id = ?",
+        [insertId, userId],
     );
 
     if (rows.length === 0) {
@@ -48,14 +54,22 @@ export async function create(input: CreateTaskInput): Promise<Task> {
     return mapTaskRow(rows[0]);
 }
 
-//Atualiza o status completed de uma tarefa e retorna o estado persistido.
-export async function updateCompleted(id: number, completed: boolean): Promise<Task | null> {
+//Atualiza o status completed de uma tarefa do usuário e retorna o estado persistido.
+export async function updateCompleted(
+    userId: number,
+    id: number,
+    completed: boolean,
+): Promise<Task | null> {
 
-    await pool.execute("UPDATE tasks SET completed = ? WHERE id = ?", [completed, id]);
+    await pool.execute(
+        "UPDATE tasks SET completed = ? WHERE id = ? AND user_id = ?",
+        [completed, id, userId],
+    );
 
     const [rows] = await pool.execute<TaskRow[]>(
-        "SELECT id, title, completed, created_at, updated_at FROM tasks WHERE id = ?",
-        [id],
+        "SELECT id, title, completed, created_at, updated_at " +
+            "FROM tasks WHERE id = ? AND user_id = ?",
+        [id, userId],
     );
 
     if (rows.length === 0) {
@@ -65,16 +79,22 @@ export async function updateCompleted(id: number, completed: boolean): Promise<T
     return mapTaskRow(rows[0]);
 }
 
-//Atualiza o título de uma tarefa e retorna o estado persistido.
-export async function updateTitle(id: number, title: string): Promise<Task | null> {
+//Atualiza o título de uma tarefa do usuário e retorna o estado persistido.
+export async function updateTitle(
+    userId: number,
+    id: number,
+    title: string,
+): Promise<Task | null> {
 
-    await pool.execute("UPDATE tasks SET title = ? WHERE id = ?", 
-        [title, id]
+    await pool.execute(
+        "UPDATE tasks SET title = ? WHERE id = ? AND user_id = ?",
+        [title, id, userId],
     );
 
     const [rows] = await pool.execute<TaskRow[]>(
-        "SELECT id, title, completed, created_at, updated_at FROM tasks WHERE id = ?",
-        [id],
+        "SELECT id, title, completed, created_at, updated_at " +
+            "FROM tasks WHERE id = ? AND user_id = ?",
+        [id, userId],
     );
 
     if (rows.length === 0) {
@@ -84,21 +104,22 @@ export async function updateTitle(id: number, title: string): Promise<Task | nul
     return mapTaskRow(rows[0]);
 }
 
-//Exclui uma tarefa pelo id e informa se alguma linha foi realmente removida.
-export async function deleteById(id: number): Promise<boolean> {
+//Exclui uma tarefa do usuário pelo id e informa se alguma linha foi realmente removida.
+export async function deleteById(userId: number, id: number): Promise<boolean> {
     
     const [result] = await pool.execute<ResultSetHeader>(
-        "DELETE FROM tasks WHERE id = ?",
-        [id],
+        "DELETE FROM tasks WHERE id = ? AND user_id = ?",
+        [id, userId],
     );
 
     return result.affectedRows > 0;
 }
 
-//Exclui todas as tarefas concluídas e informa a quantidade de linhas removidas.
-export async function deleteCompleted(): Promise<number> {
+//Exclui as tarefas concluídas do usuário e informa a quantidade de linhas removidas.
+export async function deleteCompleted(userId: number): Promise<number> {
     const [result] = await pool.execute<ResultSetHeader>(
-        "DELETE FROM tasks WHERE completed = TRUE",
+        "DELETE FROM tasks WHERE user_id = ? AND completed = TRUE",
+        [userId],
     );
 
     return result.affectedRows;
