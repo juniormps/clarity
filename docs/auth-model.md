@@ -164,6 +164,58 @@ A tabela `tasks` não será alterada neste passo.
 
 ---
 
+## Passo 28 — Tarefas vinculadas ao usuário autenticado (concretizado)
+
+A relação foi materializada no banco:
+
+```text
+User 1 ─────── N Task
+
+tasks.user_id
+      ↓
+users.id
+```
+
+- migration `004_add_user_id_to_tasks.sql` adiciona `user_id` com
+  `BIGINT UNSIGNED NOT NULL`, índice `idx_tasks_user_id` e foreign key
+  `tasks.user_id → users.id` com `ON DELETE CASCADE`;
+- as tarefas legadas (pré-sistema de usuários) foram descartadas durante
+  a migration, pois nenhuma tarefa anônima deveria ser preservada ou
+  atribuída artificialmente a um usuário;
+- `user_id` é obrigatório: nenhuma tarefa existe sem proprietário.
+
+A identidade usada nas operações de tarefas flui exclusivamente a partir
+da sessão:
+
+```text
+cookie sid
+   ↓
+requireAuth
+   ↓
+req.auth.userId
+   ↓
+controller
+   ↓
+service
+   ↓
+repository
+   ↓
+WHERE user_id = ?
+```
+
+- o frontend não informa a propriedade da tarefa; `userId` nunca é aceito
+  de `req.body`, `req.params`, query string ou headers;
+- o isolamento é aplicado diretamente no SQL, com `WHERE user_id = ?`
+  na listagem e `WHERE id = ? AND user_id = ?` nas atualizações e
+  exclusões individuais;
+- a criação associa automaticamente a tarefa ao usuário autenticado via
+  `INSERT INTO tasks (user_id, title) VALUES (?, ?)`;
+- tentativas de editar/excluir tarefas de outro usuário resultam em
+  `404 Task not found.`, indistinguíveis de tarefas inexistentes;
+- os testes completos de isolamento entre contas pertencem ao Passo 29.
+
+---
+
 ## Regra de propriedade
 
 O `user_id` de uma tarefa **não será fornecido pelo cliente** como
