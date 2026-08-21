@@ -296,6 +296,32 @@ O middleware de autenticação reutilizável pertence ao Passo 27.
 
 ---
 
+## Passo 27 — Middleware de autenticação (concretizado)
+
+Fluxo de uma rota protegida:
+
+```text
+cookie sid
+   ↓
+requireAuth
+   ↓
+sessão válida
+   ↓
+req.auth.userId
+   ↓
+rota protegida
+```
+
+- `requireAuth` resolve a sessão reutilizando `authService.me()`, sem
+  duplicar hash SHA-256, consulta de sessão ou verificação de expiração;
+- em sessão válida, disponibiliza `req.auth = { userId: user.id }`;
+- em sessão ausente, inválida ou expirada, encaminha `AppError` 401
+  (`Authentication required.`) para o `errorHandler`;
+- `/api/tasks` agora exige autenticação (todas as rotas do módulo);
+- o isolamento das tarefas por `userId` ainda pertence ao Passo 28.
+
+---
+
 ## Estratégia para tarefas já existentes
 
 Atualmente há tarefas anônimas no banco, pois `tasks` ainda não possui

@@ -1,7 +1,11 @@
 import { Router } from "express";
+import { requireAuth } from "../../middlewares/requireAuth.js";
 import * as taskController from "./task.controller.js";
 
 export const taskRoutes = Router();
+
+//Exige autenticação para todas as rotas de tarefas.
+taskRoutes.use(requireAuth);
 
 //Resgata todas as tarefas do banco de dados.
 taskRoutes.get("/", taskController.list);
