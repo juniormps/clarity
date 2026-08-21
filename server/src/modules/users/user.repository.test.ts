@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { create, isDuplicateEntryError } from "./user.repository.js";
+import { create, findByEmailForAuthentication, isDuplicateEntryError } from "./user.repository.js";
 
 const { executeMock } = vi.hoisted(() => ({ executeMock: vi.fn() }));
 
@@ -24,6 +24,46 @@ describe("isDuplicateEntryError", () => {
         expect(isDuplicateEntryError(new Error("boom"))).toBe(false);
         expect(isDuplicateEntryError({ code: "ER_BAD_DB_ERROR" })).toBe(false);
         expect(isDuplicateEntryError(null)).toBe(false);
+    });
+});
+
+describe("findByEmailForAuthentication", () => {
+    beforeEach(() => {
+        executeMock.mockReset();
+    });
+
+    it("retorna o usuário com passwordHash quando o email existe", async () => {
+        executeMock.mockResolvedValueOnce([
+            [
+                {
+                    id: 7,
+                    first_name: "Márcio",
+                    last_name: "Pereira",
+                    email: "user@example.com",
+                    password_hash: "$argon2id$fake",
+                    created_at: new Date("2026-01-01T00:00:00.000Z"),
+                    updated_at: new Date("2026-01-01T00:00:00.000Z"),
+                },
+            ],
+        ]);
+
+        const user = await findByEmailForAuthentication("user@example.com");
+
+        expect(user).toEqual({
+            id: 7,
+            firstName: "Márcio",
+            lastName: "Pereira",
+            email: "user@example.com",
+            passwordHash: "$argon2id$fake",
+            createdAt: "2026-01-01T00:00:00.000Z",
+            updatedAt: "2026-01-01T00:00:00.000Z",
+        });
+    });
+
+    it("retorna null quando o email não existe", async () => {
+        executeMock.mockResolvedValueOnce([[]]);
+
+        await expect(findByEmailForAuthentication("nao-existe@example.com")).resolves.toBeNull();
     });
 });
 

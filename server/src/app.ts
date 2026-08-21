@@ -1,15 +1,19 @@
+import cookieParser from "cookie-parser";
 import express from "express";
 import { checkConnection } from "./database/connection.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import { authRoutes } from "./modules/auth/auth.routes.js";
 import { taskRoutes } from "./modules/tasks/task.routes.js";
 import { userRoutes } from "./modules/users/user.routes.js";
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/tasks", taskRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/health", async (_req, res) => {
     const dbConnected = await checkConnection();

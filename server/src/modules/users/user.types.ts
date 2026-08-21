@@ -7,6 +7,10 @@ export interface User {
     updatedAt: string;
 }
 
+export interface UserAuthenticationRecord extends User {
+    passwordHash: string;
+}
+
 export interface CreateUserInput {
     firstName: string;
     lastName: string;

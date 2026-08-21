@@ -260,20 +260,39 @@ quando necessários.
 - rotas protegidas obterão `userId` da autenticação;
 - credenciais não devem ser usadas como propriedade enviada pelo frontend.
 
-O mecanismo de sessão não será detalhado ainda. A decisão concreta de
-implementação pertence ao Passo 26. O planejamento atual prevê
-preferência por `cookie HttpOnly`.
+## Sessão
 
-Não serão criados, neste passo:
+A autenticação usa:
 
-- biblioteca de sessão;
-- JWT;
-- cookies;
-- tokens;
-- tabela de sessões;
-- middleware de autenticação.
+```text
+cookie HttpOnly + sessão server-side
+```
 
-Esses assuntos pertencem aos próximos passos.
+Fluxo conceitual:
+
+```text
+login válido
+    ↓
+token opaco aleatório
+    ↓
+SHA-256 do token
+    ↓
+token original → cookie HttpOnly
+hash do token → tabela sessions
+```
+
+Resumo das decisões concretizadas:
+
+- tabela `sessions` armazena apenas o hash SHA-256 do token;
+- o token real existe somente no cookie `sid`;
+- duração server-side da sessão: 24 horas;
+- cookie não persistente (removido ao fim da sessão do navegador);
+- cookie configurado com `HttpOnly`, `SameSite=Lax`, `Path=/`;
+- `Secure` habilitado somente em produção;
+- endpoints: `POST /api/auth/login`, `GET /api/auth/me` e
+  `POST /api/auth/logout`.
+
+O middleware de autenticação reutilizável pertence ao Passo 27.
 
 ---
 
