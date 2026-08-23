@@ -53,18 +53,22 @@ describe("App — roteamento", () => {
         expect(screen.getByRole("heading", { name: "Clarity" })).toBeInTheDocument();
     });
 
-    it("renderiza LoginPage na rota /login", () => {
+    it("renderiza LoginPage na rota /login", async () => {
         mockedGetCurrentUser.mockResolvedValue(null);
         renderAt("/login");
 
-        expect(screen.getByRole("heading", { name: "Entrar" })).toBeInTheDocument();
+        expect(
+            await screen.findByRole("heading", { name: "Entrar" }),
+        ).toBeInTheDocument();
     });
 
-    it("renderiza RegisterPage na rota /register", () => {
+    it("renderiza RegisterPage na rota /register", async () => {
         mockedGetCurrentUser.mockResolvedValue(null);
         renderAt("/register");
 
-        expect(screen.getByRole("heading", { name: "Criar conta" })).toBeInTheDocument();
+        expect(
+            await screen.findByRole("heading", { name: "Criar conta" }),
+        ).toBeInTheDocument();
     });
 
     it("renderiza NotFoundPage em uma rota desconhecida", () => {

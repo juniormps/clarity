@@ -9,6 +9,10 @@ vi.mock("../hooks/useTasks", () => ({
     useTasks: vi.fn(),
 }));
 
+vi.mock("../features/auth/LogoutButton", () => ({
+    default: () => <button type="button">Sair mock</button>,
+}));
+
 const mockedUseTasks = vi.mocked(useTasks);
 
 const tasks: Task[] = [

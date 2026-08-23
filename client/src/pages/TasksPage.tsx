@@ -5,6 +5,7 @@ import TaskFilters from "../components/TaskFilters/TaskFilters";
 import TaskItem from "../components/TaskItem/TaskItem";
 import TaskSearch from "../components/TaskSearch/TaskSearch";
 import TaskSummary from "../components/TaskSummary/TaskSummary";
+import LogoutButton from "../features/auth/LogoutButton";
 import { useTasks } from "../hooks/useTasks";
 import type { TaskFilter } from "../types/taskFilter";
 import styles from "./TasksPage.module.css";
@@ -87,6 +88,8 @@ function TasksPage() {
         <main className={styles.container}>
             <h1 className={styles.title}>Clarity</h1>
             <p className={styles.subtitle}>Task management made clear</p>
+
+            <LogoutButton />
 
             <TaskSummary tasks={tasks} />
 

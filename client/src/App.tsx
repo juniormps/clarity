@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import GuestRoute from "./features/auth/GuestRoute";
 import ProtectedRoute from "./features/auth/ProtectedRoute";
 import { useRestoreAuthSession } from "./hooks/useRestoreAuthSession";
 import HomePage from "./pages/HomePage";
@@ -13,8 +14,11 @@ function App() {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+
+            <Route element={<GuestRoute />}>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+            </Route>
 
             <Route element={<ProtectedRoute />}>
                 <Route path="/app" element={<TasksPage />} />
