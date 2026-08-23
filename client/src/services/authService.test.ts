@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { User } from "../types/user";
-import { getCurrentUser } from "./authService";
+import { getCurrentUser, registerUser } from "./authService";
 
 const mockUser: User = {
     id: 1,
@@ -9,6 +9,14 @@ const mockUser: User = {
     email: "john@example.com",
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z",
+};
+
+const registerInput = {
+    firstName: "John",
+    lastName: "Doe",
+    email: "john@example.com",
+    password: "12345678",
+    passwordConfirmation: "12345678",
 };
 
 function mockFetch(status: number, body?: unknown) {
@@ -41,6 +49,51 @@ describe("authService — getCurrentUser", () => {
 
         await expect(getCurrentUser()).rejects.toThrow(
             "Failed to load current user (500).",
+        );
+    });
+});
+
+describe("authService — registerUser", () => {
+    it("retorna o usuário criado em uma resposta 201", async () => {
+        const fetchSpy = vi
+            .spyOn(globalThis, "fetch")
+            .mockResolvedValue(
+                new Response(JSON.stringify({ data: mockUser }), { status: 201 }),
+            );
+
+        await expect(registerUser(registerInput)).resolves.toEqual(mockUser);
+
+        expect(fetchSpy).toHaveBeenCalledWith(
+            "/api/users",
+            expect.objectContaining({
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(registerInput),
+            }),
+        );
+    });
+
+    it("rejeita com a mensagem do backend para email duplicado", async () => {
+        mockFetch(409, { error: "Email is already in use." });
+
+        await expect(registerUser(registerInput)).rejects.toThrow(
+            "Email is already in use.",
+        );
+    });
+
+    it("preserva a mensagem útil do servidor em um erro de validação", async () => {
+        mockFetch(400, { error: '"email" must be a valid email address.' });
+
+        await expect(registerUser(registerInput)).rejects.toThrow(
+            '"email" must be a valid email address.',
+        );
+    });
+
+    it("usa fallback com o status quando não há mensagem utilizável", async () => {
+        mockFetch(500);
+
+        await expect(registerUser(registerInput)).rejects.toThrow(
+            "Failed to register user (500).",
         );
     });
 });

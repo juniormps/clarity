@@ -4,6 +4,18 @@ interface CurrentUserResponse {
     data: User;
 }
 
+interface RegisterUserInput {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    passwordConfirmation: string;
+}
+
+interface ErrorResponse {
+    error?: unknown;
+}
+
 //Consulta a sessão atual no backend para restaurar o usuário autenticado.
 export async function getCurrentUser(): Promise<User | null> {
     const response = await fetch("/api/auth/me");
@@ -19,4 +31,43 @@ export async function getCurrentUser(): Promise<User | null> {
     const body = (await response.json()) as CurrentUserResponse;
 
     return body.data;
+}
+
+//Cadastra um novo usuário no backend. Não cria sessão autenticada.
+export async function registerUser(input: RegisterUserInput): Promise<User> {
+
+    const response = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(input),
+    });
+
+    if (!response.ok) {
+        throw new Error(await extractErrorMessage(response));
+    }
+
+    const body = (await response.json()) as CurrentUserResponse;
+
+    return body.data;
+}
+
+//Extrai a mensagem de erro fornecida pelo backend, com fallback para o status HTTP.
+async function extractErrorMessage(response: Response): Promise<string> {
+
+    const fallback = `Failed to register user (${response.status}).`;
+
+    try {
+        const body = (await response.json()) as ErrorResponse;
+
+        if (typeof body.error === "string" && body.error.trim().length > 0) {
+            return body.error;
+        }
+        
+    } catch {
+        // Resposta sem corpo JSON utilizável: mantém o fallback.
+    }
+
+    return fallback;
 }
