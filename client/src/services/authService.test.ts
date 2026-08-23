@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { User } from "../types/user";
-import { getCurrentUser, registerUser } from "./authService";
+import {
+    getCurrentUser,
+    loginUser,
+    logoutUser,
+    registerUser,
+} from "./authService";
 
 const mockUser: User = {
     id: 1,
@@ -94,6 +99,77 @@ describe("authService — registerUser", () => {
 
         await expect(registerUser(registerInput)).rejects.toThrow(
             "Failed to register user (500).",
+        );
+    });
+});
+
+describe("authService — loginUser", () => {
+    const loginCredentials = {
+        email: "john@example.com",
+        password: "12345678",
+    };
+
+    it("retorna o usuário em uma resposta 200 com o corpo esperado", async () => {
+        const fetchSpy = vi
+            .spyOn(globalThis, "fetch")
+            .mockResolvedValue(
+                new Response(JSON.stringify({ data: mockUser }), { status: 200 }),
+            );
+
+        await expect(loginUser(loginCredentials)).resolves.toEqual(mockUser);
+
+        expect(fetchSpy).toHaveBeenCalledWith(
+            "/api/auth/login",
+            expect.objectContaining({
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(loginCredentials),
+            }),
+        );
+    });
+
+    it("rejeita com a mensagem do backend para credenciais inválidas", async () => {
+        mockFetch(401, { error: "Invalid email or password." });
+
+        await expect(loginUser(loginCredentials)).rejects.toThrow(
+            "Invalid email or password.",
+        );
+    });
+
+    it("usa fallback com o status em um erro inesperado sem mensagem", async () => {
+        mockFetch(500);
+
+        await expect(loginUser(loginCredentials)).rejects.toThrow(
+            "Failed to log in (500).",
+        );
+    });
+});
+
+describe("authService — logoutUser", () => {
+    it("resolve sem valor em uma resposta 204 sem interpretar o body", async () => {
+        const fetchSpy = vi
+            .spyOn(globalThis, "fetch")
+            .mockResolvedValue(new Response(null, { status: 204 }));
+
+        await expect(logoutUser()).resolves.toBeUndefined();
+
+        expect(fetchSpy).toHaveBeenCalledWith(
+            "/api/auth/logout",
+            expect.objectContaining({ method: "POST" }),
+        );
+    });
+
+    it("rejeita com a mensagem do backend quando disponível", async () => {
+        mockFetch(401, { error: "Session is not valid." });
+
+        await expect(logoutUser()).rejects.toThrow("Session is not valid.");
+    });
+
+    it("usa fallback com o status em um erro sem mensagem utilizável", async () => {
+        mockFetch(500);
+
+        await expect(logoutUser()).rejects.toThrow(
+            "Failed to log out (500).",
         );
     });
 });
