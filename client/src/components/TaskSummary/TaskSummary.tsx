@@ -1,4 +1,5 @@
 import type { Task } from "../../types/task";
+import { getTaskStats } from "../../utils/getTaskStats";
 import styles from "./TaskSummary.module.css";
 
 interface TaskSummaryProps {
@@ -6,10 +7,7 @@ interface TaskSummaryProps {
 }
 
 function TaskSummary({ tasks }: TaskSummaryProps) {
-    const total = tasks.length;
-    const completed = tasks.filter((task) => task.completed).length;
-    const pending = total - completed;
-    const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+    const { total, completed, pending, percentage } = getTaskStats(tasks);
     const progressValue = total === 0 ? 0 : completed;
     const progressMax = total === 0 ? 1 : total;
 
