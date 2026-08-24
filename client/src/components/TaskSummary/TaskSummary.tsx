@@ -7,36 +7,22 @@ interface TaskSummaryProps {
 }
 
 function TaskSummary({ tasks }: TaskSummaryProps) {
-    const { total, completed, pending, percentage } = getTaskStats(tasks);
-    const progressValue = total === 0 ? 0 : completed;
-    const progressMax = total === 0 ? 1 : total;
+    
+    const { completed, pending } = getTaskStats(tasks);
+
+    const pendingWord = pending === 1 ? "pendente" : "pendentes";
+    const completedWord = completed === 1 ? "concluída" : "concluídas";
 
     return (
-        <section className={styles.summary} aria-label="Resumo das tarefas">
-            <h2 className={styles.heading}>Resumo</h2>
+        <div className={styles.summary} aria-label="Resumo das tarefas">
+            <span className={styles.stat}>
+                <strong>{pending}</strong> {pendingWord}
+            </span>
 
-            <div className={styles.stats}>
-                <div className={styles.stat}>
-                    <span className={styles.statValue}>{total}</span>
-                    <span className={styles.statLabel}>Total</span>
-                </div>
-                <div className={styles.stat}>
-                    <span className={styles.statValue}>{pending}</span>
-                    <span className={styles.statLabel}>Pendentes</span>
-                </div>
-                <div className={styles.stat}>
-                    <span className={styles.statValue}>{completed}</span>
-                    <span className={styles.statLabel}>Concluídas</span>
-                </div>
-            </div>
-
-            <div className={styles.progressRow}>
-                <progress className={styles.progress} value={progressValue} max={progressMax} />
-                <p className={styles.progressText}>
-                    {completed} de {total} tarefas concluídas — {percentage}%
-                </p>
-            </div>
-        </section>
+            <span className={styles.stat}>
+                <strong>{completed}</strong> {completedWord}
+            </span>
+        </div>
     );
 }
 

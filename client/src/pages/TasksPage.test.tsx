@@ -50,6 +50,54 @@ function renderTasksPage(taskList: Task[] = tasks) {
     );
 }
 
+describe("TasksPage — Workspace", () => {
+    it("exibe o eyebrow Visão geral e o heading Minhas tarefas como h2", () => {
+        renderTasksPage();
+
+        expect(screen.getByText("Visão geral")).toBeInTheDocument();
+        expect(
+            screen.getByRole("heading", { name: "Minhas tarefas", level: 2 }),
+        ).toBeInTheDocument();
+    });
+
+    it("exibe o resumo de pendentes e concluídas", () => {
+        renderTasksPage();
+
+        const summary = screen.getByLabelText("Resumo das tarefas");
+        expect(summary).toHaveTextContent("1 pendente");
+        expect(summary).toHaveTextContent("2 concluídas");
+    });
+
+    it("mantém filtros, busca, total e limpar concluídas", () => {
+        renderTasksPage();
+
+        expect(screen.getByRole("button", { name: "Todas" })).toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: "Pendentes" }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: "Concluídas" }),
+        ).toBeInTheDocument();
+
+        expect(
+            screen.getByRole("searchbox", { name: "Buscar tarefas" }),
+        ).toBeInTheDocument();
+
+        expect(screen.getByText("3 tarefas no total")).toBeInTheDocument();
+        expect(
+            screen.getByRole("button", { name: "Limpar concluídas" }),
+        ).toBeInTheDocument();
+    });
+
+    it("continua renderizando a lista de tarefas", () => {
+        renderTasksPage();
+
+        expect(screen.getByText("Estudar React")).toBeInTheDocument();
+        expect(screen.getByText("Estudar MySQL")).toBeInTheDocument();
+        expect(screen.getByText("Revisar React")).toBeInTheDocument();
+    });
+});
+
 describe("TasksPage — filtro e busca combinados", () => {
     it("exibe todas as tarefas com filtro all e busca vazia", () => {
         renderTasksPage();

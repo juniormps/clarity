@@ -13,9 +13,8 @@ const FILTER_OPTIONS: readonly { value: TaskFilter; label: string }[] = [
 ];
 
 function TaskFilters({ activeFilter, onFilterChange }: TaskFiltersProps) {
-    
     return (
-        <div className={styles.filters}>
+        <div className={styles.filters} role="group" aria-label="Filtrar tarefas">
             {FILTER_OPTIONS.map((option) => {
                 const isActive = activeFilter === option.value;
                 const buttonClass = isActive ? `${styles.button} ${styles.active}` : styles.button;

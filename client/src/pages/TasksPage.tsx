@@ -86,6 +86,10 @@ function TasksPage() {
         }
     }
 
+    const totalLabel = `${stats.total} ${
+        stats.total === 1 ? "tarefa" : "tarefas"
+    } no total`;
+
     return (
         <main id="conteudo-principal" className={styles.container}>
             <TasksHero stats={stats} />
@@ -97,54 +101,77 @@ function TasksPage() {
                 clearCreateError={clearCreateError}
             />
 
-            <TaskSummary tasks={tasks} />
+            <section className={styles.workspace} aria-labelledby="tasks-title">
+                <div className={styles.workspaceHeading}>
+                    <div className={styles.headingCopy}>
+                        <p className={styles.eyebrow}>Visão geral</p>
+                        <h2 id="tasks-title" className={styles.title}>
+                            Minhas tarefas
+                        </h2>
+                    </div>
 
-            <TaskSearch value={searchTerm} onChange={setSearchTerm} />
+                    <TaskSummary tasks={tasks} />
+                </div>
 
-            <TaskFilters activeFilter={filter} onFilterChange={setFilter} />
+                <div className={styles.toolbar}>
+                    <TaskFilters activeFilter={filter} onFilterChange={setFilter} />
+                    
+                    <TaskSearch value={searchTerm} onChange={setSearchTerm} />
+                </div>
 
-            <ClearCompletedTasks
-                hasCompletedTasks={hasCompletedTasks}
-                isDeleting={isDeletingCompleted}
-                error={deleteCompletedError}
-                onDeleteCompleted={handleClearCompleted}
-            />
+                <div className={styles.taskArea}>
+                    {isLoadingTasks && (
+                        <p className={styles.status}>Carregando tarefas...</p>
+                    )}
 
-            {isLoadingTasks && <p className={styles.status}>Carregando tarefas...</p>}
+                    {!isLoadingTasks && error && (
+                        <p className={styles.error}>{error}</p>
+                    )}
 
-            {!isLoadingTasks && error && <p className={styles.error}>{error}</p>}
+                    {!isLoadingTasks && !error && tasks.length === 0 && (
+                        <p className={styles.status}>Nenhuma tarefa cadastrada.</p>
+                    )}
 
-            {!isLoadingTasks && !error && tasks.length === 0 && (
-                <p className={styles.status}>Nenhuma tarefa cadastrada.</p>
-            )}
+                    {!isLoadingTasks && !error && tasks.length > 0 && visibleTasks.length === 0 && (
+                        <p className={styles.status}>{emptyMessage}</p>
+                    )}
 
-            {!isLoadingTasks && !error && tasks.length > 0 && visibleTasks.length === 0 && (
-                <p className={styles.status}>{emptyMessage}</p>
-            )}
+                    {!isLoadingTasks && !error && visibleTasks.length > 0 && (
+                        <ul className={styles.list}>
+                            {visibleTasks.map((task) => (
+                                <TaskItem
+                                    key={task.id}
+                                    task={task}
+                                    isUpdating={updatingCompletedTaskIds.has(task.id)}
+                                    isDeleting={deletingTaskIds.has(task.id)}
+                                    isEditingTitle={editingTaskIds.has(task.id)}
+                                    updateError={updateCompletedErrors[task.id] ?? null}
+                                    deleteError={deleteErrors[task.id] ?? null}
+                                    editError={openEditTaskId === task.id ? editError : null}
+                                    isEditing={openEditTaskId === task.id}
+                                    onStartEdit={() => setOpenEditTaskId(task.id)}
+                                    onCancelEdit={() => setOpenEditTaskId(null)}
+                                    onToggleCompleted={updateTaskCompleted}
+                                    onDelete={deleteTask}
+                                    onUpdateTitle={updateTaskTitle}
+                                    onClearEditError={clearEditError}
+                                />
+                            ))}
+                        </ul>
+                    )}
+                </div>
 
-            {!isLoadingTasks && !error && visibleTasks.length > 0 && (
-                <ul className={styles.list}>
-                    {visibleTasks.map((task) => (
-                        <TaskItem
-                            key={task.id}
-                            task={task}
-                            isUpdating={updatingCompletedTaskIds.has(task.id)}
-                            isDeleting={deletingTaskIds.has(task.id)}
-                            isEditingTitle={editingTaskIds.has(task.id)}
-                            updateError={updateCompletedErrors[task.id] ?? null}
-                            deleteError={deleteErrors[task.id] ?? null}
-                            editError={openEditTaskId === task.id ? editError : null}
-                            isEditing={openEditTaskId === task.id}
-                            onStartEdit={() => setOpenEditTaskId(task.id)}
-                            onCancelEdit={() => setOpenEditTaskId(null)}
-                            onToggleCompleted={updateTaskCompleted}
-                            onDelete={deleteTask}
-                            onUpdateTitle={updateTaskTitle}
-                            onClearEditError={clearEditError}
-                        />
-                    ))}
-                </ul>
-            )}
+                <div className={styles.workspaceFooter}>
+                    <p className={styles.total}>{totalLabel}</p>
+
+                    <ClearCompletedTasks
+                        hasCompletedTasks={hasCompletedTasks}
+                        isDeleting={isDeletingCompleted}
+                        error={deleteCompletedError}
+                        onDeleteCompleted={handleClearCompleted}
+                    />
+                </div>
+            </section>
         </main>
     );
 }

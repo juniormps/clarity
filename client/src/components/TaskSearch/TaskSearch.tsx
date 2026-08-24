@@ -11,16 +11,22 @@ function TaskSearch({ value, onChange }: TaskSearchProps) {
             <label className={styles.label} htmlFor="task-search">
                 Buscar tarefas
             </label>
-            
-            <div className={styles.row}>
+
+            <div className={styles.field}>
+                <svg className={styles.icon} aria-hidden="true" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m20 20-3.5-3.5" />
+                </svg>
+
                 <input
                     id="task-search"
                     className={styles.input}
                     type="search"
                     value={value}
-                    placeholder="Buscar por título"
+                    placeholder="Buscar tarefa..."
                     onChange={(event) => onChange(event.target.value)}
                 />
+
                 {value.length > 0 && (
                     <button
                         type="button"
@@ -28,7 +34,9 @@ function TaskSearch({ value, onChange }: TaskSearchProps) {
                         aria-label="Limpar busca"
                         onClick={() => onChange("")}
                     >
-                        Limpar
+                        <svg aria-hidden="true" viewBox="0 0 24 24">
+                            <path d="M6 6l12 12M18 6 6 18" />
+                        </svg>
                     </button>
                 )}
             </div>
