@@ -12,10 +12,9 @@ function renderHomePage() {
 }
 
 describe("HomePage — Landing Page", () => {
-    it("apresenta o Clarity e sua proposta", () => {
+    it("apresenta a proposta do produto", () => {
         renderHomePage();
 
-        expect(screen.getByText("Clarity")).toBeInTheDocument();
         expect(
             screen.getByRole("heading", {
                 name: "Organize e acompanhe suas tarefas com clareza",

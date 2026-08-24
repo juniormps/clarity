@@ -55,6 +55,7 @@ describe("App — roteamento", () => {
                 name: "Organize e acompanhe suas tarefas com clareza",
             }),
         ).toBeInTheDocument();
+        expect(screen.getByRole("link", { name: "Clarity" })).toBeInTheDocument();
     });
 
     it("renderiza LoginPage na rota /login", async () => {

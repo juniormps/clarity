@@ -4,8 +4,6 @@ import styles from "./HomePage.module.css";
 function HomePage() {
     return (
         <main className={styles.main}>
-            <p className={styles.brand}>Clarity</p>
-
             <h1 className={styles.title}>
                 Organize e acompanhe suas tarefas com clareza
             </h1>
