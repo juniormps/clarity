@@ -4,53 +4,86 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 2rem;
+  padding: var(--space-8) var(--page-gutter);
   text-align: center;
 }
 
 .brand {
+  font-family: var(--font-heading);
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.02em;
-  margin-bottom: 1rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-4);
 }
 
 .title {
-  font-size: 2.25rem;
-  font-weight: 700;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
   max-width: 32rem;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
 }
 
 .description {
   font-size: 1.125rem;
-  color: #666;
+  color: var(--color-text-muted);
   max-width: 32rem;
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-8);
 }
 
 .actions {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  width: 100%;
+  max-width: 24rem;
+  gap: var(--space-3);
 }
 
 .primary,
 .secondary {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-min-height);
+  padding: 0 var(--space-6);
+  border-radius: var(--control-radius);
   font-weight: 600;
   text-decoration: none;
+  transition: background-color var(--control-transition),
+    color var(--control-transition), border-color var(--control-transition);
 }
 
 .primary {
-  background-color: #4f46e5;
-  color: #ffffff;
+  background-color: var(--color-primary);
+  color: var(--color-surface);
 }
 
 .secondary {
-  border: 1px solid #4f46e5;
-  color: #4f46e5;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+}
+
+@media (hover: hover) {
+  .primary:hover {
+    background-color: var(--color-primary-dark);
+  }
+
+  .secondary:hover {
+    background-color: var(--color-primary-soft);
+  }
+}
+
+@media (min-width: 480px) {
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .actions {
+    flex-direction: row;
+    justify-content: center;
+    max-width: none;
+  }
 }
