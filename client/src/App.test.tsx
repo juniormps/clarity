@@ -50,7 +50,11 @@ describe("App — roteamento", () => {
         mockedGetCurrentUser.mockResolvedValue(null);
         renderAt("/");
 
-        expect(screen.getByRole("heading", { name: "Clarity" })).toBeInTheDocument();
+        expect(
+            screen.getByRole("heading", {
+                name: "Organize e acompanhe suas tarefas com clareza",
+            }),
+        ).toBeInTheDocument();
     });
 
     it("renderiza LoginPage na rota /login", async () => {
