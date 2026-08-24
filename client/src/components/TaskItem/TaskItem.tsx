@@ -78,23 +78,23 @@ function TaskItem({
         onStartEdit();
     }
 
+    const itemClassName = task.completed
+        ? `${styles.item} ${styles.completed}`
+        : styles.item;
+
     if (isEditing) {
         return (
             <TaskEditForm
                 task={task}
                 isSaving={isEditingTitle}
                 serverError={editError}
-                itemClassName={styles.item}
+                itemClassName={itemClassName}
                 onSave={onUpdateTitle}
                 onCancel={onCancelEdit}
                 onClearServerError={onClearEditError}
             />
         );
     }
-
-    const itemClassName = task.completed
-        ? `${styles.item} ${styles.completed}`
-        : styles.item;
 
     return (
         <li className={itemClassName}>
