@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
 import { logoutUser } from "../../services/authService";
 import { setUnauthenticated } from "./authSlice";
+import styles from "./LogoutButton.module.css";
 
 function LogoutButton() {
 
@@ -39,12 +40,21 @@ function LogoutButton() {
     }
 
     return (
-        <div>
-            <button type="button" onClick={handleLogout} disabled={isLoggingOut}>
+        <div className={styles.wrapper}>
+            <button
+                type="button"
+                className={styles.button}
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+            >
                 {isLoggingOut ? "Saindo..." : "Sair"}
             </button>
 
-            {error && <p role="alert">{error}</p>}
+            {error && (
+                <p className={styles.error} role="alert">
+                    {error}
+                </p>
+            )}
         </div>
     );
 }

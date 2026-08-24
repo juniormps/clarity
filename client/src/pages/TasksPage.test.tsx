@@ -1,19 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useTasks } from "../hooks/useTasks";
+import { MemoryRouter, Outlet, Route, Routes } from "react-router-dom";
+import { describe, expect, it } from "vitest";
+import type { AppLayoutOutletContext } from "../layouts/AppLayout/AppLayoutContext";
+import { makeTaskState } from "../test/useTasksState";
 import type { Task } from "../types/task";
+import { getTaskStats } from "../utils/getTaskStats";
 import TasksPage from "./TasksPage";
-
-vi.mock("../hooks/useTasks", () => ({
-    useTasks: vi.fn(),
-}));
-
-vi.mock("../features/auth/LogoutButton", () => ({
-    default: () => <button type="button">Sair mock</button>,
-}));
-
-const mockedUseTasks = vi.mocked(useTasks);
 
 const tasks: Task[] = [
     {
@@ -39,43 +32,27 @@ const tasks: Task[] = [
     },
 ];
 
-function mockUseTasksReturn(
-    overrides: Partial<ReturnType<typeof useTasks>> = {},
-): ReturnType<typeof useTasks> {
-    return {
-        tasks: [] as Task[],
-        isLoadingTasks: false,
-        error: null,
-        isCreating: false,
-        createError: null,
-        createTask: vi.fn<(title: string) => Promise<Task>>(),
-        clearCreateError: vi.fn<() => void>(),
-        updatingCompletedTaskIds: new Set<number>(),
-        updateCompletedErrors: {},
-        updateTaskCompleted: vi.fn<(id: number, completed: boolean) => Promise<Task>>(),
-        deletingTaskIds: new Set<number>(),
-        deleteErrors: {},
-        deleteTask: vi.fn<(id: number) => Promise<void>>(),
-        isDeletingCompleted: false,
-        deleteCompletedError: null,
-        deleteCompletedTasks: vi.fn<() => Promise<void>>(),
-        editingTaskIds: new Set<number>(),
-        editError: null,
-        updateTaskTitle: vi.fn<(id: number, title: string) => Promise<Task>>(),
-        clearEditError: vi.fn<() => void>(),
-        ...overrides,
+function renderTasksPage(taskList: Task[] = tasks) {
+    const taskState = makeTaskState({ tasks: taskList });
+    const context: AppLayoutOutletContext = {
+        taskState,
+        stats: getTaskStats(taskState.tasks),
     };
-}
 
-beforeEach(() => {
-    mockedUseTasks.mockReset();
-});
+    return render(
+        <MemoryRouter initialEntries={["/app"]}>
+            <Routes>
+                <Route element={<Outlet context={context} />}>
+                    <Route path="/app" element={<TasksPage />} />
+                </Route>
+            </Routes>
+        </MemoryRouter>,
+    );
+}
 
 describe("TasksPage — filtro e busca combinados", () => {
     it("exibe todas as tarefas com filtro all e busca vazia", () => {
-        mockedUseTasks.mockReturnValue(mockUseTasksReturn({ tasks }));
-
-        render(<TasksPage />);
+        renderTasksPage();
 
         expect(screen.getByText("Estudar React")).toBeInTheDocument();
         expect(screen.getByText("Estudar MySQL")).toBeInTheDocument();
@@ -84,9 +61,8 @@ describe("TasksPage — filtro e busca combinados", () => {
 
     it("exibe somente tarefas pendentes ao selecionar Pendentes", async () => {
         const user = userEvent.setup();
-        mockedUseTasks.mockReturnValue(mockUseTasksReturn({ tasks }));
 
-        render(<TasksPage />);
+        renderTasksPage();
 
         await user.click(screen.getByRole("button", { name: "Pendentes" }));
 
@@ -97,9 +73,8 @@ describe("TasksPage — filtro e busca combinados", () => {
 
     it("exibe somente tarefas concluídas ao selecionar Concluídas", async () => {
         const user = userEvent.setup();
-        mockedUseTasks.mockReturnValue(mockUseTasksReturn({ tasks }));
 
-        render(<TasksPage />);
+        renderTasksPage();
 
         await user.click(screen.getByRole("button", { name: "Concluídas" }));
 
@@ -110,9 +85,8 @@ describe("TasksPage — filtro e busca combinados", () => {
 
     it("filtra por título ao pesquisar", async () => {
         const user = userEvent.setup();
-        mockedUseTasks.mockReturnValue(mockUseTasksReturn({ tasks }));
 
-        render(<TasksPage />);
+        renderTasksPage();
 
         await user.type(screen.getByRole("searchbox"), "React");
 
@@ -123,9 +97,8 @@ describe("TasksPage — filtro e busca combinados", () => {
 
     it("combina filtro Concluídas com busca React", async () => {
         const user = userEvent.setup();
-        mockedUseTasks.mockReturnValue(mockUseTasksReturn({ tasks }));
 
-        render(<TasksPage />);
+        renderTasksPage();
 
         await user.click(screen.getByRole("button", { name: "Concluídas" }));
         await user.type(screen.getByRole("searchbox"), "React");

@@ -1,0 +1,67 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+  text-align: left;
+  padding: var(--space-6) 0 var(--space-10);
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.titleAccent {
+  display: block;
+  color: var(--color-primary);
+}
+
+.description {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--color-text-muted);
+  max-width: 32rem;
+}
+
+.progress {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+  }
+
+  .copy {
+    flex: 1;
+    max-width: 34rem;
+  }
+
+  .progress {
+    width: 300px;
+    flex-shrink: 0;
+  }
+}

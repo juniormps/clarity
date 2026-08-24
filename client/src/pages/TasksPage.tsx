@@ -1,16 +1,18 @@
 import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import ClearCompletedTasks from "../components/ClearCompletedTasks/ClearCompletedTasks";
 import TaskComposer from "../components/TaskComposer/TaskComposer";
 import TaskFilters from "../components/TaskFilters/TaskFilters";
 import TaskItem from "../components/TaskItem/TaskItem";
 import TaskSearch from "../components/TaskSearch/TaskSearch";
 import TaskSummary from "../components/TaskSummary/TaskSummary";
-import LogoutButton from "../features/auth/LogoutButton";
-import { useTasks } from "../hooks/useTasks";
+import TasksHero from "../components/TasksHero/TasksHero";
+import type { AppLayoutOutletContext } from "../layouts/AppLayout/AppLayoutContext";
 import type { TaskFilter } from "../types/taskFilter";
 import styles from "./TasksPage.module.css";
 
 function TasksPage() {
+    const { taskState, stats } = useOutletContext<AppLayoutOutletContext>();
 
     const {
         tasks,
@@ -33,7 +35,7 @@ function TasksPage() {
         editError,
         updateTaskTitle,
         clearEditError,
-    } = useTasks();
+    } = taskState;
 
     // Estado utilizado para controlar qual tarefa está sendo editada no momento.
     const [openEditTaskId, setOpenEditTaskId] = useState<number | null>(null);
@@ -85,11 +87,8 @@ function TasksPage() {
     }
 
     return (
-        <main className={styles.container}>
-            <h1 className={styles.title}>Clarity</h1>
-            <p className={styles.subtitle}>Task management made clear</p>
-
-            <LogoutButton />
+        <main id="conteudo-principal" className={styles.container}>
+            <TasksHero stats={stats} />
 
             <TaskSummary tasks={tasks} />
 
