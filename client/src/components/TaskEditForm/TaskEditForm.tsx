@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import type { Task } from "../../types/task";
 import styles from "./TaskEditForm.module.css";
 
+const MAX_TITLE_LENGTH = 140;
+
 interface TaskEditFormProps {
     task: Task;
     isSaving: boolean;
@@ -54,8 +56,10 @@ function TaskEditForm({
             return;
         }
 
-        if (trimmed.length > 140) {
-            setValidationError("O título deve ter no máximo 140 caracteres.");
+        if (trimmed.length > MAX_TITLE_LENGTH) {
+            setValidationError(
+                `O título deve ter no máximo ${MAX_TITLE_LENGTH} caracteres.`,
+            );
             return;
         }
 
@@ -78,62 +82,84 @@ function TaskEditForm({
 
     return (
         <li className={itemClassName} ref={itemRef}>
-            <form className={styles.editForm} onSubmit={handleSave} noValidate>
+            <form
+                className={styles.editForm}
+                onSubmit={handleSave}
+                aria-busy={isSaving || undefined}
+                noValidate
+            >
                 <label className={styles.visuallyHidden} htmlFor={inputId}>
                     Editar título da tarefa
                 </label>
 
-                <input
-                    id={inputId}
-                    className={styles.editInput}
-                    type="text"
-                    value={draftTitle}
-                    maxLength={140}
-                    autoFocus
-                    aria-invalid={errorMessage ? true : undefined}
-                    aria-describedby={errorMessage ? errorId : undefined}
-                    onBeforeInput={() => {
-                        if (draftTitle.length >= 140) {
-                            setLimitMessage("O título deve ter no máximo 140 caracteres.");
+                <div className={styles.editRow}>
+                    <input
+                        id={inputId}
+                        className={
+                            errorMessage
+                                ? `${styles.editInput} ${styles.invalid}`
+                                : styles.editInput
                         }
-                    }}
-                    onPaste={(event) => {
-                        const pasted = event.clipboardData.getData("text");
-                        const start = event.currentTarget.selectionStart ?? 0;
-                        const end = event.currentTarget.selectionEnd ?? start;
-                        const resultLength = draftTitle.length - (end - start) + pasted.length;
-                        if (resultLength > 140) {
-                            setLimitMessage("O título deve ter no máximo 140 caracteres.");
-                        }
-                    }}
-                    onChange={(event) => {
-                        const value = event.target.value;
-                        setDraftTitle(value);
-                        if (validationError) {
-                            setValidationError(null);
-                        }
-                        if (limitMessage && value.length < 140) {
-                            setLimitMessage(null);
-                        }
-                        if (serverError) {
-                            onClearServerError();
-                        }
-                    }}
-                />
+                        type="text"
+                        value={draftTitle}
+                        maxLength={MAX_TITLE_LENGTH}
+                        autoFocus
+                        aria-invalid={errorMessage ? true : undefined}
+                        aria-describedby={errorMessage ? errorId : undefined}
+                        onBeforeInput={() => {
+                            if (draftTitle.length >= MAX_TITLE_LENGTH) {
+                                setLimitMessage(
+                                    `O título deve ter no máximo ${MAX_TITLE_LENGTH} caracteres.`,
+                                );
+                            }
+                        }}
 
-                <div className={styles.editActions}>
-                    <button type="submit" className={styles.saveButton} disabled={isSaving}>
-                        {isSaving ? "Salvando..." : "Salvar"}
-                    </button>
+                        onPaste={(event) => {
+                            const pasted = event.clipboardData.getData("text");
+                            const start = event.currentTarget.selectionStart ?? 0;
+                            const end = event.currentTarget.selectionEnd ?? start;
+                            const resultLength =
+                                draftTitle.length - (end - start) + pasted.length;
+                            if (resultLength > MAX_TITLE_LENGTH) {
+                                setLimitMessage(
+                                    `O título deve ter no máximo ${MAX_TITLE_LENGTH} caracteres.`,
+                                );
+                            }
+                        }}
+                        
+                        onChange={(event) => {
+                            const value = event.target.value;
+                            setDraftTitle(value);
+                            if (validationError) {
+                                setValidationError(null);
+                            }
+                            if (limitMessage && value.length < MAX_TITLE_LENGTH) {
+                                setLimitMessage(null);
+                            }
+                            if (serverError) {
+                                onClearServerError();
+                            }
+                        }}
+                    />
 
-                    <button
-                        type="button"
-                        className={styles.cancelButton}
-                        disabled={isSaving}
-                        onClick={onCancel}
-                    >
-                        Cancelar
-                    </button>
+                    <div className={styles.editActions}>
+                        <button
+                            type="submit"
+                            className={styles.saveButton}
+                            disabled={isSaving}
+                        >
+                            {isSaving ? "Salvando..." : "Salvar"}
+                        </button>
+
+                        <button
+                            type="button"
+                            className={styles.cancelButton}
+                            disabled={isSaving}
+                            onClick={onCancel}
+                        >
+                            Cancelar
+                        </button>
+                    </div>
                 </div>
 
                 {errorMessage && (
