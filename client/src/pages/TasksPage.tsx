@@ -3,7 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import ClearCompletedTasks from "../components/ClearCompletedTasks/ClearCompletedTasks";
 import TaskComposer from "../components/TaskComposer/TaskComposer";
 import TaskFilters from "../components/TaskFilters/TaskFilters";
-import TaskItem from "../components/TaskItem/TaskItem";
+import TaskList from "../components/TaskList/TaskList";
 import TaskSearch from "../components/TaskSearch/TaskSearch";
 import TaskSummary from "../components/TaskSummary/TaskSummary";
 import TasksHero from "../components/TasksHero/TasksHero";
@@ -137,27 +137,22 @@ function TasksPage() {
                     )}
 
                     {!isLoadingTasks && !error && visibleTasks.length > 0 && (
-                        <ul className={styles.list}>
-                            {visibleTasks.map((task) => (
-                                <TaskItem
-                                    key={task.id}
-                                    task={task}
-                                    isUpdating={updatingCompletedTaskIds.has(task.id)}
-                                    isDeleting={deletingTaskIds.has(task.id)}
-                                    isEditingTitle={editingTaskIds.has(task.id)}
-                                    updateError={updateCompletedErrors[task.id] ?? null}
-                                    deleteError={deleteErrors[task.id] ?? null}
-                                    editError={openEditTaskId === task.id ? editError : null}
-                                    isEditing={openEditTaskId === task.id}
-                                    onStartEdit={() => setOpenEditTaskId(task.id)}
-                                    onCancelEdit={() => setOpenEditTaskId(null)}
-                                    onToggleCompleted={updateTaskCompleted}
-                                    onDelete={deleteTask}
-                                    onUpdateTitle={updateTaskTitle}
-                                    onClearEditError={clearEditError}
-                                />
-                            ))}
-                        </ul>
+                        <TaskList
+                            tasks={visibleTasks}
+                            updatingCompletedTaskIds={updatingCompletedTaskIds}
+                            deletingTaskIds={deletingTaskIds}
+                            editingTaskIds={editingTaskIds}
+                            updateCompletedErrors={updateCompletedErrors}
+                            deleteErrors={deleteErrors}
+                            openEditTaskId={openEditTaskId}
+                            editError={editError}
+                            onToggleCompleted={updateTaskCompleted}
+                            onDelete={deleteTask}
+                            onUpdateTitle={updateTaskTitle}
+                            onClearEditError={clearEditError}
+                            onStartEdit={(id) => setOpenEditTaskId(id)}
+                            onCancelEdit={() => setOpenEditTaskId(null)}
+                        />
                     )}
                 </div>
 
