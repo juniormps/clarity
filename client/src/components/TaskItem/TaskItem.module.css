@@ -1,59 +1,35 @@
 .item {
-  padding: 0.75rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.375rem;
-  margin-bottom: 0.5rem;
+  padding: var(--space-4);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--control-transition),
+    background-color var(--control-transition),
+    transform var(--control-transition);
+}
+
+.completed {
+  background-color: var(--color-primary-soft);
 }
 
 .itemRow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.itemError {
-  color: #b91c1c;
-  font-size: 0.875rem;
-  text-align: left;
-  margin-top: 0.5rem;
-}
-
-.title {
-  text-align: left;
-  overflow-wrap: anywhere;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-
-.status {
-  font-size: 0.875rem;
-  color: #666;
+  gap: var(--space-2) var(--space-3);
 }
 
 .toggleButton {
-  padding: 0.375rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  background-color: #fff;
-  color: #111827;
-  font-size: 0.875rem;
-  cursor: pointer;
-}
-
-.toggleButton:hover:not(:disabled) {
-  border-color: #4f46e5;
-  color: #4f46e5;
-}
-
-.toggleButton:focus-visible {
-  outline: 2px solid #4f46e5;
-  outline-offset: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--control-min-height);
+  height: var(--control-min-height);
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
 }
 
 .toggleButton:disabled {
@@ -61,51 +37,144 @@
   cursor: not-allowed;
 }
 
+.checkboxVisual {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  transition:
+    background-color var(--control-transition),
+    border-color var(--control-transition);
+}
+
+.completed .checkboxVisual {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.checkboxVisual svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--color-surface);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.completed .title {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.date {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-basis: 100%;
+  justify-content: flex-end;
+  opacity: 1;
+  transition: opacity var(--control-transition);
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--control-min-height);
+  height: var(--control-min-height);
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--color-text-muted);
+  transition:
+    background-color var(--control-transition),
+    color var(--control-transition);
+}
+
 .deleteButton {
-  padding: 0.375rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  background-color: #fff;
-  color: #b91c1c;
-  font-size: 0.875rem;
-  cursor: pointer;
+  color: var(--color-error);
 }
 
-.deleteButton:hover:not(:disabled) {
-  border-color: #b91c1c;
+.iconButton svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.deleteButton:focus-visible {
-  outline: 2px solid #b91c1c;
-  outline-offset: 2px;
-}
-
-.deleteButton:disabled {
-  opacity: 0.6;
+.iconButton:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.editButton {
-  padding: 0.375rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  background-color: #fff;
-  color: #111827;
+.itemError {
+  margin: var(--space-3) 0 0;
   font-size: 0.875rem;
-  cursor: pointer;
+  color: var(--color-error);
+  text-align: left;
 }
 
-.editButton:hover:not(:disabled) {
-  border-color: #4f46e5;
-  color: #4f46e5;
+@media (hover: hover) {
+  .iconButton:not(:disabled):hover {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+
+  .deleteButton:not(:disabled):hover {
+    background-color: rgba(185, 28, 28, 0.06);
+    color: var(--color-error);
+  }
 }
 
-.editButton:focus-visible {
-  outline: 2px solid #4f46e5;
-  outline-offset: 2px;
+@media (hover: hover) and (pointer: fine) {
+  .actions {
+    opacity: 0;
+  }
+
+  .item:hover .actions,
+  .item:focus-within .actions {
+    opacity: 1;
+  }
+
+  .item:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+  }
 }
 
-.editButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+@media (min-width: 640px) {
+  .actions {
+    flex-basis: auto;
+    margin-left: auto;
+  }
 }
