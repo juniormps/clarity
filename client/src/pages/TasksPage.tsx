@@ -90,14 +90,14 @@ function TasksPage() {
         <main id="conteudo-principal" className={styles.container}>
             <TasksHero stats={stats} />
 
-            <TaskSummary tasks={tasks} />
-
             <TaskComposer
                 createTask={createTask}
                 isCreating={isCreating}
                 createError={createError}
                 clearCreateError={clearCreateError}
             />
+
+            <TaskSummary tasks={tasks} />
 
             <TaskSearch value={searchTerm} onChange={setSearchTerm} />
 

@@ -3,6 +3,8 @@ import { useState } from "react";
 import type { Task } from "../../types/task";
 import styles from "./TaskComposer.module.css";
 
+const MAX_TITLE_LENGTH = 140;
+
 interface TaskComposerProps {
     createTask: (title: string) => Promise<Task>;
     isCreating: boolean;
@@ -16,6 +18,7 @@ function TaskComposer({
     createError,
     clearCreateError,
 }: TaskComposerProps) {
+    
     const [title, setTitle] = useState("");
     const [validationError, setValidationError] = useState<string | null>(null);
     const [limitMessage, setLimitMessage] = useState<string | null>(null);
@@ -44,73 +47,105 @@ function TaskComposer({
     const errorMessage = validationError ?? limitMessage ?? createError;
 
     return (
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-            <label className={styles.label} htmlFor="task-title">
-                Nova tarefa
-            </label>
-            <div className={styles.row}>
-                <input
-                    id="task-title"
-                    className={styles.input}
-                    type="text"
-                    value={title}
-                    maxLength={140}
-                    placeholder="O que precisa ser feito?"
-                    aria-invalid={errorMessage ? true : undefined}
-                    aria-describedby={
-                        errorMessage ? "task-composer-error" : undefined
-                    }
-                    onBeforeInput={() => {
-                        if (title.length >= 140) {
-                            setLimitMessage(
-                                "O título deve ter no máximo 140 caracteres.",
-                            );
-                        }
-                    }}
-                    onPaste={(event) => {
-                        const pasted = event.clipboardData.getData("text");
-                        const start = event.currentTarget.selectionStart ?? 0;
-                        const end = event.currentTarget.selectionEnd ?? start;
-                        const resultLength =
-                            title.length - (end - start) + pasted.length;
-                        if (resultLength > 140) {
-                            setLimitMessage(
-                                "O título deve ter no máximo 140 caracteres.",
-                            );
-                        }
-                    }}
-                    onChange={(event) => {
-                        const value = event.target.value;
-                        setTitle(value);
-                        if (validationError) {
-                            setValidationError(null);
-                        }
-                        if (limitMessage && value.length < 140) {
-                            setLimitMessage(null);
-                        }
-                        if (createError) {
-                            clearCreateError();
-                        }
-                    }}
-                />
-                <button
-                    type="submit"
-                    className={styles.button}
-                    disabled={isCreating}
-                >
-                    {isCreating ? "Criando..." : "Criar"}
-                </button>
+        <section className={styles.composer} aria-labelledby="task-composer-title">
+            <div className={styles.header}>
+                <div className={styles.icon} aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 5v14M5 12h14" />
+                    </svg>
+                </div>
+
+                <h2 id="task-composer-title" className={styles.heading}>
+                    O que precisa ser feito?
+                </h2>
             </div>
-            {errorMessage && (
-                <p
-                    id="task-composer-error"
-                    className={styles.error}
-                    role="alert"
+
+            <form className={styles.form} onSubmit={handleSubmit} noValidate>
+                <label className={styles.srOnly} htmlFor="task-title">
+                    Nova tarefa
+                </label>
+
+                <div
+                    className={`${styles.inputGroup} ${errorMessage ? styles.invalid : ""}`}
                 >
-                    {errorMessage}
-                </p>
-            )}
-        </form>
+                    <input
+                        id="task-title"
+                        className={styles.input}
+                        type="text"
+                        value={title}
+                        maxLength={MAX_TITLE_LENGTH}
+                        placeholder="Ex.: Preparar apresentação do projeto"
+                        aria-invalid={errorMessage ? true : undefined}
+                        aria-describedby={
+                            errorMessage ? "task-composer-error" : undefined
+                        }
+                        onBeforeInput={() => {
+                            if (title.length >= MAX_TITLE_LENGTH) {
+                                setLimitMessage(
+                                    `O título deve ter no máximo ${MAX_TITLE_LENGTH} caracteres.`,
+                                );
+                            }
+                        }}
+
+                        onPaste={(event) => {
+                            const pasted = event.clipboardData.getData("text");
+                            const start = event.currentTarget.selectionStart ?? 0;
+                            const end = event.currentTarget.selectionEnd ?? start;
+                            const resultLength =
+                                title.length - (end - start) + pasted.length;
+                            if (resultLength > MAX_TITLE_LENGTH) {
+                                setLimitMessage(
+                                    `O título deve ter no máximo ${MAX_TITLE_LENGTH} caracteres.`,
+                                );
+                            }
+                        }}
+                        
+                        onChange={(event) => {
+                            const value = event.target.value;
+                            setTitle(value);
+                            if (validationError) {
+                                setValidationError(null);
+                            }
+                            if (limitMessage && value.length < MAX_TITLE_LENGTH) {
+                                setLimitMessage(null);
+                            }
+                            if (createError) {
+                                clearCreateError();
+                            }
+                        }}
+                    />
+
+                    <button
+                        type="submit"
+                        className={styles.button}
+                        disabled={isCreating}
+                    >
+                        <svg aria-hidden="true" viewBox="0 0 24 24">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg>
+                        {isCreating ? "Adicionando..." : "Adicionar"}
+                    </button>
+                </div>
+
+                <div className={styles.meta}>
+                    <div className={styles.message}>
+                        {errorMessage && (
+                            <p
+                                id="task-composer-error"
+                                className={styles.error}
+                                role="alert"
+                            >
+                                {errorMessage}
+                            </p>
+                        )}
+                    </div>
+
+                    <span className={styles.counter}>
+                        {title.length}/{MAX_TITLE_LENGTH}
+                    </span>
+                </div>
+            </form>
+        </section>
     );
 }
 
