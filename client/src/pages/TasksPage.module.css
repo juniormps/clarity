@@ -59,20 +59,6 @@
   flex-direction: column;
 }
 
-.status {
-  margin: 0;
-  padding: var(--space-8) 0;
-  text-align: center;
-  color: var(--color-text-muted);
-}
-
-.error {
-  margin: 0;
-  padding: var(--space-8) 0;
-  text-align: center;
-  color: var(--color-error);
-}
-
 .workspaceFooter {
   display: flex;
   flex-direction: column;

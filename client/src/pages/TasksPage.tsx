@@ -4,6 +4,9 @@ import ClearCompletedTasks from "../components/ClearCompletedTasks/ClearComplete
 import TaskComposer from "../components/TaskComposer/TaskComposer";
 import TaskFilters from "../components/TaskFilters/TaskFilters";
 import TaskList from "../components/TaskList/TaskList";
+import TaskListState, {
+    type TaskListStateVariant,
+} from "../components/TaskListState/TaskListState";
 import TaskSearch from "../components/TaskSearch/TaskSearch";
 import TaskSummary from "../components/TaskSummary/TaskSummary";
 import TasksHero from "../components/TasksHero/TasksHero";
@@ -65,12 +68,12 @@ function TasksPage() {
         return matchesFilter && matchesSearch;
     });
 
-    const emptyMessage =
+    const emptyStateVariant: TaskListStateVariant =
         normalizedSearch.length > 0
-            ? "Nenhuma tarefa encontrada."
+            ? "search"
             : filter === "pending"
-                ? "Nenhuma tarefa pendente."
-                : "Nenhuma tarefa concluída.";
+                ? "pending"
+                : "completed";
 
     //Exclusão em massa de todas as tarefas concluídas. 
     //Se houver uma tarefa entre as concluídas, aberta em edição, o modo de edição é encerrado.            
@@ -120,23 +123,15 @@ function TasksPage() {
                 </div>
 
                 <div className={styles.taskArea}>
-                    {isLoadingTasks && (
-                        <p className={styles.status}>Carregando tarefas...</p>
-                    )}
-
-                    {!isLoadingTasks && error && (
-                        <p className={styles.error}>{error}</p>
-                    )}
-
-                    {!isLoadingTasks && !error && tasks.length === 0 && (
-                        <p className={styles.status}>Nenhuma tarefa cadastrada.</p>
-                    )}
-
-                    {!isLoadingTasks && !error && tasks.length > 0 && visibleTasks.length === 0 && (
-                        <p className={styles.status}>{emptyMessage}</p>
-                    )}
-
-                    {!isLoadingTasks && !error && visibleTasks.length > 0 && (
+                    {isLoadingTasks ? (
+                        <TaskListState variant="loading" />
+                    ) : error ? (
+                        <TaskListState variant="error" message={error} />
+                    ) : tasks.length === 0 ? (
+                        <TaskListState variant="empty" />
+                    ) : visibleTasks.length === 0 ? (
+                        <TaskListState variant={emptyStateVariant} />
+                    ) : (
                         <TaskList
                             tasks={visibleTasks}
                             updatingCompletedTaskIds={updatingCompletedTaskIds}
