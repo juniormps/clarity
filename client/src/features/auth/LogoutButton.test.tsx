@@ -9,6 +9,7 @@ import type { User } from "../../types/user";
 import authReducer from "./authSlice";
 import type { AuthState } from "./authSlice";
 import LogoutButton from "./LogoutButton";
+import ProtectedRoute from "./ProtectedRoute";
 
 vi.mock("../../services/authService", () => ({
     logoutUser: vi.fn(),
@@ -47,6 +48,33 @@ function renderLogoutButton() {
     return { store, view };
 }
 
+//Reproduz a estrutura real: LogoutButton dentro da área protegida, com a
+//rota pública Home (/) e a rota de login como destino do ProtectedRoute.
+function renderLogoutButtonWithinProtectedRoute() {
+    const initialAuth: AuthState = { user: mockUser, status: "authenticated" };
+
+    const store = configureStore({
+        reducer: { auth: authReducer },
+        preloadedState: { auth: initialAuth },
+    });
+
+    const view = render(
+        <Provider store={store}>
+            <MemoryRouter initialEntries={["/app"]}>
+                <Routes>
+                    <Route element={<ProtectedRoute />}>
+                        <Route path="/app" element={<LogoutButton />} />
+                    </Route>
+                    <Route path="/" element={<div>Home mock</div>} />
+                    <Route path="/login" element={<div>Login mock</div>} />
+                </Routes>
+            </MemoryRouter>
+        </Provider>,
+    );
+
+    return { store, view };
+}
+
 beforeEach(() => {
     mockedLogoutUser.mockReset();
 });
@@ -61,6 +89,19 @@ describe("LogoutButton — sucesso", () => {
 
         expect(await screen.findByText("Home mock")).toBeInTheDocument();
         expect(mockedLogoutUser).toHaveBeenCalledTimes(1);
+        expect(store.getState().auth.status).toBe("unauthenticated");
+        expect(store.getState().auth.user).toBeNull();
+    });
+
+    it("dentro da área protegida, o logout navega para / e não para /login", async () => {
+        mockedLogoutUser.mockResolvedValue(undefined);
+        const user = userEvent.setup();
+        const { store } = renderLogoutButtonWithinProtectedRoute();
+
+        await user.click(screen.getByRole("button", { name: "Sair" }));
+
+        expect(await screen.findByText("Home mock")).toBeInTheDocument();
+        expect(screen.queryByText("Login mock")).not.toBeInTheDocument();
         expect(store.getState().auth.status).toBe("unauthenticated");
         expect(store.getState().auth.user).toBeNull();
     });

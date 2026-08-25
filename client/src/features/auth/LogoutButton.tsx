@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { flushSync } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
 import { logoutUser } from "../../services/authService";
@@ -24,8 +25,16 @@ function LogoutButton() {
         try {
             await logoutUser();
 
+            // Navega para a Home enquanto o usuário ainda está autenticado e
+            // garante que essa navegação seja confirmada antes de alterar o
+            // estado global. Dessa forma o ProtectedRoute é desmontado e não
+            // dispara o redirect para /login, que competia com o destino
+            // explícito do logout (a Home pública).
+            flushSync(() => {
+                navigate("/", { replace: true });
+            });
+
             dispatch(setUnauthenticated());
-            navigate("/", { replace: true });
 
         } catch (logoutError) {
             setError(
