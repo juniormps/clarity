@@ -52,4 +52,11 @@ describe("HomePage — Landing Page", () => {
             "/login",
         );
     });
+
+    it("possui um main focável pelo skip link", () => {
+        renderHomePage();
+
+        expect(screen.getByRole("main")).toHaveAttribute("id", "conteudo-principal");
+        expect(screen.getByRole("main")).toHaveAttribute("tabindex", "-1");
+    });
 });

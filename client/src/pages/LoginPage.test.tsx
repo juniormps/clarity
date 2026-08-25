@@ -62,6 +62,13 @@ describe("LoginPage — renderização", () => {
         expect(screen.getByLabelText("Senha")).toBeInTheDocument();
         expect(screen.getByRole("button", { name: "Entrar" })).toBeInTheDocument();
     });
+
+    it("possui um main focável pelo skip link", () => {
+        renderLoginPage();
+
+        expect(screen.getByRole("main")).toHaveAttribute("id", "conteudo-principal");
+        expect(screen.getByRole("main")).toHaveAttribute("tabindex", "-1");
+    });
 });
 
 describe("LoginPage — validação", () => {

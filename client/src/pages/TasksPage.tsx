@@ -94,7 +94,7 @@ function TasksPage() {
     } no total`;
 
     return (
-        <main id="conteudo-principal" className={styles.container}>
+        <main id="conteudo-principal" className={styles.container} tabIndex={-1}>
             <TasksHero stats={stats} />
 
             <TaskComposer

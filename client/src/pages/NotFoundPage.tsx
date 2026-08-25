@@ -1,6 +1,6 @@
 function NotFoundPage() {
     return (
-        <main>
+        <main id="conteudo-principal" tabIndex={-1}>
             <h1>Página não encontrada</h1>
         </main>
     );

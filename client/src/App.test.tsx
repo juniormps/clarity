@@ -84,6 +84,14 @@ describe("App — roteamento", () => {
             screen.getByRole("heading", { name: "Página não encontrada" }),
         ).toBeInTheDocument();
     });
+
+    it("NotFoundPage possui main focável pelo skip link", () => {
+        mockedGetCurrentUser.mockResolvedValue(null);
+        renderAt("/rota-inexistente");
+
+        expect(screen.getByRole("main")).toHaveAttribute("id", "conteudo-principal");
+        expect(screen.getByRole("main")).toHaveAttribute("tabindex", "-1");
+    });
 });
 
 describe("App — proteção da rota /app", () => {

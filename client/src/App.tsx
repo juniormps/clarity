@@ -22,6 +22,8 @@ function App() {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
                 </Route>
+
+                <Route path="*" element={<NotFoundPage />} />
             </Route>
 
             <Route element={<ProtectedRoute />}>
@@ -29,8 +31,6 @@ function App() {
                     <Route path="/app" element={<TasksPage />} />
                 </Route>
             </Route>
-
-            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );
 }

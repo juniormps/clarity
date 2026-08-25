@@ -59,6 +59,13 @@ describe("RegisterPage — renderização", () => {
             screen.getByRole("button", { name: "Criar conta" }),
         ).toBeInTheDocument();
     });
+
+    it("possui um main focável pelo skip link", () => {
+        renderRegisterPage();
+
+        expect(screen.getByRole("main")).toHaveAttribute("id", "conteudo-principal");
+        expect(screen.getByRole("main")).toHaveAttribute("tabindex", "-1");
+    });
 });
 
 describe("RegisterPage — validação", () => {

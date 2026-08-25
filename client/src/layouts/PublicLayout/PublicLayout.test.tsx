@@ -53,4 +53,12 @@ describe("PublicLayout", () => {
             "/register",
         );
     });
+
+    it("renderiza o skip link para o conteúdo principal", () => {
+        renderPublicLayout("/");
+
+        expect(
+            screen.getByRole("link", { name: "Ir para o conteúdo" }),
+        ).toHaveAttribute("href", "#conteudo-principal");
+    });
 });

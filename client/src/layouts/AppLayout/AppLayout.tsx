@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import AppHeader from "../../components/AppHeader/AppHeader";
+import SkipLink from "../../components/SkipLink/SkipLink";
 import { useTasks } from "../../hooks/useTasks";
 import { getTaskStats } from "../../utils/getTaskStats";
 import type { AppLayoutOutletContext } from "./AppLayoutContext";
@@ -13,9 +14,7 @@ function AppLayout() {
 
     return (
         <div className={styles.shell}>
-            <a className={styles.skipLink} href="#conteudo-principal">
-                Ir para o conteúdo
-            </a>
+            <SkipLink />
 
             <AppHeader pending={stats.pending} isLoading={taskState.isLoadingTasks} />
 

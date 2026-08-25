@@ -108,7 +108,7 @@ function LoginPage() {
     }
 
     return (
-        <main className={styles.main}>
+        <main id="conteudo-principal" className={styles.main} tabIndex={-1}>
             <div className={styles.card}>
                 <h1 className={styles.title}>Entrar</h1>
 

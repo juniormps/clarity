@@ -3,7 +3,7 @@ import styles from "./HomePage.module.css";
 
 function HomePage() {
     return (
-        <main className={styles.main}>
+        <main id="conteudo-principal" className={styles.main} tabIndex={-1}>
             <h1 className={styles.title}>
                 Organize e acompanhe suas tarefas com clareza
             </h1>
