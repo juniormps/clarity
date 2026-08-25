@@ -73,8 +73,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: var(--control-min-height);
+  height: var(--control-min-height);
   border: none;
   border-radius: 50%;
   background-color: transparent;
