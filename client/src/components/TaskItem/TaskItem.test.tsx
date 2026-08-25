@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { Task } from "../../types/task";
 import TaskItem from "./TaskItem";
 
@@ -172,39 +172,54 @@ describe("TaskItem — edição", () => {
 });
 
 describe("TaskItem — exclusão", () => {
-    afterEach(() => {
-        vi.restoreAllMocks();
+    it("abre o modal de confirmação ao clicar em excluir", async () => {
+        const user = userEvent.setup();
+
+        renderTaskItem(makeTask());
+
+        await user.click(
+            screen.getByRole("button", {
+                name: 'Excluir a tarefa "Estudar React"',
+            }),
+        );
+
+        expect(screen.getByRole("dialog")).toHaveAttribute("open");
+        expect(
+            screen.getByRole("heading", { name: "Excluir tarefa?" }),
+        ).toBeInTheDocument();
     });
 
     it("não chama onDelete quando o usuário cancela a confirmação", async () => {
         const user = userEvent.setup();
-        vi.spyOn(window, "confirm").mockReturnValue(false);
 
-        const { onDelete } = renderTaskItem(makeTask());
+        const { view, onDelete } = renderTaskItem(makeTask());
 
         await user.click(
             screen.getByRole("button", {
                 name: 'Excluir a tarefa "Estudar React"',
             }),
         );
+        await user.click(screen.getByRole("button", { name: "Cancelar" }));
 
         expect(onDelete).not.toHaveBeenCalled();
+        expect(view.container.querySelector("dialog")).not.toHaveAttribute("open");
     });
 
     it("chama onDelete(task.id) quando o usuário confirma", async () => {
         const user = userEvent.setup();
-        vi.spyOn(window, "confirm").mockReturnValue(true);
 
         const task = makeTask();
-        const { onDelete } = renderTaskItem(task);
+        const { view, onDelete } = renderTaskItem(task);
 
         await user.click(
             screen.getByRole("button", {
                 name: 'Excluir a tarefa "Estudar React"',
             }),
         );
+        await user.click(screen.getByRole("button", { name: "Excluir" }));
 
         await waitFor(() => expect(onDelete).toHaveBeenCalledWith(task.id));
+        expect(view.container.querySelector("dialog")).not.toHaveAttribute("open");
     });
 });
 

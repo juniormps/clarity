@@ -1,4 +1,6 @@
+import { useState } from "react";
 import type { Task } from "../../types/task";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import TaskEditForm from "../TaskEditForm/TaskEditForm";
 import styles from "./TaskItem.module.css";
 
@@ -42,6 +44,8 @@ function TaskItem({
     onCancelEdit,
 }: TaskItemProps) {
     
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
     const nextCompleted = !task.completed;
     const actionLabel = task.completed ? "Reabrir" : "Concluir";
     const isBusy = isUpdating || isDeleting || isEditingTitle;
@@ -55,15 +59,14 @@ function TaskItem({
         }
     }
 
-    // Função para excluir a tarefa.
-    async function handleDelete() {
-        const confirmed = window.confirm(
-            "Tem certeza de que deseja excluir esta tarefa?",
-        );
+    // Abre o modal de confirmação antes de excluir a tarefa.
+    function handleOpenDelete() {
+        setIsDeleteModalOpen(true);
+    }
 
-        if (!confirmed) {
-            return;
-        }
+    // Exclui a tarefa após a confirmação do usuário.
+    async function handleConfirmDelete() {
+        setIsDeleteModalOpen(false);
 
         try {
             await onDelete(task.id);
@@ -97,72 +100,83 @@ function TaskItem({
     }
 
     return (
-        <li className={itemClassName}>
-            <div className={styles.itemRow}>
-                <button
-                    type="button"
-                    className={styles.toggleButton}
-                    aria-pressed={task.completed}
-                    aria-label={`${actionLabel} a tarefa "${task.title}"`}
-                    aria-busy={isUpdating || undefined}
-                    disabled={isBusy}
-                    onClick={handleToggleCompleted}
-                >
-                    <span className={styles.checkboxVisual} aria-hidden="true">
-                        {task.completed && (
+        <>
+            <li className={itemClassName}>
+                <div className={styles.itemRow}>
+                    <button
+                        type="button"
+                        className={styles.toggleButton}
+                        aria-pressed={task.completed}
+                        aria-label={`${actionLabel} a tarefa "${task.title}"`}
+                        aria-busy={isUpdating || undefined}
+                        disabled={isBusy}
+                        onClick={handleToggleCompleted}
+                    >
+                        <span className={styles.checkboxVisual} aria-hidden="true">
+                            {task.completed && (
+                                <svg aria-hidden="true" viewBox="0 0 24 24">
+                                    <path d="m6 12 4 4 8-9" />
+                                </svg>
+                            )}
+                        </span>
+                    </button>
+
+                    <div className={styles.copy}>
+                        <span className={styles.title}>{task.title}</span>
+
+                        <time className={styles.date} dateTime={task.createdAt}>
+                            {dateFormatter.format(new Date(task.createdAt))}
+                        </time>
+                    </div>
+
+                    <div className={styles.actions}>
+                        <button
+                            type="button"
+                            className={styles.iconButton}
+                            aria-label={`Editar a tarefa "${task.title}"`}
+                            disabled={isBusy}
+                            onClick={handleStartEdit}
+                        >
                             <svg aria-hidden="true" viewBox="0 0 24 24">
-                                <path d="m6 12 4 4 8-9" />
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
                             </svg>
-                        )}
-                    </span>
-                </button>
+                        </button>
 
-                <div className={styles.copy}>
-                    <span className={styles.title}>{task.title}</span>
-
-                    <time className={styles.date} dateTime={task.createdAt}>
-                        {dateFormatter.format(new Date(task.createdAt))}
-                    </time>
+                        <button
+                            type="button"
+                            className={`${styles.iconButton} ${styles.deleteButton}`}
+                            aria-label={`Excluir a tarefa "${task.title}"`}
+                            disabled={isBusy}
+                            onClick={handleOpenDelete}
+                        >
+                            <svg aria-hidden="true" viewBox="0 0 24 24">
+                                <path d="M3 6h18" />
+                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                <path d="M10 11v6" />
+                                <path d="M14 11v6" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <div className={styles.actions}>
-                    <button
-                        type="button"
-                        className={styles.iconButton}
-                        aria-label={`Editar a tarefa "${task.title}"`}
-                        disabled={isBusy}
-                        onClick={handleStartEdit}
-                    >
-                        <svg aria-hidden="true" viewBox="0 0 24 24">
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
-                        </svg>
-                    </button>
+                {(updateError || deleteError) && (
+                    <p className={styles.itemError} role="alert">
+                        {updateError ?? deleteError}
+                    </p>
+                )}
+            </li>
 
-                    <button
-                        type="button"
-                        className={`${styles.iconButton} ${styles.deleteButton}`}
-                        aria-label={`Excluir a tarefa "${task.title}"`}
-                        disabled={isBusy}
-                        onClick={handleDelete}
-                    >
-                        <svg aria-hidden="true" viewBox="0 0 24 24">
-                            <path d="M3 6h18" />
-                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            {(updateError || deleteError) && (
-                <p className={styles.itemError} role="alert">
-                    {updateError ?? deleteError}
-                </p>
-            )}
-        </li>
+            <ConfirmationModal
+                isOpen={isDeleteModalOpen}
+                title="Excluir tarefa?"
+                message={`Tem certeza de que deseja excluir "${task.title}"? Esta ação não pode ser desfeita.`}
+                confirmLabel="Excluir"
+                onConfirm={handleConfirmDelete}
+                onCancel={() => setIsDeleteModalOpen(false)}
+            />
+        </>
     );
 }
 

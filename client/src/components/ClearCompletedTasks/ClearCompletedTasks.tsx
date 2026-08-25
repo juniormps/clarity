@@ -1,3 +1,5 @@
+import { useState } from "react";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 import styles from "./ClearCompletedTasks.module.css";
 
 interface ClearCompletedTasksProps {
@@ -13,16 +15,16 @@ function ClearCompletedTasks({
     error,
     onDeleteCompleted,
 }: ClearCompletedTasksProps) {
-    
-    // Solicita confirmação e, se confirmada, dispara a exclusão em massa.
-    async function handleClick() {
-        const confirmed = window.confirm(
-            "Tem certeza de que deseja excluir todas as tarefas concluídas?",
-        );
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-        if (!confirmed) {
-            return;
-        }
+    // Abre o modal de confirmação antes da exclusão em massa.
+    function handleOpenModal() {
+        setIsModalOpen(true);
+    }
+
+    // Executa a exclusão em massa após a confirmação do usuário.
+    async function handleConfirmDelete() {
+        setIsModalOpen(false);
 
         try {
             await onDeleteCompleted();
@@ -37,7 +39,7 @@ function ClearCompletedTasks({
                 type="button"
                 className={styles.button}
                 disabled={!hasCompletedTasks || isDeleting}
-                onClick={handleClick}
+                onClick={handleOpenModal}
             >
                 {isDeleting ? "Limpando..." : "Limpar concluídas"}
             </button>
@@ -47,6 +49,15 @@ function ClearCompletedTasks({
                     {error}
                 </p>
             )}
+
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                title="Excluir tarefas concluídas?"
+                message="Tem certeza de que deseja excluir todas as tarefas concluídas? Esta ação não pode ser desfeita."
+                confirmLabel="Excluir concluídas"
+                onConfirm={handleConfirmDelete}
+                onCancel={() => setIsModalOpen(false)}
+            />
         </div>
     );
 }
