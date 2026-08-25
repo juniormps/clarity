@@ -2,6 +2,7 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
+import styles from "./AuthPage.module.css";
 
 interface RegisterFormValues {
     firstName: string;
@@ -137,128 +138,159 @@ function RegisterPage() {
     }
 
     return (
-        <main>
-            <h1>Criar conta</h1>
+        <main className={styles.main}>
+            <div className={styles.card}>
+                <h1 className={styles.title}>Criar conta</h1>
 
-            <form onSubmit={handleSubmit} noValidate>
-                <div>
-                    <label htmlFor="firstName">Nome</label>
-                    <input
-                        id="firstName"
-                        name="firstName"
-                        type="text"
-                        autoComplete="given-name"
-                        maxLength={120}
-                        value={values.firstName}
-                        aria-invalid={fieldErrors.firstName ? true : undefined}
-                        aria-describedby={
-                            fieldErrors.firstName ? "firstName-error" : undefined
-                        }
-                        onChange={(event) => handleChange("firstName", event.target.value)}
-                    />
-                    {fieldErrors.firstName && (
-                        <p id="firstName-error">{fieldErrors.firstName}</p>
-                    )}
-                </div>
+                <form className={styles.form} onSubmit={handleSubmit} noValidate>
+                    <div className={styles.field}>
+                        <label className={styles.label} htmlFor="firstName">Nome</label>
+                        <input
+                            className={styles.input}
+                            id="firstName"
+                            name="firstName"
+                            type="text"
+                            autoComplete="given-name"
+                            maxLength={120}
+                            value={values.firstName}
+                            aria-invalid={fieldErrors.firstName ? true : undefined}
+                            aria-describedby={
+                                fieldErrors.firstName ? "firstName-error" : undefined
+                            }
+                            onChange={(event) => handleChange("firstName", event.target.value)}
+                        />
+                        {fieldErrors.firstName && (
+                            <p className={styles.fieldError} id="firstName-error">
+                                {fieldErrors.firstName}
+                            </p>
+                        )}
+                    </div>
 
-                <div>
-                    <label htmlFor="lastName">Sobrenome</label>
-                    <input
-                        id="lastName"
-                        name="lastName"
-                        type="text"
-                        autoComplete="family-name"
-                        maxLength={120}
-                        value={values.lastName}
-                        aria-invalid={fieldErrors.lastName ? true : undefined}
-                        aria-describedby={
-                            fieldErrors.lastName ? "lastName-error" : undefined
-                        }
-                        onChange={(event) => handleChange("lastName", event.target.value)}
-                    />
-                    {fieldErrors.lastName && (
-                        <p id="lastName-error">{fieldErrors.lastName}</p>
-                    )}
-                </div>
+                    <div className={styles.field}>
+                        <label className={styles.label} htmlFor="lastName">Sobrenome</label>
+                        <input
+                            className={styles.input}
+                            id="lastName"
+                            name="lastName"
+                            type="text"
+                            autoComplete="family-name"
+                            maxLength={120}
+                            value={values.lastName}
+                            aria-invalid={fieldErrors.lastName ? true : undefined}
+                            aria-describedby={
+                                fieldErrors.lastName ? "lastName-error" : undefined
+                            }
+                            onChange={(event) => handleChange("lastName", event.target.value)}
+                        />
+                        {fieldErrors.lastName && (
+                            <p className={styles.fieldError} id="lastName-error">
+                                {fieldErrors.lastName}
+                            </p>
+                        )}
+                    </div>
 
-                <div>
-                    <label htmlFor="email">E-mail</label>
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        maxLength={255}
-                        value={values.email}
-                        aria-invalid={fieldErrors.email ? true : undefined}
-                        aria-describedby={
-                            fieldErrors.email ? "email-error" : undefined
-                        }
-                        onChange={(event) => handleChange("email", event.target.value)}
-                    />
-                    {fieldErrors.email && (
-                        <p id="email-error">{fieldErrors.email}</p>
-                    )}
-                </div>
+                    <div className={styles.field}>
+                        <label className={styles.label} htmlFor="email">E-mail</label>
+                        <input
+                            className={styles.input}
+                            id="email"
+                            name="email"
+                            type="email"
+                            autoComplete="email"
+                            maxLength={255}
+                            value={values.email}
+                            aria-invalid={fieldErrors.email ? true : undefined}
+                            aria-describedby={
+                                fieldErrors.email ? "email-error" : undefined
+                            }
+                            onChange={(event) => handleChange("email", event.target.value)}
+                        />
+                        {fieldErrors.email && (
+                            <p className={styles.fieldError} id="email-error">
+                                {fieldErrors.email}
+                            </p>
+                        )}
+                    </div>
 
-                <div>
-                    <label htmlFor="password">Senha</label>
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        autoComplete="new-password"
-                        maxLength={128}
-                        value={values.password}
-                        aria-invalid={fieldErrors.password ? true : undefined}
-                        aria-describedby={
-                            fieldErrors.password ? "password-error" : undefined
-                        }
-                        onChange={(event) => handleChange("password", event.target.value)}
-                    />
-                    {fieldErrors.password && (
-                        <p id="password-error">{fieldErrors.password}</p>
-                    )}
-                </div>
+                    <div className={styles.field}>
+                        <label className={styles.label} htmlFor="password">Senha</label>
+                        <input
+                            className={styles.input}
+                            id="password"
+                            name="password"
+                            type="password"
+                            autoComplete="new-password"
+                            maxLength={128}
+                            value={values.password}
+                            aria-invalid={fieldErrors.password ? true : undefined}
+                            aria-describedby={
+                                fieldErrors.password ? "password-error" : undefined
+                            }
+                            onChange={(event) => handleChange("password", event.target.value)}
+                        />
+                        {fieldErrors.password && (
+                            <p className={styles.fieldError} id="password-error">
+                                {fieldErrors.password}
+                            </p>
+                        )}
+                    </div>
 
-                <div>
-                    <label htmlFor="passwordConfirmation">Confirmar senha</label>
-                    <input
-                        id="passwordConfirmation"
-                        name="passwordConfirmation"
-                        type="password"
-                        autoComplete="new-password"
-                        maxLength={128}
-                        value={values.passwordConfirmation}
-                        aria-invalid={
-                            fieldErrors.passwordConfirmation ? true : undefined
-                        }
-                        aria-describedby={
-                            fieldErrors.passwordConfirmation
-                                ? "passwordConfirmation-error"
-                                : undefined
-                        }
-                        onChange={(event) =>
-                            handleChange("passwordConfirmation", event.target.value)
-                        }
-                    />
-                    {fieldErrors.passwordConfirmation && (
-                        <p id="passwordConfirmation-error">
-                            {fieldErrors.passwordConfirmation}
-                        </p>
-                    )}
-                </div>
+                    <div className={styles.field}>
+                        <label className={styles.label} htmlFor="passwordConfirmation">
+                            Confirmar senha
+                        </label>
+                        <input
+                            className={styles.input}
+                            id="passwordConfirmation"
+                            name="passwordConfirmation"
+                            type="password"
+                            autoComplete="new-password"
+                            maxLength={128}
+                            value={values.passwordConfirmation}
+                            aria-invalid={
+                                fieldErrors.passwordConfirmation ? true : undefined
+                            }
+                            aria-describedby={
+                                fieldErrors.passwordConfirmation
+                                    ? "passwordConfirmation-error"
+                                    : undefined
+                            }
+                            onChange={(event) =>
+                                handleChange("passwordConfirmation", event.target.value)
+                            }
+                        />
+                        {fieldErrors.passwordConfirmation && (
+                            <p
+                                className={styles.fieldError}
+                                id="passwordConfirmation-error"
+                            >
+                                {fieldErrors.passwordConfirmation}
+                            </p>
+                        )}
+                    </div>
 
-                <button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Criando conta..." : "Criar conta"}
-                </button>
-            </form>
+                    <button
+                        className={styles.submitButton}
+                        type="submit"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? "Criando conta..." : "Criar conta"}
+                    </button>
+                </form>
 
-            {submitError && <p role="alert">{submitError}</p>}
+                {submitError && (
+                    <p className={styles.submitError} role="alert">
+                        {submitError}
+                    </p>
+                )}
 
-            <p>
-                Já possui uma conta? <Link to="/login">Entrar</Link>
-            </p>
+                <p className={styles.footer}>
+                    Já possui uma conta?{" "}
+                    <Link className={styles.footerLink} to="/login">
+                        Entrar
+                    </Link>
+                </p>
+            </div>
         </main>
     );
 }

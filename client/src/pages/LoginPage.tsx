@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../app/hooks";
 import { setAuthenticatedUser } from "../features/auth/authSlice";
 import { loginUser } from "../services/authService";
+import styles from "./AuthPage.module.css";
 
 interface LoginFormValues {
     email: string;
@@ -107,52 +108,75 @@ function LoginPage() {
     }
 
     return (
-        <main>
-            <h1>Entrar</h1>
+        <main className={styles.main}>
+            <div className={styles.card}>
+                <h1 className={styles.title}>Entrar</h1>
 
-            <form onSubmit={handleSubmit} noValidate>
-                <div>
-                    <label htmlFor="email">E-mail</label>
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        autoComplete="email"
-                        maxLength={255}
-                        value={values.email}
-                        aria-invalid={fieldErrors.email ? true : undefined}
-                        aria-describedby={fieldErrors.email ? "email-error" : undefined}
-                        onChange={(event) => handleChange("email", event.target.value)}
-                    />
-                    {fieldErrors.email && <p id="email-error">{fieldErrors.email}</p>}
-                </div>
+                <form className={styles.form} onSubmit={handleSubmit} noValidate>
+                    <div className={styles.field}>
+                        <label className={styles.label} htmlFor="email">E-mail</label>
+                        <input
+                            className={styles.input}
+                            id="email"
+                            name="email"
+                            type="email"
+                            autoComplete="email"
+                            maxLength={255}
+                            value={values.email}
+                            aria-invalid={fieldErrors.email ? true : undefined}
+                            aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                            onChange={(event) => handleChange("email", event.target.value)}
+                        />
+                        {fieldErrors.email && (
+                            <p className={styles.fieldError} id="email-error">
+                                {fieldErrors.email}
+                            </p>
+                        )}
+                    </div>
 
-                <div>
-                    <label htmlFor="password">Senha</label>
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        autoComplete="current-password"
-                        maxLength={128}
-                        value={values.password}
-                        aria-invalid={fieldErrors.password ? true : undefined}
-                        aria-describedby={fieldErrors.password ? "password-error" : undefined}
-                        onChange={(event) => handleChange("password", event.target.value)}
-                    />
-                    {fieldErrors.password && <p id="password-error">{fieldErrors.password}</p>}
-                </div>
+                    <div className={styles.field}>
+                        <label className={styles.label} htmlFor="password">Senha</label>
+                        <input
+                            className={styles.input}
+                            id="password"
+                            name="password"
+                            type="password"
+                            autoComplete="current-password"
+                            maxLength={128}
+                            value={values.password}
+                            aria-invalid={fieldErrors.password ? true : undefined}
+                            aria-describedby={fieldErrors.password ? "password-error" : undefined}
+                            onChange={(event) => handleChange("password", event.target.value)}
+                        />
+                        {fieldErrors.password && (
+                            <p className={styles.fieldError} id="password-error">
+                                {fieldErrors.password}
+                            </p>
+                        )}
+                    </div>
 
-                <button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Entrando..." : "Entrar"}
-                </button>
-            </form>
+                    <button
+                        className={styles.submitButton}
+                        type="submit"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? "Entrando..." : "Entrar"}
+                    </button>
+                </form>
 
-            {submitError && <p role="alert">{submitError}</p>}
+                {submitError && (
+                    <p className={styles.submitError} role="alert">
+                        {submitError}
+                    </p>
+                )}
 
-            <p>
-                Ainda não possui uma conta? <Link to="/register">Criar conta</Link>
-            </p>
+                <p className={styles.footer}>
+                    Ainda não possui uma conta?{" "}
+                    <Link className={styles.footerLink} to="/register">
+                        Criar conta
+                    </Link>
+                </p>
+            </div>
         </main>
     );
 }
