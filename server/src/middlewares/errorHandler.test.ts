@@ -53,4 +53,32 @@ describe("errorHandler", () => {
         expect(next).toHaveBeenCalledWith(error);
         expect(res.json).not.toHaveBeenCalled();
     });
+
+    it("responde 400 para JSON malformado (erro do body-parser)", () => {
+        const res = createMockResponse();
+        const next = vi.fn();
+        const error = Object.assign(new SyntaxError("Unexpected token"), {
+            type: "entity.parse.failed",
+        });
+
+        errorHandler(error, {} as Request, res, next);
+
+        expect(res.statusCode).toBe(400);
+        expect(res.json).toHaveBeenCalledWith({ error: "Invalid JSON payload." });
+        expect(next).not.toHaveBeenCalled();
+    });
+
+    it("responde 413 para payload excessivo (erro do body-parser)", () => {
+        const res = createMockResponse();
+        const next = vi.fn();
+        const error = Object.assign(new Error("request entity too large"), {
+            type: "entity.too.large",
+        });
+
+        errorHandler(error, {} as Request, res, next);
+
+        expect(res.statusCode).toBe(413);
+        expect(res.json).toHaveBeenCalledWith({ error: "Payload too large." });
+        expect(next).not.toHaveBeenCalled();
+    });
 });

@@ -3,6 +3,7 @@ import request from "supertest";
 import { afterAll, afterEach, beforeEach, describe, expect, it } from "vitest";
 import { app } from "../../src/app.js";
 import { pool } from "../../src/database/connection.js";
+import { resetRateLimits } from "../../src/middlewares/rateLimiters.js";
 
 type TestAgent = ReturnType<typeof request.agent>;
 
@@ -67,6 +68,10 @@ describe("isolamento entre usuários nas tarefas", () => {
     let emailB: string;
 
     beforeEach(async () => {
+        //A suíte cria vários usuários por teste; zera o rate limit para que o
+        //limiter de cadastro não interfira no isolamento em si.
+        await resetRateLimits();
+
         const suffix = randomUUID();
         emailA = `isolation-a-${suffix}@example.com`;
         emailB = `isolation-b-${suffix}@example.com`;
