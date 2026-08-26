@@ -19,6 +19,31 @@ function requireEnv(key: string): string {
     return value;
 }
 
+const NODE_ENV_VALUES = ["development", "test", "production"] as const;
+
+export type NodeEnv = (typeof NODE_ENV_VALUES)[number];
+
+//Valida NODE_ENV. O default "development" preserva a execução local sem
+//exigir configuração extra; em produção o valor deve ser informado
+//explicitamente (ex.: NODE_ENV=production node dist/server.js), pois é o
+//que determina o cookie Secure.
+function resolveNodeEnv(): NodeEnv {
+    const raw = process.env["NODE_ENV"];
+
+    if (raw === undefined || raw === "") {
+        return "development";
+    }
+
+    if (NODE_ENV_VALUES.includes(raw as NodeEnv)) {
+        return raw as NodeEnv;
+    }
+
+    throw new Error(
+        `Invalid NODE_ENV: "${raw}". ` +
+            `Expected one of: ${NODE_ENV_VALUES.join(", ")}.`,
+    );
+}
+
 function requireInt(label: string, raw: string): number {
     if (!/^\d+$/.test(raw)) {
         throw new Error(
@@ -40,6 +65,7 @@ function requireInt(label: string, raw: string): number {
 }
 
 export const env = {
+    NODE_ENV: resolveNodeEnv(),
     PORT: requireInt("PORT", process.env["PORT"] ?? "3000"),
     DB_HOST: requireEnv("DB_HOST"),
     DB_PORT: requireInt("DB_PORT", requireEnv("DB_PORT")),

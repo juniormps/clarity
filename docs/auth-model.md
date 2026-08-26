@@ -338,7 +338,8 @@ Resumo das decisões concretizadas:
 - tabela `sessions` armazena apenas o hash SHA-256 do token;
 - o token real existe somente no cookie `sid`;
 - duração server-side da sessão: 24 horas;
-- cookie não persistente (removido ao fim da sessão do navegador);
+- cookie com `Max-Age` alinhado à duração da sessão (24 horas), a partir de
+  uma única fonte de verdade (`SESSION_TTL_MS`);
 - cookie configurado com `HttpOnly`, `SameSite=Lax`, `Path=/`;
 - `Secure` habilitado somente em produção;
 - endpoints: `POST /api/auth/login`, `GET /api/auth/me` e

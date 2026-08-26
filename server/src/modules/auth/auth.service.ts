@@ -9,9 +9,8 @@ import {
     deleteSessionByTokenHash,
     findUserByTokenHash,
 } from "./session.repository.js";
+import { SESSION_TTL_MS } from "./auth.cookie.js";
 import { generateSessionToken, hashSessionToken } from "./session.token.js";
-
-const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 //Autentica o usuário, cria uma sessão e retorna o usuário seguro junto do token.
 export async function login(body: unknown): Promise<LoginResult> {

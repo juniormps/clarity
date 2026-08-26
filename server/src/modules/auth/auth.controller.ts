@@ -1,5 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
-import { getSessionCookieOptions, SESSION_COOKIE_NAME } from "./auth.cookie.js";
+import {
+    getSessionCookieClearOptions,
+    getSessionCookieOptions,
+    SESSION_COOKIE_NAME,
+} from "./auth.cookie.js";
 import * as authService from "./auth.service.js";
 
 //Autentica o usuário, configura o cookie de sessão e retorna o usuário seguro.
@@ -29,7 +33,7 @@ export async function logout(req: Request, res: Response, next: NextFunction): P
     try {
         const token = req.cookies[SESSION_COOKIE_NAME];
         await authService.logout(token);
-        res.clearCookie(SESSION_COOKIE_NAME, getSessionCookieOptions());
+        res.clearCookie(SESSION_COOKIE_NAME, getSessionCookieClearOptions());
         res.status(204).end();
     } catch (error) {
         next(error);
