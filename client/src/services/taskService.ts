@@ -1,3 +1,4 @@
+import { HttpError } from "./httpError";
 import type { Task } from "../types/task";
 
 interface ListTasksResponse {
@@ -21,7 +22,7 @@ export async function listTasks(): Promise<Task[]> {
     const response = await fetch("/api/tasks");
 
     if (!response.ok) {
-        throw new Error(`Failed to load tasks (${response.status}).`);
+        throw new HttpError(response.status, `Failed to load tasks (${response.status}).`);
     }
 
     const body = (await response.json()) as ListTasksResponse;
@@ -40,7 +41,7 @@ export async function createTask(title: string): Promise<Task> {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to create task (${response.status}).`);
+        throw new HttpError(response.status, `Failed to create task (${response.status}).`);
     }
 
     const body = (await response.json()) as CreateTaskResponse;
@@ -60,7 +61,7 @@ export async function updateTaskCompleted(id: number, completed: boolean): Promi
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to update task (${response.status}).`);
+        throw new HttpError(response.status, `Failed to update task (${response.status}).`);
     }
 
     const body = (await response.json()) as UpdateTaskCompletedResponse;
@@ -80,7 +81,7 @@ export async function updateTaskTitle(id: number, title: string): Promise<Task> 
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to update task title (${response.status}).`);
+        throw new HttpError(response.status, `Failed to update task title (${response.status}).`);
     }
 
     const body = (await response.json()) as UpdateTaskTitleResponse;
@@ -96,7 +97,7 @@ export async function deleteTask(id: number): Promise<void> {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to delete task (${response.status}).`);
+        throw new HttpError(response.status, `Failed to delete task (${response.status}).`);
     }
 }
 
@@ -108,6 +109,6 @@ export async function deleteCompletedTasks(): Promise<void> {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to delete completed tasks (${response.status}).`);
+        throw new HttpError(response.status, `Failed to delete completed tasks (${response.status}).`);
     }
 }

@@ -1,6 +1,9 @@
+import { configureStore } from "@reduxjs/toolkit";
 import { render, screen } from "@testing-library/react";
+import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes, useOutletContext } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import authReducer from "../../features/auth/authSlice";
 import { useTasks } from "../../hooks/useTasks";
 import { makeTaskState } from "../../test/useTasksState";
 import type { Task } from "../../types/task";
@@ -48,14 +51,18 @@ function TasksProbe() {
 }
 
 function renderAppLayout() {
+    const store = configureStore({ reducer: { auth: authReducer } });
+
     return render(
-        <MemoryRouter initialEntries={["/app"]}>
-            <Routes>
-                <Route element={<AppLayout />}>
-                    <Route path="/app" element={<TasksProbe />} />
-                </Route>
-            </Routes>
-        </MemoryRouter>,
+        <Provider store={store}>
+            <MemoryRouter initialEntries={["/app"]}>
+                <Routes>
+                    <Route element={<AppLayout />}>
+                        <Route path="/app" element={<TasksProbe />} />
+                    </Route>
+                </Routes>
+            </MemoryRouter>
+        </Provider>,
     );
 }
 

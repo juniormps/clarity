@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { isUnauthorizedError } from "../services/httpError";
 import {
     createTask as createTaskRequest,
     deleteCompletedTasks as deleteCompletedTasksRequest,
@@ -50,7 +51,22 @@ function removeTaskError(current: Record<number, string>, id: number): Record<nu
     return next;
 }
 
-export function useTasks() {
+export function useTasks(onUnauthorized?: () => void) {
+    //Guarda o callback em uma ref para que a detecção de sessão inválida
+    //não exija reexecutar o efeito de carregamento da lista.
+    const onUnauthorizedRef = useRef(onUnauthorized);
+
+    useEffect(() => {
+        onUnauthorizedRef.current = onUnauthorized;
+    }, [onUnauthorized]);
+
+    //Sinaliza a expiração da sessão quando uma API protegida retorna 401.
+    function handleUnauthorized(error: unknown): void {
+        if (isUnauthorizedError(error)) {
+            onUnauthorizedRef.current?.();
+        }
+    }
+
     // Estado das tarefas.
     const [tasks, setTasks] = useState<Task[]>([]);
 
@@ -100,8 +116,9 @@ export function useTasks() {
                 if (!cancelled) {
                     setTasks(data);
                 }
-            } catch {
+            } catch (error) {
                 if (!cancelled) {
+                    handleUnauthorized(error);
                     setLoadState((current) => ({
                         ...current,
                         error: "Não foi possível carregar as tarefas.",
@@ -134,6 +151,7 @@ export function useTasks() {
             return task;
             
         } catch (error) {
+            handleUnauthorized(error);
             setCreateState((current) => ({
                 ...current,
                 error: "Não foi possível criar a tarefa.",
@@ -167,6 +185,7 @@ export function useTasks() {
             );
             return updatedTask;
         } catch (error) {
+            handleUnauthorized(error);
             setUpdateCompletedState((current) => ({
                 ...current,
                 errors: {
@@ -194,6 +213,7 @@ export function useTasks() {
             await deleteTaskRequest(id);
             setTasks((current) => current.filter((task) => task.id !== id));
         } catch (error) {
+            handleUnauthorized(error);
             setDeleteState((current) => ({
                 ...current,
                 errors: {
@@ -224,6 +244,7 @@ export function useTasks() {
             );
             return updatedTask;
         } catch (error) {
+            handleUnauthorized(error);
             setEditState((current) => ({
                 ...current,
                 error: "Não foi possível editar o título da tarefa.",
@@ -250,6 +271,7 @@ export function useTasks() {
             await deleteCompletedTasksRequest();
             setTasks((current) => current.filter((task) => !task.completed));
         } catch (error) {
+            handleUnauthorized(error);
             setDeleteCompletedState((current) => ({
                 ...current,
                 error: "Não foi possível limpar as tarefas concluídas.",
