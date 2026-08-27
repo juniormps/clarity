@@ -536,27 +536,6 @@ Não é utilizado ORM.
 
 As migrations são responsáveis pela evolução da estrutura do banco de dados.
 
-Entre as principais estruturas criadas estão:
-
-- `tasks`;
-- `users`;
-- `sessions`;
-- relacionamento entre usuários e tarefas.
-
-A tabela de tarefas possui uma chave estrangeira para o usuário proprietário.
-
-Conceitualmente:
-
-```text
-users
-  │
-  └── id
-       │
-       │ FK
-       ▼
-tasks.user_id
-```
-
 ---
 
 # 🧪 Testes
