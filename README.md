@@ -2,7 +2,7 @@
 
 > Organize hoje. Respire amanhã.
 
-Uma aplicação ****full stack de gerenciamento de tarefas****, desenvolvida com foco em arquitetura, autenticação, segurança, responsividade, acessibilidade e testes automatizados.
+Uma aplicação **full stack de gerenciamento de tarefas**, desenvolvida com foco em arquitetura, autenticação, segurança, responsividade, acessibilidade e testes automatizados.
 
 O Clarity permite que cada usuário crie sua própria conta e gerencie suas tarefas em um ambiente protegido. Cada tarefa pertence exclusivamente ao usuário autenticado, garantindo o isolamento dos dados tanto na interface quanto na API.
 
@@ -12,7 +12,7 @@ O projeto foi desenvolvido de forma incremental, priorizando funcionalidades peq
 
 ## 🚀 Demonstração
 
-🔗 ****Acesse a aplicação:**** [Em breve](#)
+🔗 **Acesse a aplicação:** [Em breve](#)
 
 > O link da demonstração será adicionado após o deploy da aplicação.
 
@@ -22,91 +22,62 @@ O projeto foi desenvolvido de forma incremental, priorizando funcionalidades peq
 
 As imagens da aplicação serão adicionadas após a finalização do deploy e captura das telas principais.
 
-*\<!--*
+_\<!--_
 
-*![Landing Page](docs/images/landing-page.png)*
+_![Landing Page](docs/images/landing-page.png)_
 
-*![Área de tarefas](docs/images/tasks-page.png)*
+_![Área de tarefas](docs/images/tasks-page.png)_
 
-*![Login](docs/images/login.png)*
+_![Login](docs/images/login.png)_
 
-*-->*
+_-->_
 
 ---
 
 # 📋 Índice
 
 - [Sobre o projeto](#-sobre-o-projeto)
-
 - [Funcionalidades](#-funcionalidades)
-
 - [Tecnologias](#-tecnologias)
-
 - [Arquitetura](#-arquitetura)
-
 - [Estrutura do projeto](#-estrutura-do-projeto)
-
 - [Modelo de dados](#-modelo-de-dados)
-
 - [Autenticação](#-autenticação)
-
 - [Rotas](#-rotas)
-
 - [API](#-api)
-
 - [Banco de dados e migrations](#-banco-de-dados-e-migrations)
-
 - [Testes](#-testes)
-
 - [Responsividade e acessibilidade](#-responsividade-e-acessibilidade)
-
 - [Segurança](#-segurança)
-
 - [Decisões técnicas](#-decisões-técnicas)
-
 - [Instalação](#-instalação)
-
 - [Scripts disponíveis](#-scripts-disponíveis)
-
 - [Próximos passos](#-próximos-passos)
 
 ---
 
 # 💡 Sobre o projeto
 
-O ****Clarity**** é uma aplicação de gerenciamento de tarefas desenvolvida como projeto de estudo e portfólio.
+O **Clarity** é uma aplicação de gerenciamento de tarefas desenvolvida como projeto de estudo e portfólio.
 
 Mais do que construir apenas uma interface de To-Do List, o objetivo do projeto é praticar a construção de uma aplicação completa, envolvendo:
 
 - desenvolvimento front-end;
-
 - desenvolvimento de API;
-
 - autenticação;
-
 - persistência em banco de dados relacional;
-
 - arquitetura em camadas;
-
 - gerenciamento de sessão;
-
 - isolamento de dados entre usuários;
-
 - validação de dados;
-
 - tratamento de erros;
-
 - segurança;
-
 - responsividade;
-
 - acessibilidade;
-
 - testes automatizados;
-
 - testes end-to-end.
 
-A aplicação foi construída utilizando uma arquitetura full stack separada entre ****client****, ****server**** e ****database****.
+A aplicação foi construída utilizando uma arquitetura full stack separada entre **client**, **server** e **database**.
 
 ---
 
@@ -115,21 +86,13 @@ A aplicação foi construída utilizando uma arquitetura full stack separada ent
 ## 👤 Autenticação
 
 - Cadastro de novos usuários
-
 - Login
-
 - Logout
-
 - Recuperação da sessão atual
-
 - Restauração da sessão ao recarregar a página
-
 - Rotas públicas
-
 - Rotas protegidas
-
 - Redirecionamento de usuários não autenticados
-
 - Expiração e invalidação de sessão
 
 ---
@@ -137,31 +100,18 @@ A aplicação foi construída utilizando uma arquitetura full stack separada ent
 ## ✅ Gerenciamento de tarefas
 
 - Criar tarefas
-
 - Listar tarefas
-
 - Editar o título de uma tarefa
-
 - Marcar tarefas como concluídas
-
 - Reabrir tarefas concluídas
-
 - Excluir tarefas individualmente
-
 - Excluir todas as tarefas concluídas
-
 - Filtrar tarefas por status:
-
-  - Todas
-
-  - Pendentes
-
-  - Concluídas
-
+    - Todas
+    - Pendentes
+    - Concluídas
 - Buscar tarefas por título
-
 - Visualizar resumo das tarefas
-
 - Visualizar progresso das tarefas
 
 ---
@@ -169,27 +119,16 @@ A aplicação foi construída utilizando uma arquitetura full stack separada ent
 ## 🧑‍💻 Experiência do usuário
 
 - Estados de carregamento
-
 - Skeleton loading
-
 - Estados vazios
-
 - Estados de erro
-
 - Mensagens de validação
-
 - Confirmação antes de ações destrutivas
-
 - Interface responsiva
-
 - Abordagem Mobile First
-
 - Navegação por teclado
-
 - Gerenciamento de foco
-
 - Skip links
-
 - Suporte a preferências de redução de movimento
 
 ---
@@ -198,67 +137,43 @@ A aplicação foi construída utilizando uma arquitetura full stack separada ent
 
 ## Front-end
 
-| Tecnologia | Utilização |
-
-|---|---|
-
-| ****React**** | Construção da interface |
-
-| ****TypeScript**** | Tipagem estática |
-
-| ****Vite**** | Ambiente de desenvolvimento e build |
-
-| ****React Router DOM**** | Roteamento da aplicação |
-
-| ****Redux Toolkit**** | Estado global de autenticação |
-
-| ****React Redux**** | Integração do Redux com React |
-
-| ****CSS Modules**** | Estilização componentizada |
-
-| ****Vitest**** | Testes automatizados |
-
-| ****Testing Library**** | Testes de componentes |
-
-| ****Playwright**** | Testes end-to-end |
+| Tecnologia           | Utilização                          |
+| -------------------- | ----------------------------------- |
+| **React**            | Construção da interface             |
+| **TypeScript**       | Tipagem estática                    |
+| **Vite**             | Ambiente de desenvolvimento e build |
+| **React Router DOM** | Roteamento da aplicação             |
+| **Redux Toolkit**    | Estado global de autenticação       |
+| **React Redux**      | Integração do Redux com React       |
+| **CSS Modules**      | Estilização componentizada          |
+| **Vitest**           | Testes automatizados                |
+| **Testing Library**  | Testes de componentes               |
+| **Playwright**       | Testes end-to-end                   |
 
 ---
 
 ## Back-end
 
-| Tecnologia | Utilização |
-
-|---|---|
-
-| ****Node.js**** | Ambiente de execução |
-
-| ****Express**** | API HTTP |
-
-| ****TypeScript**** | Tipagem estática |
-
-| ****MySQL**** | Banco de dados relacional |
-
-| ****mysql2**** | Comunicação com o MySQL |
+| Tecnologia     | Utilização                |
+| -------------- | ------------------------- |
+| **Node.js**    | Ambiente de execução      |
+| **Express**    | API HTTP                  |
+| **TypeScript** | Tipagem estática          |
+| **MySQL**      | Banco de dados relacional |
+| **mysql2**     | Comunicação com o MySQL   |
 
 ---
 
 ## Autenticação e segurança
 
-| Tecnologia | Utilização |
-
-|---|---|
-
-| ****Argon2id**** | Hash de senhas |
-
-| ****Cookies HttpOnly**** | Gerenciamento de sessão |
-
-| ****cookie-parser**** | Leitura de cookies |
-
-| ****Helmet**** | Headers de segurança |
-
-| ****express-rate-limit**** | Rate limiting |
-
-| ****dotenv**** | Variáveis de ambiente |
+| Tecnologia             | Utilização              |
+| ---------------------- | ----------------------- |
+| **Argon2id**           | Hash de senhas          |
+| **Cookies HttpOnly**   | Gerenciamento de sessão |
+| **cookie-parser**      | Leitura de cookies      |
+| **Helmet**             | Headers de segurança    |
+| **express-rate-limit** | Rate limiting           |
+| **dotenv**             | Variáveis de ambiente   |
 
 ---
 
@@ -309,56 +224,68 @@ flowchart LR
     B --> A
 ```
 
+No back-end, o código segue a direção de dependência **route → controller → service → repository → banco**:
+
+- **Routes** — definem os endpoints e conectam middlewares e controllers (sem regra de negócio ou SQL);
+- **Controllers** — tratam de preocupações HTTP (dados da requisição, resposta e status);
+- **Services** — contêm as regras de negócio e não dependem de `Request`/`Response` do Express;
+- **Repositories** — concentram todo o acesso ao banco e o SQL (sempre parametrizado).
+
+---
+
 # 📁 Estrutura do projeto
 
 ```text
 clarity/
 │
-├── client/
+├── client/                         # Front-end (React + Vite)
 │   │
-│   ├── e2e/
+│   ├── e2e/                        # Testes end-to-end (Playwright)
 │   │   ├── helpers/
 │   │   ├── critical-flow.spec.ts
 │   │   ├── session-expiry.spec.ts
 │   │   └── user-isolation.spec.ts
 │   │
 │   ├── src/
-│   │   ├── app/
+│   │   ├── app/                    # Store Redux e hooks
 │   │   │   ├── hooks.ts
 │   │   │   └── store.ts
 │   │   │
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── layouts/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── types/
-│   │   └── ...
+│   │   ├── components/             # Componentes reutilizáveis
+|   |   ├── features/               # Recursos por domínio (ex.: auth)
+│   │   ├── hooks/                  # Hooks customizados (ex.: useTasks)
+│   │   ├── layouts/                # PublicLayout e AppLayout
+│   │   ├── pages/                  # Páginas da aplicação
+│   │   ├── services/               # Comunicação HTTP com a API
+│   │   ├── types/                  # Tipos de domínio
+│   │   └── utils/                  # Funções utilitárias
 │   │
 │   └── package.json
 │
-├── server/
+├── server/                         # Back-end (Node + Express)
 │   │
 │   ├── src/
-│   │   ├── config/
-│   │   ├── database/
-│   │   ├── middlewares/
-│   │   ├── modules/
+│   │   ├── config/                 # Variáveis de ambiente
+│   │   ├── database/               # Pool de conexões MySQL
+|   |   ├── errors/                 # AppError e tratamento de erros
+│   │   ├── middlewares/            # requireAuth, rate limiters, errorHandler
+│   │   ├── modules/                # users, auth e tasks (route → controller → service → repository)
 │   │   │   ├── auth/
-│   │   │   └── tasks/
-│   │   ├── utils/
+│   │   │   ├── tasks/
+|   |   |   └── users/
+│   │   ├── types/                  # Tipos globais
 │   │   ├── app.ts
 │   │   └── server.ts
 │   │
 │   ├── tests/
-│   │   └── integration/
+│   │   └── integration/            # Testes de integração da API
 │   │
 │   └── package.json
 │
 ├── database/
-│   └── migrations/
+│   └── migrations/                 # Migrations SQL
 │
-├── docs/
+├── docs/                           # Documentação complementar
 │
 ├── .env.example
 ├── AGENTS.md
@@ -387,19 +314,13 @@ Database
 
 ## Responsabilidades
 
-| Camada | Responsabilidade |
-
-|---|---|
-
-| ****Route**** | Define os endpoints e middlewares |
-
-| ****Controller**** | Recebe a requisição e envia a resposta HTTP |
-
-| ****Service**** | Contém regras de negócio |
-
-| ****Repository**** | Executa operações de persistência |
-
-| ****Database**** | Armazena os dados |
+| Camada         | Responsabilidade                            |
+| -------------- | ------------------------------------------- |
+| **Route**      | Define os endpoints e middlewares           |
+| **Controller** | Recebe a requisição e envia a resposta HTTP |
+| **Service**    | Contém regras de negócio                    |
+| **Repository** | Executa operações de persistência           |
+| **Database**   | Armazena os dados                           |
 
 Essa separação evita que regras de negócio fiquem diretamente nos controllers ou que detalhes de SQL se espalhem pela aplicação.
 
@@ -407,11 +328,18 @@ Essa separação evita que regras de negócio fiquem diretamente nos controllers
 
 # 🗄 Modelo de dados
 
-A aplicação possui uma relação de **um para muitos** entre usuários e tarefas.
+O banco possui três tabelas:
+
+| Tabela       | Descrição                                        |
+| ------------ | ------------------------------------------------ |
+| **users**    | Contas de usuário (nome, e-mail e hash de senha) |
+| **tasks**    | Tarefas, cada uma vinculada a um usuário         |
+| **sessions** | Sessões ativas (hash do token por usuário)       |
 
 ```mermaid
 erDiagram
     USERS ||--o{ TASKS : possui
+    USERS ||--o{ SESSIONS : possui
     USERS {
         int id PK
         string first_name
@@ -429,6 +357,13 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
+    SESSIONS {
+        int id PK
+        int user_id FK
+        string token_hash
+        datetime expires_at
+        datetime created_at
+    }
 ```
 
 A relação principal é:
@@ -443,19 +378,24 @@ User
                  Task
 ```
 
-Cada tarefa pertence obrigatoriamente a um usuário.
-
-Isso significa que um usuário só pode visualizar e manipular tarefas associadas à sua própria conta.
+- um usuário pode possuir várias tarefas;
+- cada tarefa pertence a exatamente um usuário (`tasks.user_id` com `NOT NULL`);
+- exclusão de usuário propaga a remoção de suas tarefas e sessões (`ON DELETE CASCADE`);
+- o detalhamento do modelo está registrado em [`docs/auth-model.md`](docs/auth-model.md).
 
 ---
 
 # 🔐 Autenticação
 
-O Clarity utiliza autenticação baseada em sessão.
+- autenticação por **e-mail + senha**;
+- a senha nunca é armazenada em texto puro — apenas o hash gerado com **Argon2id**;
+- sessão baseada em **cookie HttpOnly** (`sid`) combinada com **sessão server-side**;
+- apenas o **hash SHA-256** do token é persistido na tabela `sessions`;
+- duração da sessão: **24 horas** (`expires_at` no banco e `Max-Age` do cookie alinhados a uma única fonte de verdade);
+- cookie configurado com `HttpOnly`, `SameSite=Lax` e `Path=/`; `Secure` habilitado somente em produção;
+- endpoints de sessão: `POST /api/auth/login`, `GET /api/auth/me` e `POST /api/auth/logout`.
 
-As senhas não são armazenadas em texto puro. Antes de serem persistidas, passam por hash utilizando Argon2id.
-
-O fluxo de login pode ser representado assim:
+Fluxo de login:
 
 ```mermaid
 sequenceDiagram
@@ -501,58 +441,43 @@ Middleware de autenticação
           401
 ```
 
-O identificador da sessão não precisa ser acessado diretamente pelo JavaScript da aplicação.
+A documentação completa do modelo está em [`docs/auth-model.md`](docs/auth-model.md).
 
 ---
 
 # 🔒 Isolamento entre usuários
 
-Um dos princípios importantes da aplicação é que tarefas pertencem ao usuário autenticado.
-
-O userId não é tratado como uma informação confiável enviada pelo cliente.
-
-Em vez disso, o servidor:
-
-1. identifica o usuário através da sessão;
-
-2. adiciona o contexto do usuário à requisição;
-
-3. utiliza esse usuário nas operações do domínio;
-
-4. consulta ou modifica apenas tarefas pertencentes àquele usuário.
+O `userId` nunca é tratado como uma informação confiável enviada pelo cliente. Em vez disso, o servidor identifica o usuário através da sessão e usa esse contexto em todas as operações do domínio:
 
 O fluxo pode ser representado assim:
 
 ```mermaid
 flowchart TD
-    A[Usuário autenticado]
-        --> B[Cookie de sessão]
+    A[Usuário autenticado] --> B[Cookie de sessão]
     B --> C[Middleware requireAuth]
     C --> D[Identifica usuário]
     D --> E[Controller]
     E --> F[Service]
     F --> G[Repository]
     G --> H[(MySQL)]
-    H --> I{Tarefa pertence\<br/>ao usuário?}
+    H --> I{Tarefa pertence<br/>ao usuário?}
     I -->|Sim| J[Operação permitida]
     I -->|Não| K[Recurso não encontrado]
 ```
+
+---
 
 # 🧭 Rotas da aplicação
 
 ## Front-end
 
-| Rota | Tipo | Descrição |
-
-|---|---|---|
-
-| `/` | Pública | Landing page |
-
-| `/login` | Pública | Login |
-
-| `/register` | Pública | Cadastro |
-
-| `/app` | Protegida | Área de gerenciamento de tarefas |
+| Rota        | Tipo      | Descrição                        |
+| ----------- | --------- | -------------------------------- |
+| `/`         | Pública   | Landing page                     |
+| `/login`    | Pública   | Login                            |
+| `/register` | Pública   | Cadastro                         |
+| `/app`      | Protegida | Área de gerenciamento de tarefas |
+| `*`         | Pública   | NotFoundPage                     |
 
 A aplicação diferencia rotas públicas e protegidas.
 
@@ -562,29 +487,24 @@ Usuários não autenticados não podem acessar diretamente a área de tarefas.
 
 # 🔌 API
 
+Todas as rotas da API usam o prefixo `/api`. Respostas de sucesso seguem o formato `{ "data": ... }`; erros seguem `{ "error": "mensagem" }`.
+
 ## Health check
 
-| Método | Endpoint | Descrição |
-
-|---|---|---|
-
-| `GET` | `/health` | Verifica a disponibilidade da API e da conexão com o banco |
+| Método | Endpoint  | Descrição                                                  | Autenticação | Corpo | Sucesso      |
+| ------ | --------- | ---------------------------------------------------------- | ------------ | ----- | ------------ |
+| `GET`  | `/health` | Verifica a disponibilidade da API e da conexão com o banco | Não          | -     | `200`/ `503` |
 
 ---
 
 ## Autenticação
 
-| Método | Endpoint | Descrição |
-
-|---|---|---|
-
-| `POST` | `/api/auth/register` | Cria um novo usuário |
-
-| `POST` | `/api/auth/login` | Autentica o usuário |
-
-| `GET` | `/api/auth/me` | Retorna o usuário autenticado |
-
-| `POST` | `/api/auth/logout` | Encerra a sessão |
+| Método | Endpoint           | Descrição                     | Autenticação     | Corpo                                                            | Sucesso |
+| ------ | ------------------ | ----------------------------- | ---------------- | ---------------------------------------------------------------- | ------- |
+| `POST` | `/api/users`       | Cria um novo usuário          | Não (rate limit) | `{ firstName, lastName, email, password, passwordConfirmation }` | `201`   |
+| `POST` | `/api/auth/login`  | Autentica o usuário           | Não (rate limit) | `{ email, password }`                                            | `200`   |
+| `GET`  | `/api/auth/me`     | Retorna o usuário autenticado | Cookie           | -                                                                | `200`   |
+| `POST` | `/api/auth/logout` | Encerra a sessão              | Cookie           | -                                                                | `204`   |
 
 ---
 
@@ -592,21 +512,14 @@ Usuários não autenticados não podem acessar diretamente a área de tarefas.
 
 Todas as rotas abaixo exigem autenticação.
 
-| Método | Endpoint | Descrição |
-
-|---|---|---|
-
-| `GET` | `/api/tasks` | Lista as tarefas do usuário |
-
-| `POST` | `/api/tasks` | Cria uma tarefa |
-
-| `PATCH` | `/api/tasks/:id` | Altera o status de conclusão |
-
-| `PATCH` | `/api/tasks/:id/title` | Edita o título |
-
-| `DELETE` | `/api/tasks/:id` | Remove uma tarefa |
-
-| `DELETE` | `/api/tasks/completed` | Remove todas as tarefas concluídas |
+| Método   | Endpoint               | Descrição                          | Autenticação | Corpo                    | Sucesso |
+| -------- | ---------------------- | ---------------------------------- | ------------ | ------------------------ | ------- |
+| `GET`    | `/api/tasks`           | Lista as tarefas do usuário        | Sim          | -                        | `200`   |
+| `POST`   | `/api/tasks`           | Cria uma tarefa                    | Sim          | `{ title }`              | `201`   |
+| `PATCH`  | `/api/tasks/:id`       | Altera o status de conclusão       | Sim          | `{ completed: boolean }` | `200`   |
+| `PATCH`  | `/api/tasks/:id/title` | Edita o título                     | Sim          | `{ title }`              | `200`   |
+| `DELETE` | `/api/tasks/:id`       | Remove uma tarefa                  | Sim          | -                        | `204`   |
+| `DELETE` | `/api/tasks/completed` | Remove todas as tarefas concluídas | Sim          | -                        | `204`   |
 
 ---
 
@@ -615,11 +528,8 @@ Todas as rotas abaixo exigem autenticação.
 O projeto utiliza:
 
 - MySQL;
-
 - SQL puro;
-
 - `mysql2`;
-
 - migrations versionadas.
 
 Não é utilizado ORM.
@@ -629,11 +539,8 @@ As migrations são responsáveis pela evolução da estrutura do banco de dados.
 Entre as principais estruturas criadas estão:
 
 - `tasks`;
-
 - `users`;
-
 - `sessions`;
-
 - relacionamento entre usuários e tarefas.
 
 A tabela de tarefas possui uma chave estrangeira para o usuário proprietário.
@@ -657,17 +564,15 @@ tasks.user_id
 O projeto utiliza diferentes níveis de testes.
 
 ```text
-▲
-                   / \\
-                  /   \\
-                 / E2E \\
-                /_______\\
-               /         \\
-              / Integração\\
-             /_____________\\
-            /               \\
-           / Unitários        \\
-          /____________________\\
+        /\
+       /E2E\
+      /------\
+     /        \
+    /Integração\
+   /------------\
+  /              \
+ /   Unitários    \
+/------------------\
 ```
 
 ---
@@ -679,15 +584,10 @@ Os testes unitários cobrem partes isoladas da aplicação.
 Entre os elementos testados estão:
 
 - validações;
-
 - componentes;
-
 - filtros;
-
 - comportamentos de interface;
-
 - regras de negócio;
-
 - tratamento de erros.
 
 ---
@@ -699,20 +599,16 @@ Os testes de integração validam a comunicação entre partes da API.
 São utilizados para verificar fluxos como:
 
 - autenticação;
-
 - proteção de rotas;
-
 - operações relacionadas a tarefas;
-
 - respostas HTTP;
-
 - integração entre camadas.
 
 ---
 
 ## Testes end-to-end
 
-Os testes E2E utilizam ****Playwright****.
+Os testes E2E utilizam **Playwright**.
 
 Eles simulam fluxos completos da aplicação.
 
@@ -760,32 +656,23 @@ Também existem testes para validar o comportamento da aplicação quando uma se
 
 # 📱 Responsividade
 
-A interface foi desenvolvida seguindo a abordagem ****Mobile First****.
+A interface foi desenvolvida seguindo a abordagem **Mobile First**.
 
 O desenvolvimento começa considerando telas menores e o layout é progressivamente adaptado para:
 
 - dispositivos móveis;
-
 - celulares maiores;
-
 - tablets;
-
 - notebooks;
-
 - desktops.
 
 A responsividade não é tratada apenas como uma adaptação visual, mas também considera:
 
 - áreas de toque;
-
 - ausência de hover em dispositivos touch;
-
 - reorganização de componentes;
-
 - legibilidade;
-
 - comportamento de formulários;
-
 - navegação.
 
 ---
@@ -797,23 +684,14 @@ O projeto considera diferentes aspectos de acessibilidade.
 Entre eles:
 
 - navegação por teclado;
-
 - foco visível;
-
 - gerenciamento de foco;
-
 - labels associadas aos campos;
-
 - atributos `aria-*`;
-
 - mensagens de erro acessíveis;
-
 - skip links;
-
 - áreas clicáveis adequadas;
-
 - suporte a `prefers-reduced-motion`;
-
 - atenção ao contraste visual.
 
 ---
@@ -825,25 +703,15 @@ Antes da etapa de deploy, foram adicionadas medidas voltadas à segurança e rob
 Entre elas:
 
 - hash de senha com Argon2id;
-
 - autenticação baseada em sessão;
-
 - cookies HttpOnly;
-
 - validação de dados de entrada;
-
 - queries parametrizadas;
-
 - middleware de autenticação;
-
 - tratamento centralizado de erros;
-
 - Helmet;
-
 - rate limiting em rotas sensíveis;
-
 - variáveis de ambiente para informações sensíveis;
-
 - tratamento de sessão expirada.
 
 ---
@@ -857,15 +725,10 @@ O projeto utiliza SQL diretamente através do `mysql2`.
 A decisão foi tomada para permitir uma compreensão mais próxima de:
 
 - consultas SQL;
-
 - joins;
-
 - chaves estrangeiras;
-
 - migrations;
-
 - persistência;
-
 - relacionamento entre entidades.
 
 Além disso, a camada de repository mantém os detalhes de acesso ao banco separados das regras de negócio.
@@ -913,13 +776,9 @@ permite que cada camada tenha uma responsabilidade específica.
 Isso facilita:
 
 - manutenção;
-
 - testes;
-
 - evolução das regras de negócio;
-
 - substituição de detalhes de persistência;
-
 - organização do código.
 
 ---
@@ -955,9 +814,7 @@ Essa abordagem permitiu que a arquitetura evoluísse junto com a complexidade da
 Antes de começar, é necessário ter instalado:
 
 - Node.js
-
 - npm
-
 - MySQL
 
 ---
@@ -983,11 +840,8 @@ Utilize o arquivo `.env.example` como referência para criar os arquivos de ambi
 Configure as informações relacionadas a:
 
 - banco de dados;
-
 - ambiente de execução;
-
 - sessão;
-
 - demais variáveis utilizadas pela aplicação.
 
 > ⚠️ Nunca envie arquivos `.env` com informações sensíveis para o repositório.
@@ -1050,51 +904,31 @@ A aplicação ficará disponível no endereço informado pelo Vite.
 
 ## Client
 
-| Comando | Descrição |
-
-|---|---|
-
-| `npm run dev` | Inicia o ambiente de desenvolvimento |
-
-| `npm run build` | Gera a build de produção |
-
-| `npm run preview` | Visualiza a build localmente |
-
-| `npm run lint` | Executa o ESLint |
-
-| `npm run typecheck` | Executa a verificação de tipos |
-
-| `npm test` | Executa os testes |
-
-| `npm run test:watch` | Executa os testes em modo watch |
-
-| `npm run test:e2e` | Executa os testes end-to-end |
-
-| `npm run test:e2e:ui` | Executa os testes E2E com interface |
-
+| Comando                   | Descrição                                   |
+| ------------------------- | ------------------------------------------- |
+| `npm run dev`             | Inicia o ambiente de desenvolvimento        |
+| `npm run build`           | Gera a build de produção                    |
+| `npm run preview`         | Visualiza a build localmente                |
+| `npm run lint`            | Executa o ESLint                            |
+| `npm run typecheck`       | Executa a verificação de tipos              |
+| `npm test`                | Executa os testes                           |
+| `npm run test:watch`      | Executa os testes em modo watch             |
+| `npm run test:e2e`        | Executa os testes end-to-end                |
+| `npm run test:e2e:ui`     | Executa os testes E2E com interface         |
 | `npm run test:e2e:headed` | Executa os testes E2E com navegador visível |
 
 ## Server
 
-| Comando | Descrição |
-
-|---|---|
-
-| `npm run dev` | Inicia o servidor em desenvolvimento |
-
-| `npm run build` | Compila o TypeScript |
-
-| `npm start` | Inicia a aplicação compilada |
-
-| `npm run lint` | Executa o ESLint |
-
-| `npm run typecheck` | Executa a verificação de tipos |
-
-| `npm test` | Executa os testes |
-
-| `npm run test:integration` | Executa os testes de integração |
-
-| `npm run test:watch` | Executa os testes em modo watch |
+| Comando                    | Descrição                            |
+| -------------------------- | ------------------------------------ |
+| `npm run dev`              | Inicia o servidor em desenvolvimento |
+| `npm run build`            | Compila o TypeScript                 |
+| `npm start`                | Inicia a aplicação compilada         |
+| `npm run lint`             | Executa o ESLint                     |
+| `npm run typecheck`        | Executa a verificação de tipos       |
+| `npm test`                 | Executa os testes                    |
+| `npm run test:integration` | Executa os testes de integração      |
+| `npm run test:watch`       | Executa os testes em modo watch      |
 
 ---
 
@@ -1103,70 +937,44 @@ A aplicação ficará disponível no endereço informado pelo Vite.
 As próximas etapas planejadas para o projeto são:
 
 - [ ] Configurar integração contínua
-
 - [ ] Criar pipeline com GitHub Actions
-
 - [ ] Executar lint automaticamente
-
 - [ ] Executar typecheck automaticamente
-
 - [ ] Executar testes automaticamente
-
 - [ ] Configurar ambiente de produção
-
 - [ ] Fazer deploy do front-end
-
 - [ ] Fazer deploy da API
-
 - [ ] Configurar banco de dados em produção
-
 - [ ] Configurar variáveis de ambiente
-
 - [ ] Ajustar CORS para produção
-
 - [ ] Configurar cookies conforme a topologia de deploy
-
 - [ ] Executar migrations em produção
-
 - [ ] Adicionar link da demonstração
-
 - [ ] Adicionar screenshots da aplicação
 
 ---
 
 # 📌 Status
 
-🚧 ****Em desenvolvimento****
+🚧 **Em desenvolvimento**
 
 A aplicação já possui uma base full stack funcional, incluindo:
 
 - autenticação;
-
 - gerenciamento de sessão;
-
 - CRUD de tarefas;
-
 - isolamento de dados entre usuários;
-
 - banco de dados relacional;
-
 - arquitetura em camadas;
-
 - validações;
-
 - tratamento centralizado de erros;
-
 - testes automatizados;
-
 - testes end-to-end;
-
 - responsividade;
-
 - acessibilidade;
-
 - medidas de segurança e robustez.
 
-As próximas etapas concentram-se principalmente em ****CI/CD e deploy****.
+As próximas etapas concentram-se principalmente em **CI/CD e deploy**.
 
 ---
 
@@ -1174,6 +982,6 @@ As próximas etapas concentram-se principalmente em ****CI/CD e deploy****.
 
 Feito com atenção aos detalhes. ✨
 
-****Clarity — Organize hoje. Respire amanhã.****
+**Clarity — Organize hoje. Respire amanhã.**
 
 </p>
