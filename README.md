@@ -4,10 +4,6 @@
 
 Uma aplicação **full stack de gerenciamento de tarefas**, desenvolvida com foco em arquitetura, autenticação, segurança, responsividade, acessibilidade e testes automatizados.
 
-O Clarity permite que cada usuário crie sua própria conta e gerencie suas tarefas em um ambiente protegido. Cada tarefa pertence exclusivamente ao usuário autenticado, garantindo o isolamento dos dados tanto na interface quanto na API.
-
-O projeto foi desenvolvido de forma incremental, priorizando funcionalidades pequenas, responsabilidades bem definidas, commits coerentes e evolução progressiva da arquitetura.
-
 ---
 
 ## 🚀 Demonstração
@@ -22,20 +18,20 @@ O projeto foi desenvolvido de forma incremental, priorizando funcionalidades peq
 
 As imagens da aplicação serão adicionadas após a finalização do deploy e captura das telas principais.
 
-_\<!--_
+<!--
+![Landing Page](docs/images/landing-page.png)
 
-_![Landing Page](docs/images/landing-page.png)_
+![Área de tarefas](docs/images/tasks-page.png)
 
-_![Área de tarefas](docs/images/tasks-page.png)_
-
-_![Login](docs/images/login.png)_
-
-_-->_
+![Login](docs/images/login.png)
+-->
 
 ---
 
 # 📋 Índice
 
+- [Demonstração](#-demonstração)
+- [Preview](#-preview)
 - [Sobre o projeto](#-sobre-o-projeto)
 - [Funcionalidades](#-funcionalidades)
 - [Tecnologias](#-tecnologias)
@@ -43,16 +39,19 @@ _-->_
 - [Estrutura do projeto](#-estrutura-do-projeto)
 - [Modelo de dados](#-modelo-de-dados)
 - [Autenticação](#-autenticação)
-- [Rotas](#-rotas)
+- [Isolamento entre usuários](#-isolamento-entre-usuários)
+- [Rotas da aplicação](#-rotas-da-aplicação)
 - [API](#-api)
 - [Banco de dados e migrations](#-banco-de-dados-e-migrations)
 - [Testes](#-testes)
-- [Responsividade e acessibilidade](#-responsividade-e-acessibilidade)
+- [Responsividade](#-responsividade)
+- [Acessibilidade](#-acessibilidade)
 - [Segurança](#-segurança)
 - [Decisões técnicas](#-decisões-técnicas)
 - [Instalação](#-instalação)
 - [Scripts disponíveis](#-scripts-disponíveis)
 - [Próximos passos](#-próximos-passos)
+- [Status](#-status)
 
 ---
 
@@ -207,6 +206,8 @@ O Clarity utiliza uma arquitetura full stack separada em três partes principais
 └─────────────────────────────────────────────┘
 ```
 
+Também podemos representar o fluxo de uma requisição:
+
 ```mermaid
 flowchart LR
     A[React] --> B[Service]
@@ -231,6 +232,8 @@ No back-end, o código segue a direção de dependência **route → controller 
 - **Services** — contêm as regras de negócio e não dependem de `Request`/`Response` do Express;
 - **Repositories** — concentram todo o acesso ao banco e o SQL (sempre parametrizado).
 
+Essa separação evita que regras de negócio fiquem diretamente nos controllers ou que detalhes de SQL se espalhem pela aplicação.
+
 ---
 
 # 📁 Estrutura do projeto
@@ -252,7 +255,7 @@ clarity/
 │   │   │   └── store.ts
 │   │   │
 │   │   ├── components/             # Componentes reutilizáveis
-|   |   ├── features/               # Recursos por domínio (ex.: auth)
+│   │   ├── features/               # Recursos por domínio (ex.: auth)
 │   │   ├── hooks/                  # Hooks customizados (ex.: useTasks)
 │   │   ├── layouts/                # PublicLayout e AppLayout
 │   │   ├── pages/                  # Páginas da aplicação
@@ -267,12 +270,12 @@ clarity/
 │   ├── src/
 │   │   ├── config/                 # Variáveis de ambiente
 │   │   ├── database/               # Pool de conexões MySQL
-|   |   ├── errors/                 # AppError e tratamento de erros
+│   │   ├── errors/                 # AppError e tratamento de erros
 │   │   ├── middlewares/            # requireAuth, rate limiters, errorHandler
 │   │   ├── modules/                # users, auth e tasks (route → controller → service → repository)
 │   │   │   ├── auth/
 │   │   │   ├── tasks/
-|   |   |   └── users/
+│   │   │   └── users/
 │   │   ├── types/                  # Tipos globais
 │   │   ├── app.ts
 │   │   └── server.ts
@@ -293,36 +296,6 @@ clarity/
 ```
 
 A organização busca manter responsabilidades separadas e facilitar a manutenção e os testes.
-
----
-
-# 🔄 Arquitetura do back-end
-
-O back-end utiliza uma arquitetura em camadas:
-
-```text
-Route
-  ↓
-Controller
-  ↓
-Service
-  ↓
-Repository
-  ↓
-Database
-```
-
-## Responsabilidades
-
-| Camada         | Responsabilidade                            |
-| -------------- | ------------------------------------------- |
-| **Route**      | Define os endpoints e middlewares           |
-| **Controller** | Recebe a requisição e envia a resposta HTTP |
-| **Service**    | Contém regras de negócio                    |
-| **Repository** | Executa operações de persistência           |
-| **Database**   | Armazena os dados                           |
-
-Essa separação evita que regras de negócio fiquem diretamente nos controllers ou que detalhes de SQL se espalhem pela aplicação.
 
 ---
 
@@ -368,16 +341,6 @@ erDiagram
 
 A relação principal é:
 
-```text
-User
-  │
-  │ 1
-  │
-  └────────────── N
-                  │
-                 Task
-```
-
 - um usuário pode possuir várias tarefas;
 - cada tarefa pertence a exatamente um usuário (`tasks.user_id` com `NOT NULL`);
 - exclusão de usuário propaga a remoção de suas tarefas e sessões (`ON DELETE CASCADE`);
@@ -393,7 +356,7 @@ User
 - apenas o **hash SHA-256** do token é persistido na tabela `sessions`;
 - duração da sessão: **24 horas** (`expires_at` no banco e `Max-Age` do cookie alinhados a uma única fonte de verdade);
 - cookie configurado com `HttpOnly`, `SameSite=Lax` e `Path=/`; `Secure` habilitado somente em produção;
-- endpoints de sessão: `POST /api/auth/login`, `GET /api/auth/me` e `POST /api/auth/logout`.
+- os endpoints de sessão estão documentados na seção [API](#-api).
 
 Fluxo de login:
 
@@ -487,7 +450,7 @@ Usuários não autenticados não podem acessar diretamente a área de tarefas.
 
 # 🔌 API
 
-Todas as rotas da API usam o prefixo `/api`. Respostas de sucesso seguem o formato `{ "data": ... }`; erros seguem `{ "error": "mensagem" }`.
+As rotas da API usam o prefixo `/api`, com exceção do health check (`/health`). Respostas de sucesso seguem o formato `{ "data": ... }`; erros seguem `{ "error": "mensagem" }`.
 
 ## Health check
 
@@ -531,8 +494,6 @@ O projeto utiliza:
 - SQL puro;
 - `mysql2`;
 - migrations versionadas.
-
-Não é utilizado ORM.
 
 As migrations são responsáveis pela evolução da estrutura do banco de dados.
 
@@ -590,6 +551,8 @@ São utilizados para verificar fluxos como:
 Os testes E2E utilizam **Playwright**.
 
 Eles simulam fluxos completos da aplicação.
+
+Os testes E2E rodam contra um banco de dados dedicado (`clarity_e2e`), recriado automaticamente antes de cada execução.
 
 ### Fluxo crítico
 
@@ -738,19 +701,7 @@ Isso reduz a necessidade de expor o identificador da sessão ao JavaScript da ap
 
 ## Arquitetura em camadas no back-end
 
-A separação:
-
-```text
-Route
-↓
-Controller
-↓
-Service
-↓
-Repository
-```
-
-permite que cada camada tenha uma responsabilidade específica.
+A arquitetura em camadas, detalhada na seção [Arquitetura](#-arquitetura), permite que cada camada tenha uma responsabilidade específica.
 
 Isso facilita:
 
@@ -792,7 +743,7 @@ Essa abordagem permitiu que a arquitetura evoluísse junto com a complexidade da
 
 Antes de começar, é necessário ter instalado:
 
-- Node.js
+- Node.js (18 ou superior, por usar ESM e `tsx`)
 - npm
 - MySQL
 
@@ -814,14 +765,23 @@ cd clarity
 
 ## 2. Configure as variáveis de ambiente
 
-Utilize o arquivo `.env.example` como referência para criar os arquivos de ambiente necessários.
+Na raiz do projeto, crie o arquivo `.env` a partir do modelo:
 
-Configure as informações relacionadas a:
+```bash
+cp .env.example .env
+```
 
-- banco de dados;
-- ambiente de execução;
-- sessão;
-- demais variáveis utilizadas pela aplicação.
+O servidor carrega o `.env` a partir da raiz do projeto. As variáveis disponíveis são:
+
+| Variável      | Descrição                                       |
+| ------------- | ----------------------------------------------- |
+| `PORT`        | Porta do servidor (padrão `3000`)               |
+| `NODE_ENV`    | Ambiente: `development`, `test` ou `production` |
+| `DB_HOST`     | Host do MySQL (padrão `localhost`)              |
+| `DB_PORT`     | Porta do MySQL (padrão `3306`)                  |
+| `DB_USER`     | Usuário do MySQL                                |
+| `DB_PASSWORD` | Senha do usuário do MySQL                       |
+| `DB_NAME`     | Nome do banco de dados (padrão `clarity`)       |
 
 > ⚠️ Nunca envie arquivos `.env` com informações sensíveis para o repositório.
 
@@ -849,10 +809,19 @@ npm install
 
 ## 4. Configure o banco de dados
 
-Crie o banco de dados e execute as migrations localizadas em:
+Crie o banco de dados:
 
-```text
-database/migrations/
+```sql
+CREATE DATABASE clarity;
+```
+
+Em seguida, execute as migrations em ordem numérica (localizadas em `database/migrations/`):
+
+```bash
+mysql -u <seu_usuario> -p clarity < database/migrations/001_create_tasks.sql
+mysql -u <seu_usuario> -p clarity < database/migrations/002_create_users.sql
+mysql -u <seu_usuario> -p clarity < database/migrations/003_create_sessions.sql
+mysql -u <seu_usuario> -p clarity < database/migrations/004_add_user_id_to_tasks.sql
 ```
 
 ---
@@ -865,6 +834,8 @@ Dentro de `server/`:
 npm run dev
 ```
 
+O servidor ficará disponível em `http://localhost:3000`.
+
 ---
 
 ## 6. Inicie o client
@@ -875,7 +846,7 @@ Dentro de `client/`:
 npm run dev
 ```
 
-A aplicação ficará disponível no endereço informado pelo Vite.
+A aplicação ficará disponível em `http://localhost:5173`. O Vite redireciona as chamadas `/api` para o servidor em `http://localhost:3000`.
 
 ---
 
@@ -893,6 +864,7 @@ A aplicação ficará disponível no endereço informado pelo Vite.
 | `npm test`                | Executa os testes                           |
 | `npm run test:watch`      | Executa os testes em modo watch             |
 | `npm run test:e2e`        | Executa os testes end-to-end                |
+| `npm run test:e2e:reset`  | Recria o banco de dados E2E                 |
 | `npm run test:e2e:ui`     | Executa os testes E2E com interface         |
 | `npm run test:e2e:headed` | Executa os testes E2E com navegador visível |
 
@@ -901,6 +873,8 @@ A aplicação ficará disponível no endereço informado pelo Vite.
 | Comando                    | Descrição                            |
 | -------------------------- | ------------------------------------ |
 | `npm run dev`              | Inicia o servidor em desenvolvimento |
+| `npm run dev:e2e`          | Inicia o servidor para os testes E2E |
+| `npm run db:e2e:reset`     | Recria o banco de dados E2E          |
 | `npm run build`            | Compila o TypeScript                 |
 | `npm start`                | Inicia a aplicação compilada         |
 | `npm run lint`             | Executa o ESLint                     |
@@ -928,8 +902,6 @@ As próximas etapas planejadas para o projeto são:
 - [ ] Ajustar CORS para produção
 - [ ] Configurar cookies conforme a topologia de deploy
 - [ ] Executar migrations em produção
-- [ ] Adicionar link da demonstração
-- [ ] Adicionar screenshots da aplicação
 
 ---
 
@@ -937,21 +909,7 @@ As próximas etapas planejadas para o projeto são:
 
 🚧 **Em desenvolvimento**
 
-A aplicação já possui uma base full stack funcional, incluindo:
-
-- autenticação;
-- gerenciamento de sessão;
-- CRUD de tarefas;
-- isolamento de dados entre usuários;
-- banco de dados relacional;
-- arquitetura em camadas;
-- validações;
-- tratamento centralizado de erros;
-- testes automatizados;
-- testes end-to-end;
-- responsividade;
-- acessibilidade;
-- medidas de segurança e robustez.
+A aplicação já possui uma base full stack funcional, cobrindo as funcionalidades descritas acima — autenticação, CRUD de tarefas, isolamento de dados, testes automatizados, responsividade, acessibilidade e segurança.
 
 As próximas etapas concentram-se principalmente em **CI/CD e deploy**.
 
