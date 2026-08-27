@@ -15,10 +15,10 @@ jobs:
         working-directory: client
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -45,12 +45,21 @@ jobs:
     defaults:
       run:
         working-directory: server
+    # Valores fictícios usados apenas no CI. Os testes unitários carregam
+    # src/config/env.ts (via auth.cookie) e exigem as variáveis de banco,
+    # mesmo sem estabelecer uma conexão real com o MySQL.
+    env:
+      DB_HOST: localhost
+      DB_PORT: 3306
+      DB_USER: ci_user
+      DB_PASSWORD: ci_password
+      DB_NAME: clarity_test
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
