@@ -2,158 +2,267 @@
 
 > Organize hoje. Respire amanhã.
 
-Uma aplicação **full stack de gerenciamento de tarefas**, desenvolvida com foco em arquitetura, autenticação, segurança, responsividade, acessibilidade e testes automatizados.
+Uma aplicação ****full stack de gerenciamento de tarefas****, desenvolvida com foco em arquitetura, autenticação, segurança, responsividade, acessibilidade e testes automatizados.
 
 O Clarity permite que cada usuário crie sua própria conta e gerencie suas tarefas em um ambiente protegido. Cada tarefa pertence exclusivamente ao usuário autenticado, garantindo o isolamento dos dados tanto na interface quanto na API.
 
 O projeto foi desenvolvido de forma incremental, priorizando funcionalidades pequenas, responsabilidades bem definidas, commits coerentes e evolução progressiva da arquitetura.
 
-## Demonstração
+---
 
-🔗 **Acesse a aplicação:** [Em breve](#)
+## 🚀 Demonstração
+
+🔗 ****Acesse a aplicação:**** [Em breve](#)
 
 > O link da demonstração será adicionado após o deploy da aplicação.
 
-## Preview
+---
+
+## 📸 Preview
 
 As imagens da aplicação serão adicionadas após a finalização do deploy e captura das telas principais.
 
-<!--
-![Landing Page](docs/images/landing-page.png)
+*\<!--*
 
-![Área de tarefas](docs/images/tasks-page.png)
+*![Landing Page](docs/images/landing-page.png)*
 
-![Login](docs/images/login.png)
--->
+*![Área de tarefas](docs/images/tasks-page.png)*
 
-## Índice
+*![Login](docs/images/login.png)*
 
-- [Sobre o projeto](#sobre-o-projeto)
-- [Funcionalidades](#funcionalidades)
-- [Tecnologias](#tecnologias)
-- [Arquitetura](#arquitetura)
-- [Estrutura do projeto](#estrutura-do-projeto)
-- [Modelo de dados](#modelo-de-dados)
-- [Autenticação](#autenticação)
-- [Rotas](#rotas)
-- [API](#api)
-- [Banco de dados e migrations](#banco-de-dados-e-migrations)
-- [Testes](#testes)
-- [Responsividade e acessibilidade](#responsividade-e-acessibilidade)
-- [Segurança](#segurança)
-- [Decisões técnicas](#decisões-técnicas)
-- [Instalação](#instalação)
-- [Scripts disponíveis](#scripts-disponíveis)
-- [Próximos passos](#próximos-passos)
+*-->*
 
-## Sobre o projeto
+---
 
-O **Clarity** é uma aplicação de gerenciamento de tarefas desenvolvida como projeto de estudo e portfólio.
+# 📋 Índice
+
+- [Sobre o projeto](#-sobre-o-projeto)
+
+- [Funcionalidades](#-funcionalidades)
+
+- [Tecnologias](#-tecnologias)
+
+- [Arquitetura](#-arquitetura)
+
+- [Estrutura do projeto](#-estrutura-do-projeto)
+
+- [Modelo de dados](#-modelo-de-dados)
+
+- [Autenticação](#-autenticação)
+
+- [Rotas](#-rotas)
+
+- [API](#-api)
+
+- [Banco de dados e migrations](#-banco-de-dados-e-migrations)
+
+- [Testes](#-testes)
+
+- [Responsividade e acessibilidade](#-responsividade-e-acessibilidade)
+
+- [Segurança](#-segurança)
+
+- [Decisões técnicas](#-decisões-técnicas)
+
+- [Instalação](#-instalação)
+
+- [Scripts disponíveis](#-scripts-disponíveis)
+
+- [Próximos passos](#-próximos-passos)
+
+---
+
+# 💡 Sobre o projeto
+
+O ****Clarity**** é uma aplicação de gerenciamento de tarefas desenvolvida como projeto de estudo e portfólio.
 
 Mais do que construir apenas uma interface de To-Do List, o objetivo do projeto é praticar a construção de uma aplicação completa, envolvendo:
 
 - desenvolvimento front-end;
+
 - desenvolvimento de API;
+
 - autenticação;
+
 - persistência em banco de dados relacional;
+
 - arquitetura em camadas;
+
 - gerenciamento de sessão;
+
 - isolamento de dados entre usuários;
+
 - validação de dados;
+
 - tratamento de erros;
+
 - segurança;
+
 - responsividade;
+
 - acessibilidade;
+
 - testes automatizados;
+
 - testes end-to-end.
 
-A aplicação foi construída utilizando uma arquitetura full stack separada entre **client**, **server** e **database**.
+A aplicação foi construída utilizando uma arquitetura full stack separada entre ****client****, ****server**** e ****database****.
 
-## Funcionalidades
+---
 
-### Autenticação
+# ✨ Funcionalidades
+
+## 👤 Autenticação
 
 - Cadastro de novos usuários
+
 - Login
+
 - Logout
+
 - Recuperação da sessão atual
+
 - Restauração da sessão ao recarregar a página
+
 - Rotas públicas
+
 - Rotas protegidas
+
 - Redirecionamento de usuários não autenticados
+
 - Expiração e invalidação de sessão
 
-### Gerenciamento de tarefas
+---
+
+## ✅ Gerenciamento de tarefas
 
 - Criar tarefas
+
 - Listar tarefas
+
 - Editar o título de uma tarefa
+
 - Marcar tarefas como concluídas
+
 - Reabrir tarefas concluídas
+
 - Excluir tarefas individualmente
+
 - Excluir todas as tarefas concluídas
+
 - Filtrar tarefas por status:
+
   - Todas
+
   - Pendentes
+
   - Concluídas
+
 - Buscar tarefas por título
+
 - Visualizar resumo das tarefas
+
 - Visualizar progresso das tarefas
 
-### Experiência do usuário
+---
+
+## 🧑‍💻 Experiência do usuário
 
 - Estados de carregamento
+
 - Skeleton loading
+
 - Estados vazios
+
 - Estados de erro
+
 - Mensagens de validação
+
 - Confirmação antes de ações destrutivas
+
 - Interface responsiva
+
 - Abordagem Mobile First
+
 - Navegação por teclado
+
 - Gerenciamento de foco
+
 - Skip links
+
 - Suporte a preferências de redução de movimento
 
-## Tecnologias
+---
 
-### Front-end
+# 🛠 Tecnologias
 
-| Tecnologia           | Utilização                          |
-| -------------------- | ----------------------------------- |
-| **React**            | Construção da interface             |
-| **TypeScript**       | Tipagem estática                    |
-| **Vite**             | Ambiente de desenvolvimento e build |
-| **React Router DOM** | Roteamento da aplicação             |
-| **Redux Toolkit**    | Estado global de autenticação       |
-| **React Redux**      | Integração do Redux com React       |
-| **CSS Modules**      | Estilização componentizada          |
-| **Vitest**           | Testes automatizados                |
-| **Testing Library**  | Testes de componentes               |
-| **Playwright**       | Testes end-to-end                   |
+## Front-end
 
-### Back-end
+| Tecnologia | Utilização |
 
-| Tecnologia     | Utilização                |
-| -------------- | ------------------------- |
-| **Node.js**    | Ambiente de execução      |
-| **Express**    | API HTTP                  |
-| **TypeScript** | Tipagem estática          |
-| **MySQL**      | Banco de dados relacional |
-| **mysql2**     | Comunicação com o MySQL   |
+|---|---|
 
-### Autenticação e segurança
+| ****React**** | Construção da interface |
 
-| Tecnologia             | Utilização              |
-| ---------------------- | ----------------------- |
-| **Argon2id**           | Hash de senhas          |
-| **Cookies HttpOnly**   | Gerenciamento de sessão |
-| **cookie-parser**      | Leitura de cookies      |
-| **Helmet**             | Headers de segurança    |
-| **express-rate-limit** | Rate limiting           |
-| **dotenv**             | Variáveis de ambiente   |
+| ****TypeScript**** | Tipagem estática |
 
-## Arquitetura
+| ****Vite**** | Ambiente de desenvolvimento e build |
+
+| ****React Router DOM**** | Roteamento da aplicação |
+
+| ****Redux Toolkit**** | Estado global de autenticação |
+
+| ****React Redux**** | Integração do Redux com React |
+
+| ****CSS Modules**** | Estilização componentizada |
+
+| ****Vitest**** | Testes automatizados |
+
+| ****Testing Library**** | Testes de componentes |
+
+| ****Playwright**** | Testes end-to-end |
+
+---
+
+## Back-end
+
+| Tecnologia | Utilização |
+
+|---|---|
+
+| ****Node.js**** | Ambiente de execução |
+
+| ****Express**** | API HTTP |
+
+| ****TypeScript**** | Tipagem estática |
+
+| ****MySQL**** | Banco de dados relacional |
+
+| ****mysql2**** | Comunicação com o MySQL |
+
+---
+
+## Autenticação e segurança
+
+| Tecnologia | Utilização |
+
+|---|---|
+
+| ****Argon2id**** | Hash de senhas |
+
+| ****Cookies HttpOnly**** | Gerenciamento de sessão |
+
+| ****cookie-parser**** | Leitura de cookies |
+
+| ****Helmet**** | Headers de segurança |
+
+| ****express-rate-limit**** | Rate limiting |
+
+| ****dotenv**** | Variáveis de ambiente |
+
+---
+
+# 🏗 Arquitetura
 
 O Clarity utiliza uma arquitetura full stack separada em três partes principais:
 
@@ -183,263 +292,888 @@ O Clarity utiliza uma arquitetura full stack separada em três partes principais
 └─────────────────────────────────────────────┘
 ```
 
-No back-end, o código segue a direção de dependência **route → controller → service → repository → banco**:
+```mermaid
+flowchart LR
+    A[React] --> B[Service]
+    B --> C[API]
+    C --> D[Route]
+    D --> E[Controller]
+    E --> F[Service]
+    F --> G[Repository]
+    G --> H[(MySQL)]
+    H --> G
+    G --> F
+    F --> E
+    E --> C
+    C --> B
+    B --> A
+```
 
-- **Routes** — definem os endpoints e conectam middlewares e controllers (sem regra de negócio ou SQL);
-- **Controllers** — tratam de preocupações HTTP (dados da requisição, resposta e status);
-- **Services** — contêm as regras de negócio e não dependem de `Request`/`Response` do Express;
-- **Repositories** — concentram todo o acesso ao banco e o SQL (sempre parametrizado).
-
-## Estrutura do projeto
+# 📁 Estrutura do projeto
 
 ```text
 clarity/
-├── client/                    # Front-end (React + Vite)
-│   └── src/
-│       ├── app/               # Store Redux e hooks
-│       ├── components/        # Componentes reutilizáveis
-│       ├── features/          # Recursos por domínio (ex.: auth)
-│       ├── hooks/             # Hooks customizados (ex.: useTasks)
-│       ├── layouts/           # PublicLayout e AppLayout
-│       ├── pages/             # Páginas da aplicação
-│       ├── services/          # Comunicação HTTP com a API
-│       ├── types/             # Tipos de domínio
-│       └── utils/             # Funções utilitárias
-├── server/                    # Back-end (Node + Express)
-│   └── src/
-│       ├── config/            # Variáveis de ambiente
-│       ├── database/          # Pool de conexões MySQL
-│       ├── errors/            # AppError e tratamento de erros
-│       ├── middlewares/       # requireAuth, rate limiters, errorHandler
-│       ├── modules/           # users, auth e tasks (route → controller → service → repository)
-│       └── types/             # Tipos globais
+│
+├── client/
+│   │
+│   ├── e2e/
+│   │   ├── helpers/
+│   │   ├── critical-flow.spec.ts
+│   │   ├── session-expiry.spec.ts
+│   │   └── user-isolation.spec.ts
+│   │
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── hooks.ts
+│   │   │   └── store.ts
+│   │   │
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── types/
+│   │   └── ...
+│   │
+│   └── package.json
+│
+├── server/
+│   │
+│   ├── src/
+│   │   ├── config/
+│   │   ├── database/
+│   │   ├── middlewares/
+│   │   ├── modules/
+│   │   │   ├── auth/
+│   │   │   └── tasks/
+│   │   ├── utils/
+│   │   ├── app.ts
+│   │   └── server.ts
+│   │
+│   ├── tests/
+│   │   └── integration/
+│   │
+│   └── package.json
+│
 ├── database/
-│   └── migrations/            # Migrations SQL
-└── docs/                      # Documentação complementar
+│   └── migrations/
+│
+├── docs/
+│
+├── .env.example
+├── AGENTS.md
+└── README.md
 ```
 
-## Modelo de dados
+A organização busca manter responsabilidades separadas e facilitar a manutenção e os testes.
 
-O banco possui três tabelas:
+---
 
-| Tabela      | Descrição                                        |
-| ----------- | ------------------------------------------------ |
-| **users**   | Contas de usuário (nome, e-mail e hash de senha) |
-| **tasks**   | Tarefas, cada uma vinculada a um usuário         |
-| **sessions**| Sessões ativas (hash do token por usuário)       |
+# 🔄 Arquitetura do back-end
+
+O back-end utiliza uma arquitetura em camadas:
 
 ```text
-User 1 ─────────── N Task
-
-sessions.user_id → users.id
-tasks.user_id     → users.id
+Route
+  ↓
+Controller
+  ↓
+Service
+  ↓
+Repository
+  ↓
+Database
 ```
 
-- um usuário pode possuir várias tarefas;
-- cada tarefa pertence a exatamente um usuário (`tasks.user_id` com `NOT NULL`);
-- exclusão de usuário propaga a remoção de suas tarefas e sessões (`ON DELETE CASCADE`);
-- o detalhamento do modelo está registrado em [`docs/auth-model.md`](docs/auth-model.md).
+## Responsabilidades
+
+| Camada | Responsabilidade |
+
+|---|---|
+
+| ****Route**** | Define os endpoints e middlewares |
+
+| ****Controller**** | Recebe a requisição e envia a resposta HTTP |
+
+| ****Service**** | Contém regras de negócio |
+
+| ****Repository**** | Executa operações de persistência |
+
+| ****Database**** | Armazena os dados |
+
+Essa separação evita que regras de negócio fiquem diretamente nos controllers ou que detalhes de SQL se espalhem pela aplicação.
+
+---
+
+# 🗄 Modelo de dados
+
+A aplicação possui uma relação de **um para muitos** entre usuários e tarefas.
+
+```mermaid
+erDiagram
+    USERS ||--o{ TASKS : possui
+    USERS {
+        int id PK
+        string first_name
+        string last_name
+        string email
+        string password_hash
+        datetime created_at
+        datetime updated_at
+    }
+    TASKS {
+        int id PK
+        int user_id FK
+        string title
+        boolean completed
+        datetime created_at
+        datetime updated_at
+    }
+```
+
+A relação principal é:
+
+```text
+User
+  │
+  │ 1
+  │
+  └────────────── N
+                  │
+                 Task
+```
+
+Cada tarefa pertence obrigatoriamente a um usuário.
+
+Isso significa que um usuário só pode visualizar e manipular tarefas associadas à sua própria conta.
+
+---
+
+# 🔐 Autenticação
+
+O Clarity utiliza autenticação baseada em sessão.
+
+As senhas não são armazenadas em texto puro. Antes de serem persistidas, passam por hash utilizando Argon2id.
+
+O fluxo de login pode ser representado assim:
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant C as Client
+    participant A as API
+    participant DB as MySQL
+    U->>C: Informa email e senha
+    C->>A: POST /api/auth/login
+    A->>DB: Busca usuário
+    DB-->>A: Dados do usuário
+    A->>A: Verifica senha com Argon2
+    alt Credenciais válidas
+        A->>DB: Cria sessão
+        A-->>C: Cookie HttpOnly
+        C-->>U: Usuário autenticado
+    else Credenciais inválidas
+        A-->>C: Erro de autenticação
+        C-->>U: Exibe mensagem
+    end
+```
+
+Após a autenticação:
+
+```text
+Browser
+    │
+    │ Cookie HttpOnly
+    ▼
+API
+    │
+    ▼
+Middleware de autenticação
+    │
+    ├── Sessão válida
+    │       ↓
+    │    Usuário autenticado
+    │       ↓
+    │    Controller
+    │
+    └── Sessão inválida
+            ↓
+          401
+```
+
+O identificador da sessão não precisa ser acessado diretamente pelo JavaScript da aplicação.
+
+---
+
+# 🔒 Isolamento entre usuários
+
+Um dos princípios importantes da aplicação é que tarefas pertencem ao usuário autenticado.
+
+O userId não é tratado como uma informação confiável enviada pelo cliente.
+
+Em vez disso, o servidor:
+
+1. identifica o usuário através da sessão;
+
+2. adiciona o contexto do usuário à requisição;
+
+3. utiliza esse usuário nas operações do domínio;
+
+4. consulta ou modifica apenas tarefas pertencentes àquele usuário.
+
+O fluxo pode ser representado assim:
+
+```mermaid
+flowchart TD
+    A[Usuário autenticado]
+        --> B[Cookie de sessão]
+    B --> C[Middleware requireAuth]
+    C --> D[Identifica usuário]
+    D --> E[Controller]
+    E --> F[Service]
+    F --> G[Repository]
+    G --> H[(MySQL)]
+    H --> I{Tarefa pertence\<br/>ao usuário?}
+    I -->|Sim| J[Operação permitida]
+    I -->|Não| K[Recurso não encontrado]
+```
+
+# 🧭 Rotas da aplicação
+
+## Front-end
+
+| Rota | Tipo | Descrição |
+
+|---|---|---|
+
+| `/` | Pública | Landing page |
+
+| `/login` | Pública | Login |
+
+| `/register` | Pública | Cadastro |
+
+| `/app` | Protegida | Área de gerenciamento de tarefas |
+
+A aplicação diferencia rotas públicas e protegidas.
+
+Usuários não autenticados não podem acessar diretamente a área de tarefas.
+
+---
+
+# 🔌 API
+
+## Health check
+
+| Método | Endpoint | Descrição |
+
+|---|---|---|
+
+| `GET` | `/health` | Verifica a disponibilidade da API e da conexão com o banco |
+
+---
 
 ## Autenticação
 
-- autenticação por **e-mail + senha**;
-- a senha nunca é armazenada em texto puro — apenas o hash gerado com **Argon2id**;
-- sessão baseada em **cookie HttpOnly** (`sid`) combinada com **sessão server-side**;
-- apenas o **hash SHA-256** do token é persistido na tabela `sessions`;
-- duração da sessão: **24 horas** (`expires_at` no banco e `Max-Age` do cookie alinhados a uma única fonte de verdade);
-- cookie configurado com `HttpOnly`, `SameSite=Lax` e `Path=/`; `Secure` habilitado somente em produção;
-- endpoints de sessão: `POST /api/auth/login`, `GET /api/auth/me` e `POST /api/auth/logout`.
+| Método | Endpoint | Descrição |
 
-A documentação completa do modelo está em [`docs/auth-model.md`](docs/auth-model.md).
+|---|---|---|
 
-## Rotas
+| `POST` | `/api/auth/register` | Cria um novo usuário |
 
-Rotas do front-end (React Router DOM):
+| `POST` | `/api/auth/login` | Autentica o usuário |
 
-| Rota         | Acesso                | Página        |
-| ------------ | --------------------- | ------------- |
-| `/`          | Pública               | HomePage      |
-| `/login`     | Somente convidado     | LoginPage     |
-| `/register`  | Somente convidado     | RegisterPage  |
-| `/app`       | Protegida             | TasksPage     |
-| `*`          | Pública               | NotFoundPage  |
+| `GET` | `/api/auth/me` | Retorna o usuário autenticado |
 
-## API
+| `POST` | `/api/auth/logout` | Encerra a sessão |
 
-Todas as rotas da API usam o prefixo `/api`. Respostas de sucesso seguem o formato `{ "data": ... }`; erros seguem `{ "error": "mensagem" }`.
+---
 
-| Método | Rota                    | Autenticação | Corpo                                  | Sucesso |
-| ------ | ----------------------- | ------------ | -------------------------------------- | ------- |
-| `GET`  | `/health`               | Não          | —                                      | `200` / `503` |
-| `POST` | `/api/users`            | Não (rate limit) | `{ firstName, lastName, email, password, passwordConfirmation }` | `201` |
-| `POST` | `/api/auth/login`       | Não (rate limit) | `{ email, password }`                  | `200` |
-| `GET`  | `/api/auth/me`          | Cookie       | —                                      | `200` |
-| `POST` | `/api/auth/logout`      | Cookie       | —                                      | `204` |
-| `GET`  | `/api/tasks`            | Sim          | —                                      | `200` |
-| `POST` | `/api/tasks`            | Sim          | `{ title }`                            | `201` |
-| `PATCH`| `/api/tasks/:id`        | Sim          | `{ completed: boolean }`               | `200` |
-| `PATCH`| `/api/tasks/:id/title`  | Sim          | `{ title }`                            | `200` |
-| `DELETE`| `/api/tasks/:id`       | Sim          | —                                      | `204` |
-| `DELETE`| `/api/tasks/completed` | Sim          | —                                      | `204` |
+## Tarefas
 
-### Validação
+Todas as rotas abaixo exigem autenticação.
 
-| Campo                  | Regras                                                        |
-| ---------------------- | ------------------------------------------------------------- |
-| `title`                | string, sem espaços nas extremidades, não vazio, máx. 140     |
-| `firstName` / `lastName` | string, sem espaços nas extremidades, não vazio, máx. 120   |
-| `email`                | string, sem espaços nas extremidades, lowercase, válido, máx. 255 |
-| `password`             | mínimo 8, máximo 128, não somente espaços                     |
-| `passwordConfirmation` | deve ser igual a `password`                                   |
+| Método | Endpoint | Descrição |
 
-### Rate limiting
+|---|---|---|
 
-| Endpoint          | Limite                                   |
-| ----------------- | ---------------------------------------- |
-| Login             | 10 tentativas malsucedidas / 15 min / IP |
-| Cadastro          | 5 requisições / 1 hora / IP              |
+| `GET` | `/api/tasks` | Lista as tarefas do usuário |
 
-## Banco de dados e migrations
+| `POST` | `/api/tasks` | Cria uma tarefa |
 
-As alterações de schema são representadas por arquivos SQL versionados em `database/migrations/`:
+| `PATCH` | `/api/tasks/:id` | Altera o status de conclusão |
 
-1. `001_create_tasks.sql` — tabela `tasks`;
-2. `002_create_users.sql` — tabela `users`;
-3. `003_create_sessions.sql` — tabela `sessions`;
-4. `004_add_user_id_to_tasks.sql` — vínculo `tasks.user_id → users.id`.
+| `PATCH` | `/api/tasks/:id/title` | Edita o título |
 
-Não há um script dedicado de migration no desenvolvimento: o banco é criado e as migrations são aplicadas manualmente, em ordem. Os testes E2E recriam o banco de testes e aplicam todas as migrations automaticamente.
+| `DELETE` | `/api/tasks/:id` | Remove uma tarefa |
 
-## Testes
+| `DELETE` | `/api/tasks/completed` | Remove todas as tarefas concluídas |
 
-| Tipo          | Comando                  | Requisitos                                          |
-| ------------- | ------------------------ | --------------------------------------------------- |
-| Unitários e de componente | `npm test`    | —                                                   |
-| Integração (server) | `npm run test:integration` | MySQL em execução com o banco `clarity` migrado |
-| End-to-end    | `npm run test:e2e`       | Recria um banco `*_e2e` e inicia ambos os servidores |
+---
 
-## Responsividade e acessibilidade
+# 🗃 Banco de dados e migrations
 
-- interface responsiva com abordagem **Mobile First**;
-- navegação completa por teclado e gerenciamento de foco;
-- skip links e controles com `aria-pressed` e rótulos acessíveis;
-- suporte a `prefers-reduced-motion`.
+O projeto utiliza:
 
-## Segurança
+- MySQL;
 
-- senhas com hash **Argon2id** (nunca em texto puro);
-- sessão em cookie **HttpOnly** + hash do token no servidor;
-- **Helmet** para headers de segurança;
-- **rate limiting** em login e cadastro;
-- **queries SQL parametrizadas** em todas as operações;
-- validação de todos os dados recebidos do cliente;
-- segredos e credenciais vêm de variáveis de ambiente (`.env` nunca é versionado);
-- erros internos e stack traces nunca são expostos ao cliente.
+- SQL puro;
 
-## Decisões técnicas
+- `mysql2`;
 
-- **SQL puro** com `mysql2/promise` — sem ORM ou query builder;
-- **arquitetura em camadas** com direção de dependência única;
-- **sessão por cookie HttpOnly** em vez de tokens no `localStorage`;
-- **Redux Toolkit** apenas para o estado global de autenticação; o estado das tarefas permanece em hooks locais;
-- **CSS Modules** para estilos por componente, com estilos globais restritos a reset, tipografia e tokens.
+- migrations versionadas.
 
-## Instalação
+Não é utilizado ORM.
 
-### Pré-requisitos
+As migrations são responsáveis pela evolução da estrutura do banco de dados.
 
-- [Node.js](https://nodejs.org/) (LTS recomendado)
-- MySQL em execução
+Entre as principais estruturas criadas estão:
 
-### Passos
+- `tasks`;
 
-1. **Clone o repositório**
+- `users`;
 
-   ```bash
-   git clone https://github.com/<seu-usuario>/clarity.git
-   cd clarity
-   ```
+- `sessions`;
 
-2. **Instale as dependências**
+- relacionamento entre usuários e tarefas.
 
-   ```bash
-   npm install --prefix client
-   npm install --prefix server
-   ```
+A tabela de tarefas possui uma chave estrangeira para o usuário proprietário.
 
-3. **Configure o ambiente**
+Conceitualmente:
 
-   Copie o `.env.example` para `.env` na raiz do projeto e preencha as credenciais do banco:
+```text
+users
+  │
+  └── id
+       │
+       │ FK
+       ▼
+tasks.user_id
+```
 
-   ```bash
-   cp .env.example .env
-   ```
+---
 
-   | Variável      | Obrigatória | Padrão         | Descrição                          |
-   | ------------- | ----------- | -------------- | ---------------------------------- |
-   | `PORT`        | Não         | `3000`         | Porta do servidor                  |
-   | `NODE_ENV`    | Não         | `development`  | `development`, `test` ou `production` |
-   | `DB_HOST`     | Sim         | —              | Host do MySQL                      |
-   | `DB_PORT`     | Sim         | —              | Porta do MySQL                     |
-   | `DB_USER`     | Sim         | —              | Usuário do MySQL                   |
-   | `DB_PASSWORD` | Sim         | —              | Senha do MySQL                     |
-   | `DB_NAME`     | Sim         | —              | Nome do banco de dados             |
+# 🧪 Testes
 
-4. **Crie o banco e aplique as migrations**
+O projeto utiliza diferentes níveis de testes.
 
-   Crie o banco definido em `DB_NAME` e aplique as migrations em ordem:
+```text
+▲
+                   / \\
+                  /   \\
+                 / E2E \\
+                /_______\\
+               /         \\
+              / Integração\\
+             /_____________\\
+            /               \\
+           / Unitários        \\
+          /____________________\\
+```
 
-   ```bash
-   mysql -u <usuário> -p -e "CREATE DATABASE clarity"
-   mysql -u <usuário> -p clarity < database/migrations/001_create_tasks.sql
-   mysql -u <usuário> -p clarity < database/migrations/002_create_users.sql
-   mysql -u <usuário> -p clarity < database/migrations/003_create_sessions.sql
-   mysql -u <usuário> -p clarity < database/migrations/004_add_user_id_to_tasks.sql
-   ```
+---
 
-5. **Execute o servidor e o cliente**
+## Testes unitários
 
-   ```bash
-   npm run dev --prefix server
-   npm run dev --prefix client
-   ```
+Os testes unitários cobrem partes isoladas da aplicação.
 
-   O servidor roda em `http://localhost:3000` e o client em `http://localhost:5173` (o Vite faz proxy de `/api` para o servidor).
+Entre os elementos testados estão:
 
-## Scripts disponíveis
+- validações;
 
-### Client (`client/`)
+- componentes;
 
-| Comando          | Descrição                                            |
-| ---------------- | ---------------------------------------------------- |
-| `dev`            | Inicia o servidor de desenvolvimento (Vite)          |
-| `build`          | Gera o build de produção (`tsc -b && vite build`)    |
-| `preview`        | Pré-visualiza o build de produção                    |
-| `lint`           | Executa o ESLint                                     |
-| `typecheck`      | Verifica os tipos com o TypeScript                   |
-| `test`           | Executa os testes unitários e de componente (Vitest) |
-| `test:watch`     | Testes em modo watch                                 |
-| `test:e2e`       | Reseta o banco E2E e executa os testes Playwright    |
-| `test:e2e:ui`    | Testes E2E com interface gráfica                     |
-| `test:e2e:headed`| Testes E2E com navegador visível                     |
+- filtros;
 
-### Server (`server/`)
+- comportamentos de interface;
 
-| Comando            | Descrição                                                          |
-| ------------------ | ------------------------------------------------------------------ |
-| `dev`              | Inicia o servidor em modo watch (`tsx watch`)                      |
-| `dev:e2e`          | Inicia o servidor para os testes E2E                               |
-| `db:e2e:reset`     | Recria o banco de testes E2E e aplica as migrations                |
-| `build`            | Compila para JavaScript (`tsc`)                                    |
-| `start`            | Inicia o servidor compilado                                        |
-| `lint`             | Executa o ESLint                                                   |
-| `typecheck`        | Verifica os tipos com o TypeScript                                 |
-| `test`             | Executa os testes unitários (Vitest)                               |
-| `test:integration` | Executa os testes de integração (requer MySQL com banco migrado)   |
-| `test:watch`       | Testes em modo watch                                               |
+- regras de negócio;
 
-## Próximos passos
+- tratamento de erros.
 
-- [ ] Adicionar o link da demonstração e as capturas de tela (Preview)
-- [ ] Configurar CI (lint, typecheck e testes automatizados)
-- [ ] Deploy de produção (client, API e MySQL)
+---
+
+## Testes de integração
+
+Os testes de integração validam a comunicação entre partes da API.
+
+São utilizados para verificar fluxos como:
+
+- autenticação;
+
+- proteção de rotas;
+
+- operações relacionadas a tarefas;
+
+- respostas HTTP;
+
+- integração entre camadas.
+
+---
+
+## Testes end-to-end
+
+Os testes E2E utilizam ****Playwright****.
+
+Eles simulam fluxos completos da aplicação.
+
+### Fluxo crítico
+
+```text
+Cadastro
+    ↓
+Login
+    ↓
+Criar tarefa
+    ↓
+Editar tarefa
+    ↓
+Concluir tarefa
+    ↓
+Buscar
+    ↓
+Filtrar
+    ↓
+Logout
+```
+
+### Isolamento entre usuários
+
+```text
+Usuário A
+    ↓
+Cria tarefas
+    ↓
+Logout
+    ↓
+Usuário B
+    ↓
+Login
+    ↓
+Não visualiza as tarefas do Usuário A
+```
+
+### Expiração de sessão
+
+Também existem testes para validar o comportamento da aplicação quando uma sessão deixa de ser válida.
+
+---
+
+# 📱 Responsividade
+
+A interface foi desenvolvida seguindo a abordagem ****Mobile First****.
+
+O desenvolvimento começa considerando telas menores e o layout é progressivamente adaptado para:
+
+- dispositivos móveis;
+
+- celulares maiores;
+
+- tablets;
+
+- notebooks;
+
+- desktops.
+
+A responsividade não é tratada apenas como uma adaptação visual, mas também considera:
+
+- áreas de toque;
+
+- ausência de hover em dispositivos touch;
+
+- reorganização de componentes;
+
+- legibilidade;
+
+- comportamento de formulários;
+
+- navegação.
+
+---
+
+# ♿ Acessibilidade
+
+O projeto considera diferentes aspectos de acessibilidade.
+
+Entre eles:
+
+- navegação por teclado;
+
+- foco visível;
+
+- gerenciamento de foco;
+
+- labels associadas aos campos;
+
+- atributos `aria-*`;
+
+- mensagens de erro acessíveis;
+
+- skip links;
+
+- áreas clicáveis adequadas;
+
+- suporte a `prefers-reduced-motion`;
+
+- atenção ao contraste visual.
+
+---
+
+# 🛡 Segurança
+
+Antes da etapa de deploy, foram adicionadas medidas voltadas à segurança e robustez da aplicação.
+
+Entre elas:
+
+- hash de senha com Argon2id;
+
+- autenticação baseada em sessão;
+
+- cookies HttpOnly;
+
+- validação de dados de entrada;
+
+- queries parametrizadas;
+
+- middleware de autenticação;
+
+- tratamento centralizado de erros;
+
+- Helmet;
+
+- rate limiting em rotas sensíveis;
+
+- variáveis de ambiente para informações sensíveis;
+
+- tratamento de sessão expirada.
+
+---
+
+# 🧠 Decisões técnicas
+
+## SQL puro em vez de ORM
+
+O projeto utiliza SQL diretamente através do `mysql2`.
+
+A decisão foi tomada para permitir uma compreensão mais próxima de:
+
+- consultas SQL;
+
+- joins;
+
+- chaves estrangeiras;
+
+- migrations;
+
+- persistência;
+
+- relacionamento entre entidades.
+
+Além disso, a camada de repository mantém os detalhes de acesso ao banco separados das regras de negócio.
+
+---
+
+## Redux Toolkit apenas para estado global necessário
+
+O Redux Toolkit é utilizado para o estado global relacionado à autenticação.
+
+Nem todo estado da aplicação foi colocado no Redux.
+
+Estados específicos do domínio de tarefas permanecem próximos da funcionalidade responsável por eles.
+
+A intenção é evitar transformar o Redux em um armazenamento global para qualquer estado da aplicação.
+
+---
+
+## Sessão com cookie HttpOnly
+
+A autenticação não depende de armazenar tokens diretamente em `localStorage`.
+
+O identificador da sessão é enviado através de um cookie HttpOnly.
+
+Isso reduz a necessidade de expor o identificador da sessão ao JavaScript da aplicação.
+
+---
+
+## Arquitetura em camadas no back-end
+
+A separação:
+
+```text
+Route
+↓
+Controller
+↓
+Service
+↓
+Repository
+```
+
+permite que cada camada tenha uma responsabilidade específica.
+
+Isso facilita:
+
+- manutenção;
+
+- testes;
+
+- evolução das regras de negócio;
+
+- substituição de detalhes de persistência;
+
+- organização do código.
+
+---
+
+## Desenvolvimento incremental
+
+O Clarity foi desenvolvido passo a passo.
+
+A evolução do projeto priorizou:
+
+```text
+Funcionalidade pequena
+        ↓
+Implementação
+        ↓
+Testes
+        ↓
+Validação
+        ↓
+Refatoração quando necessária
+        ↓
+Commit coerente
+```
+
+Essa abordagem permitiu que a arquitetura evoluísse junto com a complexidade da aplicação.
+
+---
+
+# 💻 Instalação
+
+## Pré-requisitos
+
+Antes de começar, é necessário ter instalado:
+
+- Node.js
+
+- npm
+
+- MySQL
+
+---
+
+## 1. Clone o repositório
+
+```bash
+git clone https://github.com/juniormps/clarity.git
+```
+
+Entre no diretório:
+
+```bash
+cd clarity
+```
+
+---
+
+## 2. Configure as variáveis de ambiente
+
+Utilize o arquivo `.env.example` como referência para criar os arquivos de ambiente necessários.
+
+Configure as informações relacionadas a:
+
+- banco de dados;
+
+- ambiente de execução;
+
+- sessão;
+
+- demais variáveis utilizadas pela aplicação.
+
+> ⚠️ Nunca envie arquivos `.env` com informações sensíveis para o repositório.
+
+---
+
+## 3. Instale as dependências
+
+### Client
+
+```bash
+cd client
+npm install
+```
+
+### Server
+
+Em outro terminal:
+
+```bash
+cd server
+npm install
+```
+
+---
+
+## 4. Configure o banco de dados
+
+Crie o banco de dados e execute as migrations localizadas em:
+
+```text
+database/migrations/
+```
+
+---
+
+## 5. Inicie o servidor
+
+Dentro de `server/`:
+
+```bash
+npm run dev
+```
+
+---
+
+## 6. Inicie o client
+
+Dentro de `client/`:
+
+```bash
+npm run dev
+```
+
+A aplicação ficará disponível no endereço informado pelo Vite.
+
+---
+
+# 📜 Scripts disponíveis
+
+## Client
+
+| Comando | Descrição |
+
+|---|---|
+
+| `npm run dev` | Inicia o ambiente de desenvolvimento |
+
+| `npm run build` | Gera a build de produção |
+
+| `npm run preview` | Visualiza a build localmente |
+
+| `npm run lint` | Executa o ESLint |
+
+| `npm run typecheck` | Executa a verificação de tipos |
+
+| `npm test` | Executa os testes |
+
+| `npm run test:watch` | Executa os testes em modo watch |
+
+| `npm run test:e2e` | Executa os testes end-to-end |
+
+| `npm run test:e2e:ui` | Executa os testes E2E com interface |
+
+| `npm run test:e2e:headed` | Executa os testes E2E com navegador visível |
+
+## Server
+
+| Comando | Descrição |
+
+|---|---|
+
+| `npm run dev` | Inicia o servidor em desenvolvimento |
+
+| `npm run build` | Compila o TypeScript |
+
+| `npm start` | Inicia a aplicação compilada |
+
+| `npm run lint` | Executa o ESLint |
+
+| `npm run typecheck` | Executa a verificação de tipos |
+
+| `npm test` | Executa os testes |
+
+| `npm run test:integration` | Executa os testes de integração |
+
+| `npm run test:watch` | Executa os testes em modo watch |
+
+---
+
+# 🔜 Próximos passos
+
+As próximas etapas planejadas para o projeto são:
+
+- [ ] Configurar integração contínua
+
+- [ ] Criar pipeline com GitHub Actions
+
+- [ ] Executar lint automaticamente
+
+- [ ] Executar typecheck automaticamente
+
+- [ ] Executar testes automaticamente
+
+- [ ] Configurar ambiente de produção
+
+- [ ] Fazer deploy do front-end
+
+- [ ] Fazer deploy da API
+
+- [ ] Configurar banco de dados em produção
+
+- [ ] Configurar variáveis de ambiente
+
+- [ ] Ajustar CORS para produção
+
+- [ ] Configurar cookies conforme a topologia de deploy
+
+- [ ] Executar migrations em produção
+
+- [ ] Adicionar link da demonstração
+
+- [ ] Adicionar screenshots da aplicação
+
+---
+
+# 📌 Status
+
+🚧 ****Em desenvolvimento****
+
+A aplicação já possui uma base full stack funcional, incluindo:
+
+- autenticação;
+
+- gerenciamento de sessão;
+
+- CRUD de tarefas;
+
+- isolamento de dados entre usuários;
+
+- banco de dados relacional;
+
+- arquitetura em camadas;
+
+- validações;
+
+- tratamento centralizado de erros;
+
+- testes automatizados;
+
+- testes end-to-end;
+
+- responsividade;
+
+- acessibilidade;
+
+- medidas de segurança e robustez.
+
+As próximas etapas concentram-se principalmente em ****CI/CD e deploy****.
+
+---
+
+<p align="center">
+
+Feito com atenção aos detalhes. ✨
+
+****Clarity — Organize hoje. Respire amanhã.****
+
+</p>
