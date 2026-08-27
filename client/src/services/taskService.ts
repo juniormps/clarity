@@ -1,3 +1,4 @@
+import { apiUrl } from "../config/api";
 import { HttpError } from "./httpError";
 import type { Task } from "../types/task";
 
@@ -19,7 +20,7 @@ interface UpdateTaskTitleResponse {
 
 //Faz uma requisição para OBTER a lista de tarefas do backend
 export async function listTasks(): Promise<Task[]> {
-    const response = await fetch("/api/tasks");
+    const response = await fetch(apiUrl("/api/tasks"));
 
     if (!response.ok) {
         throw new HttpError(response.status, `Failed to load tasks (${response.status}).`);
@@ -32,7 +33,7 @@ export async function listTasks(): Promise<Task[]> {
 
 //Faz a requisição para CRIAR uma nova tarefa no backend
 export async function createTask(title: string): Promise<Task> {
-    const response = await fetch("/api/tasks", {
+    const response = await fetch(apiUrl("/api/tasks"), {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -52,7 +53,7 @@ export async function createTask(title: string): Promise<Task> {
 //Faz a requisição para ATUALIZAR o status completed de uma tarefa
 export async function updateTaskCompleted(id: number, completed: boolean): Promise<Task> {
     
-    const response = await fetch(`/api/tasks/${id}`, {
+    const response = await fetch(apiUrl(`/api/tasks/${id}`), {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -72,7 +73,7 @@ export async function updateTaskCompleted(id: number, completed: boolean): Promi
 //Faz a requisição para ATUALIZAR o título de uma tarefa
 export async function updateTaskTitle(id: number, title: string): Promise<Task> {
     
-    const response = await fetch(`/api/tasks/${id}/title`, {
+    const response = await fetch(apiUrl(`/api/tasks/${id}/title`), {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -92,7 +93,7 @@ export async function updateTaskTitle(id: number, title: string): Promise<Task> 
 //Faz a requisição para EXCLUIR uma tarefa
 export async function deleteTask(id: number): Promise<void> {
     
-    const response = await fetch(`/api/tasks/${id}`, {
+    const response = await fetch(apiUrl(`/api/tasks/${id}`), {
         method: "DELETE",
     });
 
@@ -104,7 +105,7 @@ export async function deleteTask(id: number): Promise<void> {
 //Faz a requisição para EXCLUIR todas as tarefas concluídas
 export async function deleteCompletedTasks(): Promise<void> {
     
-    const response = await fetch("/api/tasks/completed", {
+    const response = await fetch(apiUrl("/api/tasks/completed"), {
         method: "DELETE",
     });
 

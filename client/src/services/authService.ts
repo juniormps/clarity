@@ -1,3 +1,4 @@
+import { apiUrl } from "../config/api";
 import type { User } from "../types/user";
 
 interface CurrentUserResponse {
@@ -23,7 +24,7 @@ interface ErrorResponse {
 
 //Consulta a sessão atual no backend para restaurar o usuário autenticado.
 export async function getCurrentUser(): Promise<User | null> {
-    const response = await fetch("/api/auth/me");
+    const response = await fetch(apiUrl("/api/auth/me"));
 
     if (response.status === 401) {
         return null;
@@ -41,7 +42,7 @@ export async function getCurrentUser(): Promise<User | null> {
 //Cadastra um novo usuário no backend. Não cria sessão autenticada.
 export async function registerUser(input: RegisterUserInput): Promise<User> {
 
-    const response = await fetch("/api/users", {
+    const response = await fetch(apiUrl("/api/users"), {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -66,7 +67,7 @@ export async function registerUser(input: RegisterUserInput): Promise<User> {
 //Autentica um usuário existente. Cria a sessão HttpOnly no backend.
 export async function loginUser(credentials: LoginCredentials): Promise<User> {
 
-    const response = await fetch("/api/auth/login", {
+    const response = await fetch(apiUrl("/api/auth/login"), {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -91,7 +92,7 @@ export async function loginUser(credentials: LoginCredentials): Promise<User> {
 //Encerra a sessão atual, invalidando o cookie HttpOnly no backend.
 export async function logoutUser(): Promise<void> {
 
-    const response = await fetch("/api/auth/logout", {
+    const response = await fetch(apiUrl("/api/auth/logout"), {
         method: "POST",
     });
 

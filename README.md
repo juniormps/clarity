@@ -785,6 +785,14 @@ O servidor carrega o `.env` a partir da raiz do projeto. As variáveis disponív
 
 > ⚠️ Nunca envie arquivos `.env` com informações sensíveis para o repositório.
 
+### Client
+
+O client também suporta uma variável opcional, definida em `client/.env` (veja `client/.env.example`):
+
+| Variável        | Descrição                                                                                     |
+| --------------- | --------------------------------------------------------------------------------------------- |
+| `VITE_API_URL`  | URL base da API. Vazio em desenvolvimento (usa o proxy `/api` do Vite). Em produção, defina a URL completa da API. |
+
 ---
 
 ## 3. Instale as dependências
