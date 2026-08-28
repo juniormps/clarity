@@ -255,6 +255,7 @@ clarity/
 │   │   │   └── store.ts
 │   │   │
 │   │   ├── components/             # Componentes reutilizáveis
+│   │   ├── config/                 # Configuração (URL da API)
 │   │   ├── features/               # Recursos por domínio (ex.: auth)
 │   │   ├── hooks/                  # Hooks customizados (ex.: useTasks)
 │   │   ├── layouts/                # PublicLayout e AppLayout
@@ -263,6 +264,7 @@ clarity/
 │   │   ├── types/                  # Tipos de domínio
 │   │   └── utils/                  # Funções utilitárias
 │   │
+│   ├── .env.example                # Variáveis públicas do cliente (VITE_*)
 │   └── package.json
 │
 ├── server/                         # Back-end (Node + Express)
@@ -765,6 +767,10 @@ cd clarity
 
 ## 2. Configure as variáveis de ambiente
 
+O projeto separa as variáveis em dois grupos: as do **servidor** e as do **cliente**.
+
+### Variáveis do servidor
+
 Na raiz do projeto, crie o arquivo `.env` a partir do modelo:
 
 ```bash
@@ -773,25 +779,46 @@ cp .env.example .env
 
 O servidor carrega o `.env` a partir da raiz do projeto. As variáveis disponíveis são:
 
-| Variável      | Descrição                                       |
-| ------------- | ----------------------------------------------- |
-| `PORT`        | Porta do servidor (padrão `3000`)               |
-| `NODE_ENV`    | Ambiente: `development`, `test` ou `production` |
-| `DB_HOST`     | Host do MySQL (padrão `localhost`)              |
-| `DB_PORT`     | Porta do MySQL (padrão `3306`)                  |
-| `DB_USER`     | Usuário do MySQL                                |
-| `DB_PASSWORD` | Senha do usuário do MySQL                       |
-| `DB_NAME`     | Nome do banco de dados (padrão `clarity`)       |
+| Variável      | Obrigatória | Padrão        | Descrição                                       |
+| ------------- | ----------- | ------------- | ----------------------------------------------- |
+| `PORT`        | Não         | `3000`        | Porta em que o servidor escuta                  |
+| `NODE_ENV`    | Não         | `development` | Ambiente: `development`, `test` ou `production` |
+| `DB_HOST`     | Sim         | —             | Host do MySQL                                   |
+| `DB_PORT`     | Sim         | —             | Porta do MySQL                                  |
+| `DB_USER`     | Sim         | —             | Usuário do MySQL                                |
+| `DB_PASSWORD` | Sim         | —             | Senha do usuário do MySQL                       |
+| `DB_NAME`     | Sim         | —             | Nome do banco de dados                          |
+
+As variáveis do servidor:
+
+- são lidas em **runtime** pelo servidor;
+- podem conter informações sensíveis (como credenciais de banco);
+- **não** são expostas ao cliente.
 
 > ⚠️ Nunca envie arquivos `.env` com informações sensíveis para o repositório.
 
-### Client
+Os testes E2E usam ainda uma variável opcional, `E2E_DB_NAME` (padrão `clarity_e2e`), que define o nome do banco dedicado recriado antes de cada execução. Ela só precisa ser definida se o nome padrão não puder ser usado.
 
-O client também suporta uma variável opcional, definida em `client/.env` (veja `client/.env.example`):
+### Variáveis do cliente
 
-| Variável        | Descrição                                                                                     |
-| --------------- | --------------------------------------------------------------------------------------------- |
-| `VITE_API_URL`  | URL base da API. Vazio em desenvolvimento (usa o proxy `/api` do Vite). Em produção, defina a URL completa da API. |
+O client possui uma variável opcional, definida em `client/.env` (veja `client/.env.example`):
+
+| Variável       | Obrigatória | Padrão | Descrição                                                                                                     |
+| -------------- | ----------- | ------ | ------------------------------------------------------------------------------------------------------------- |
+| `VITE_API_URL` | Não         | vazio  | URL base da API. Vazio em desenvolvimento (usa o proxy `/api` do Vite). Em produção, defina a URL completa da API. |
+
+As variáveis do cliente:
+
+- usam o prefixo `VITE_`;
+- são incorporadas à build do Vite no momento em que ela é gerada (`npm run build`);
+- são **públicas**: qualquer pessoa que acesse a aplicação pode visualizá-las;
+- **nunca** devem conter segredos, tokens privados, credenciais ou senhas.
+
+Sobre `VITE_API_URL`:
+
+- **em desenvolvimento**, pode permanecer vazia — o client usa caminhos relativos `/api` e o Vite faz o proxy para `http://localhost:3000`;
+- **em produção**, deve apontar para a URL completa da API (ex.: `https://api.exemplo.com`);
+- seu valor é **definido no momento da build** e não pode ser alterado em tempo de execução.
 
 ---
 
