@@ -49,6 +49,7 @@ As imagens da aplicação serão adicionadas após a finalização do deploy e c
 - [Segurança](#-segurança)
 - [Decisões técnicas](#-decisões-técnicas)
 - [Instalação](#-instalação)
+- [Build e execução em produção](#-build-e-execução-em-produção)
 - [Scripts disponíveis](#-scripts-disponíveis)
 - [Próximos passos](#-próximos-passos)
 - [Status](#-status)
@@ -789,6 +790,12 @@ O servidor carrega o `.env` a partir da raiz do projeto. As variáveis disponív
 | `DB_PASSWORD` | Sim         | —             | Senha do usuário do MySQL                       |
 | `DB_NAME`     | Sim         | —             | Nome do banco de dados                          |
 
+O `NODE_ENV` define o ambiente de execução:
+
+- `development` (padrão): execução local;
+- `test`: utilizado pelos testes automatizados;
+- `production`: habilita a flag `Secure` no cookie de sessão (exige HTTPS).
+
 As variáveis do servidor:
 
 - são lidas em **runtime** pelo servidor;
@@ -885,6 +892,72 @@ A aplicação ficará disponível em `http://localhost:5173`. O Vite redireciona
 
 ---
 
+# 📦 Build e execução em produção
+
+Esta seção descreve como gerar e executar os artefatos de produção. Ela **não** trata de deploy: provedor, domínio, DNS e infraestrutura serão documentados em uma etapa futura.
+
+## Server
+
+O servidor lê o `.env` da raiz do projeto em **runtime**. O fluxo de produção é:
+
+```text
+.env (raiz do projeto)
+    ↓
+npm run build            (dentro de server/)
+    ↓
+server/dist/server.js
+    ↓
+NODE_ENV=production node dist/server.js
+```
+
+1. Confira que o `.env` da raiz está configurado (veja as variáveis do servidor na seção [Instalação](#-instalação)).
+2. Gere a build:
+
+   ```bash
+   cd server
+   npm run build
+   ```
+
+   O TypeScript é compilado para `server/dist/`.
+3. Execute o artefato com `NODE_ENV=production`:
+
+   ```bash
+   NODE_ENV=production node dist/server.js
+   ```
+
+   O mesmo resultado pode ser obtido com `NODE_ENV=production npm start` (`npm start` equivale a `node dist/server.js`).
+
+> Em produção, `NODE_ENV` deve ser definido como `production`: além de validar o ambiente, é o que habilita a flag `Secure` no cookie de sessão (exigindo HTTPS).
+
+## Client
+
+O client incorpora as variáveis `VITE_*` no momento da build. O fluxo é:
+
+```text
+client/.env
+    ↓
+VITE_API_URL
+    ↓
+npm run build            (dentro de client/)
+    ↓
+client/dist/
+```
+
+1. Defina `VITE_API_URL` em `client/.env` apontando para a URL completa da API (veja as variáveis do cliente na seção [Instalação](#-instalação)).
+2. Gere a build:
+
+   ```bash
+   cd client
+   npm run build
+   ```
+
+   O Vite gera os arquivos estáticos em `client/dist/`.
+3. Sirva o conteúdo de `client/dist/` em um servidor estático.
+
+> Como `VITE_API_URL` é incorporada no build, qualquer alteração nela exige gerar uma nova build.
+
+---
+
 # 📜 Scripts disponíveis
 
 ## Client
@@ -892,7 +965,7 @@ A aplicação ficará disponível em `http://localhost:5173`. O Vite redireciona
 | Comando                   | Descrição                                   |
 | ------------------------- | ------------------------------------------- |
 | `npm run dev`             | Inicia o ambiente de desenvolvimento        |
-| `npm run build`           | Gera a build de produção                    |
+| `npm run build`           | Gera a build de produção em `client/dist/`  |
 | `npm run preview`         | Visualiza a build localmente                |
 | `npm run lint`            | Executa o ESLint                            |
 | `npm run typecheck`       | Executa a verificação de tipos              |
@@ -910,8 +983,8 @@ A aplicação ficará disponível em `http://localhost:5173`. O Vite redireciona
 | `npm run dev`              | Inicia o servidor em desenvolvimento |
 | `npm run dev:e2e`          | Inicia o servidor para os testes E2E |
 | `npm run db:e2e:reset`     | Recria o banco de dados E2E          |
-| `npm run build`            | Compila o TypeScript                 |
-| `npm start`                | Inicia a aplicação compilada         |
+| `npm run build`            | Compila o TypeScript para `server/dist/`     |
+| `npm start`                | Inicia a aplicação compilada (`node dist/server.js`) |
 | `npm run lint`             | Executa o ESLint                     |
 | `npm run typecheck`        | Executa a verificação de tipos       |
 | `npm test`                 | Executa os testes                    |
@@ -924,11 +997,11 @@ A aplicação ficará disponível em `http://localhost:5173`. O Vite redireciona
 
 As próximas etapas planejadas para o projeto são:
 
-- [ ] Configurar integração contínua
-- [ ] Criar pipeline com GitHub Actions
-- [ ] Executar lint automaticamente
-- [ ] Executar typecheck automaticamente
-- [ ] Executar testes automaticamente
+- [x] Configurar integração contínua
+- [x] Criar pipeline com GitHub Actions
+- [x] Executar lint automaticamente
+- [x] Executar typecheck automaticamente
+- [x] Executar testes automaticamente
 - [ ] Configurar ambiente de produção
 - [ ] Fazer deploy do front-end
 - [ ] Fazer deploy da API
@@ -946,7 +1019,7 @@ As próximas etapas planejadas para o projeto são:
 
 A aplicação já possui uma base full stack funcional, cobrindo as funcionalidades descritas acima — autenticação, CRUD de tarefas, isolamento de dados, testes automatizados, responsividade, acessibilidade e segurança.
 
-As próximas etapas concentram-se principalmente em **CI/CD e deploy**.
+As próximas etapas concentram-se principalmente em **infraestrutura e deploy**.
 
 ---
 
