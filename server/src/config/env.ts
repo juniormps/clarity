@@ -19,6 +19,18 @@ function requireEnv(key: string): string {
     return value;
 }
 
+//Retorna o valor da variável ou undefined quando ela não está definida ou
+//está vazia. Usada para variáveis opcionais como DB_SSL_CA_PATH.
+function optionalEnv(key: string): string | undefined {
+    const value = process.env[key];
+
+    if (value === undefined || value.trim() === "") {
+        return undefined;
+    }
+
+    return value;
+}
+
 const NODE_ENV_VALUES = ["development", "test", "production"] as const;
 
 export type NodeEnv = (typeof NODE_ENV_VALUES)[number];
@@ -72,4 +84,5 @@ export const env = {
     DB_USER: requireEnv("DB_USER"),
     DB_PASSWORD: requireEnv("DB_PASSWORD"),
     DB_NAME: requireEnv("DB_NAME"),
+    DB_SSL_CA_PATH: optionalEnv("DB_SSL_CA_PATH"),
 };

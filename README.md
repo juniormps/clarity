@@ -788,7 +788,8 @@ O servidor carrega o `.env` a partir da raiz do projeto. As variáveis disponív
 | `DB_PORT`     | Sim         | —             | Porta do MySQL                                  |
 | `DB_USER`     | Sim         | —             | Usuário do MySQL                                |
 | `DB_PASSWORD` | Sim         | —             | Senha do usuário do MySQL                       |
-| `DB_NAME`     | Sim         | —             | Nome do banco de dados                          |
+| `DB_NAME`         | Sim         | —             | Nome do banco de dados                          |
+| `DB_SSL_CA_PATH`  | Não         | —             | Caminho do certificado CA para a conexão MySQL TLS |
 
 O `NODE_ENV` define o ambiente de execução:
 
@@ -803,6 +804,8 @@ As variáveis do servidor:
 - **não** são expostas ao cliente.
 
 > ⚠️ Nunca envie arquivos `.env` com informações sensíveis para o repositório.
+
+`DB_SSL_CA_PATH` é opcional: quando ausente, o servidor conecta ao MySQL sem TLS (comportamento padrão do desenvolvimento local). Em produção, quando o provedor MySQL exigir validação por CA (ex.: Aiven), defina essa variável com o caminho do certificado CA disponibilizado como Secret File (ex.: `/etc/secrets/aiven-ca.pem`).
 
 Os testes E2E usam ainda uma variável opcional, `E2E_DB_NAME` (padrão `clarity_e2e`), que define o nome do banco dedicado recriado antes de cada execução. Ela só precisa ser definida se o nome padrão não puder ser usado.
 
