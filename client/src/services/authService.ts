@@ -24,7 +24,9 @@ interface ErrorResponse {
 
 //Consulta a sessão atual no backend para restaurar o usuário autenticado.
 export async function getCurrentUser(): Promise<User | null> {
-    const response = await fetch(apiUrl("/api/auth/me"));
+    const response = await fetch(apiUrl("/api/auth/me"), {
+        credentials: "include",
+    });
 
     if (response.status === 401) {
         return null;
@@ -44,6 +46,7 @@ export async function registerUser(input: RegisterUserInput): Promise<User> {
 
     const response = await fetch(apiUrl("/api/users"), {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -69,6 +72,7 @@ export async function loginUser(credentials: LoginCredentials): Promise<User> {
 
     const response = await fetch(apiUrl("/api/auth/login"), {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -94,6 +98,7 @@ export async function logoutUser(): Promise<void> {
 
     const response = await fetch(apiUrl("/api/auth/logout"), {
         method: "POST",
+        credentials: "include",
     });
 
     if (!response.ok) {

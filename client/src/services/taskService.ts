@@ -20,7 +20,9 @@ interface UpdateTaskTitleResponse {
 
 //Faz uma requisição para OBTER a lista de tarefas do backend
 export async function listTasks(): Promise<Task[]> {
-    const response = await fetch(apiUrl("/api/tasks"));
+    const response = await fetch(apiUrl("/api/tasks"), {
+        credentials: "include",
+    });
 
     if (!response.ok) {
         throw new HttpError(response.status, `Failed to load tasks (${response.status}).`);
@@ -35,6 +37,7 @@ export async function listTasks(): Promise<Task[]> {
 export async function createTask(title: string): Promise<Task> {
     const response = await fetch(apiUrl("/api/tasks"), {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -55,6 +58,7 @@ export async function updateTaskCompleted(id: number, completed: boolean): Promi
     
     const response = await fetch(apiUrl(`/api/tasks/${id}`), {
         method: "PATCH",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -75,6 +79,7 @@ export async function updateTaskTitle(id: number, title: string): Promise<Task> 
     
     const response = await fetch(apiUrl(`/api/tasks/${id}/title`), {
         method: "PATCH",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json",
         },
@@ -95,6 +100,7 @@ export async function deleteTask(id: number): Promise<void> {
     
     const response = await fetch(apiUrl(`/api/tasks/${id}`), {
         method: "DELETE",
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -107,6 +113,7 @@ export async function deleteCompletedTasks(): Promise<void> {
     
     const response = await fetch(apiUrl("/api/tasks/completed"), {
         method: "DELETE",
+        credentials: "include",
     });
 
     if (!response.ok) {

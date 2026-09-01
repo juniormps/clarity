@@ -38,9 +38,17 @@ afterEach(() => {
 
 describe("authService — getCurrentUser", () => {
     it("retorna o usuário quando a resposta é 200", async () => {
-        mockFetch(200, { data: mockUser });
+        const fetchSpy = vi
+            .spyOn(globalThis, "fetch")
+            .mockResolvedValue(
+                new Response(JSON.stringify({ data: mockUser }), { status: 200 }),
+            );
 
         await expect(getCurrentUser()).resolves.toEqual(mockUser);
+
+        expect(fetchSpy).toHaveBeenCalledWith("/api/auth/me", {
+            credentials: "include",
+        });
     });
 
     it("retorna null quando a resposta é 401", async () => {
@@ -72,6 +80,7 @@ describe("authService — registerUser", () => {
             "/api/users",
             expect.objectContaining({
                 method: "POST",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(registerInput),
             }),
@@ -122,6 +131,7 @@ describe("authService — loginUser", () => {
             "/api/auth/login",
             expect.objectContaining({
                 method: "POST",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(loginCredentials),
             }),
@@ -155,7 +165,7 @@ describe("authService — logoutUser", () => {
 
         expect(fetchSpy).toHaveBeenCalledWith(
             "/api/auth/logout",
-            expect.objectContaining({ method: "POST" }),
+            expect.objectContaining({ method: "POST", credentials: "include" }),
         );
     });
 

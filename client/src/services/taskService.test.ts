@@ -1,7 +1,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Task } from "../types/task";
 import { HttpError } from "./httpError";
-import { createTask, listTasks } from "./taskService";
+import {
+    createTask,
+    deleteCompletedTasks,
+    deleteTask,
+    listTasks,
+    updateTaskCompleted,
+    updateTaskTitle,
+} from "./taskService";
 
 const task: Task = {
     id: 1,
@@ -11,25 +18,86 @@ const task: Task = {
     updatedAt: "2026-01-01T00:00:00.000Z",
 };
 
+function mockFetch(status: number, body?: unknown) {
+    return vi.spyOn(globalThis, "fetch").mockResolvedValue(
+        new Response(body === undefined ? null : JSON.stringify(body), {
+            status,
+        }),
+    );
+}
+
 afterEach(() => {
     vi.restoreAllMocks();
 });
 
 describe("taskService", () => {
-    it("retorna a lista de tarefas em uma resposta 200", async () => {
-        vi.spyOn(globalThis, "fetch").mockResolvedValue(
-            new Response(JSON.stringify({ data: [task] }), { status: 200 }),
-        );
+    it("lista tarefas enviando credentials", async () => {
+        const fetchSpy = mockFetch(200, { data: [task] });
 
         await expect(listTasks()).resolves.toEqual([task]);
+
+        expect(fetchSpy).toHaveBeenCalledWith("/api/tasks", {
+            credentials: "include",
+        });
+    });
+
+    it("cria tarefa enviando credentials", async () => {
+        const fetchSpy = mockFetch(201, { data: task });
+
+        await expect(createTask("Nova tarefa")).resolves.toEqual(task);
+
+        expect(fetchSpy).toHaveBeenCalledWith(
+            "/api/tasks",
+            expect.objectContaining({ method: "POST", credentials: "include" }),
+        );
+    });
+
+    it("atualiza completed enviando credentials", async () => {
+        const fetchSpy = mockFetch(200, { data: task });
+
+        await updateTaskCompleted(1, true);
+
+        expect(fetchSpy).toHaveBeenCalledWith(
+            "/api/tasks/1",
+            expect.objectContaining({ method: "PATCH", credentials: "include" }),
+        );
+    });
+
+    it("atualiza o título enviando credentials", async () => {
+        const fetchSpy = mockFetch(200, { data: task });
+
+        await updateTaskTitle(1, "Novo título");
+
+        expect(fetchSpy).toHaveBeenCalledWith(
+            "/api/tasks/1/title",
+            expect.objectContaining({ method: "PATCH", credentials: "include" }),
+        );
+    });
+
+    it("exclui uma tarefa enviando credentials", async () => {
+        const fetchSpy = mockFetch(204);
+
+        await deleteTask(1);
+
+        expect(fetchSpy).toHaveBeenCalledWith(
+            "/api/tasks/1",
+            expect.objectContaining({ method: "DELETE", credentials: "include" }),
+        );
+    });
+
+    it("exclui as concluídas enviando credentials", async () => {
+        const fetchSpy = mockFetch(204);
+
+        await deleteCompletedTasks();
+
+        expect(fetchSpy).toHaveBeenCalledWith(
+            "/api/tasks/completed",
+            expect.objectContaining({ method: "DELETE", credentials: "include" }),
+        );
     });
 
     it("lança HttpError com status 401 quando a sessão é inválida", async () => {
-        vi.spyOn(globalThis, "fetch").mockResolvedValue(
-            new Response(JSON.stringify({ error: "Authentication required." }), {
-                status: 401,
-            }),
-        );
+        mockFetch(401, { error: "Authentication required." });
 
         const promise = createTask("Nova tarefa");
 
@@ -43,9 +111,7 @@ describe("taskService", () => {
     });
 
     it("lança HttpError com status 500 para erro interno do servidor", async () => {
-        vi.spyOn(globalThis, "fetch").mockResolvedValue(
-            new Response(null, { status: 500 }),
-        );
+        mockFetch(500);
 
         const promise = listTasks();
 
