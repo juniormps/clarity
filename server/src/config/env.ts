@@ -56,6 +56,38 @@ function resolveNodeEnv(): NodeEnv {
     );
 }
 
+const nodeEnv = resolveNodeEnv();
+
+//Origem do frontend autorizada a consumir a API pelo navegador (CORS). Em
+//produção ela é obrigatória; em desenvolvimento/teste assume o padrão local
+//do Vite para não exigir configuração manual.
+function resolveClientOrigin(): string {
+    const raw = optionalEnv("CLIENT_ORIGIN");
+
+    if (raw === undefined) {
+        if (nodeEnv === "production") {
+            throw new Error(
+                "Missing required environment variable: CLIENT_ORIGIN. " +
+                    "In production, set it to the frontend origin " +
+                    "(e.g. https://appclarity.vercel.app).",
+            );
+        }
+
+        return "http://localhost:5173";
+    }
+
+    const normalized = raw.trim().replace(/\/+$/, "");
+
+    if (!/^https?:\/\/[^/\s]+$/i.test(normalized)) {
+        throw new Error(
+            `Invalid CLIENT_ORIGIN: "${raw}". ` +
+                "It must be a valid HTTP/HTTPS origin without a trailing slash.",
+        );
+    }
+
+    return normalized;
+}
+
 function requireInt(label: string, raw: string): number {
     if (!/^\d+$/.test(raw)) {
         throw new Error(
@@ -77,7 +109,8 @@ function requireInt(label: string, raw: string): number {
 }
 
 export const env = {
-    NODE_ENV: resolveNodeEnv(),
+    NODE_ENV: nodeEnv,
+    CLIENT_ORIGIN: resolveClientOrigin(),
     PORT: requireInt("PORT", process.env["PORT"] ?? "3000"),
     DB_HOST: requireEnv("DB_HOST"),
     DB_PORT: requireInt("DB_PORT", requireEnv("DB_PORT")),
