@@ -8,9 +8,7 @@ Uma aplicação **full stack de gerenciamento de tarefas**, desenvolvida com foc
 
 ## 🚀 Demonstração
 
-🔗 **Acesse a aplicação:** [Em breve](#)
-
-> O link da demonstração será adicionado após o deploy da aplicação.
+🔗 **Acesse a aplicação:** [https://appclarity.vercel.app/](https://appclarity.vercel.app/)
 
 ---
 
@@ -900,7 +898,7 @@ A aplicação ficará disponível em `http://localhost:5173`. O Vite redireciona
 
 # 📦 Build e execução em produção
 
-Esta seção descreve como gerar e executar os artefatos de produção. Ela **não** trata de deploy: provedor, domínio, DNS e infraestrutura serão documentados em uma etapa futura.
+Esta seção descreve como gerar e executar os artefatos de produção. A infraestrutura de deploy está documentada na subseção [Deploy (produção)](#-deploy-produção).
 
 ## Server
 
@@ -964,6 +962,34 @@ client/dist/
 
 ---
 
+## Deploy (produção)
+
+A aplicação está implantada em produção e disponível em [https://appclarity.vercel.app/](https://appclarity.vercel.app/).
+
+A topologia de produção utiliza os seguintes provedores:
+
+| Camada         | Provedor   | Descrição                      |
+| -------------- | ---------- | ------------------------------ |
+| Frontend       | **Vercel** | React + Vite (build estática)  |
+| API            | **Render** | Node.js + Express              |
+| Banco de dados | **Aiven**  | MySQL                          |
+
+```text
+Frontend (React + Vite)
+        ↓
+      Vercel
+        ↓ HTTPS
+API (Node.js + Express)
+        ↓
+      Render
+        ↓ TLS
+   MySQL / Aiven
+```
+
+Em produção, a autenticação utiliza **cookie de sessão HttpOnly** e a comunicação cross-origin entre a Vercel e o Render é configurada com **CORS** e **credentials** (cookie de sessão enviado com `SameSite=None` e `Secure`).
+
+---
+
 # 📜 Scripts disponíveis
 
 ## Client
@@ -1008,24 +1034,24 @@ As próximas etapas planejadas para o projeto são:
 - [x] Executar lint automaticamente
 - [x] Executar typecheck automaticamente
 - [x] Executar testes automaticamente
-- [ ] Configurar ambiente de produção
-- [ ] Fazer deploy do front-end
-- [ ] Fazer deploy da API
-- [ ] Configurar banco de dados em produção
-- [ ] Configurar variáveis de ambiente
-- [ ] Ajustar CORS para produção
-- [ ] Configurar cookies conforme a topologia de deploy
-- [ ] Executar migrations em produção
+- [x] Configurar ambiente de produção
+- [x] Fazer deploy do front-end
+- [x] Fazer deploy da API
+- [x] Configurar banco de dados em produção
+- [x] Configurar variáveis de ambiente
+- [x] Ajustar CORS para produção
+- [x] Configurar cookies conforme a topologia de deploy
+- [x] Executar migrations em produção
 
 ---
 
 # 📌 Status
 
-🚧 **Em desenvolvimento**
+✅ **Deploy concluído**
 
-A aplicação já possui uma base full stack funcional, cobrindo as funcionalidades descritas acima — autenticação, CRUD de tarefas, isolamento de dados, testes automatizados, responsividade, acessibilidade e segurança.
+A aplicação está disponível em produção em [https://appclarity.vercel.app/](https://appclarity.vercel.app/) e possui uma base full stack funcional, cobrindo as funcionalidades descritas acima — autenticação, CRUD de tarefas, isolamento de dados, testes automatizados, responsividade, acessibilidade e segurança.
 
-As próximas etapas concentram-se principalmente em **infraestrutura e deploy**.
+O deploy de produção foi concluído e validado ponta a ponta (Vercel, Render e Aiven), incluindo comunicação cross-origin, cookie de sessão HttpOnly e migrations no banco de produção.
 
 ---
 
