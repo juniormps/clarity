@@ -44,11 +44,9 @@ Clique nas imagens para ampliar.
     <a href="docs/images/preview/landing-mobile-bottom.png">
         <img src="docs/images/preview/landing-mobile-bottom.png" alt="Clarity - Landing page no mobile" width="23%" />
     </a>
-
     <a href="docs/images/preview/tasks-mobile-top.png">
         <img src="docs/images/preview/tasks-mobile-top.png" alt="Clarity - Área autenticada no mobile" width="23%" />
     </a>
-
     <a href="docs/images/preview/tasks-mobile-bottom.png">
         <img src="docs/images/preview/tasks-mobile-bottom.png" alt="Clarity - Lista e filtros de tarefas no mobile" width="23%" />
     </a>
