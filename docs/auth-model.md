@@ -340,8 +340,10 @@ Resumo das decisões concretizadas:
 - duração server-side da sessão: 24 horas;
 - cookie com `Max-Age` alinhado à duração da sessão (24 horas), a partir de
   uma única fonte de verdade (`SESSION_TTL_MS`);
-- cookie configurado com `HttpOnly`, `SameSite=Lax`, `Path=/`;
-- `Secure` habilitado somente em produção;
+- cookie configurado com `HttpOnly`, `SameSite=Lax`, `Path=/` em
+  desenvolvimento/teste;
+- em produção, `SameSite=None` e `Secure`, necessários para o envio do cookie
+  em requisições cross-site (frontend na Vercel e API no Render);
 - endpoints: `POST /api/auth/login`, `GET /api/auth/me` e
   `POST /api/auth/logout`.
 

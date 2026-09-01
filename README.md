@@ -358,7 +358,7 @@ A relação principal é:
 - sessão baseada em **cookie HttpOnly** (`sid`) combinada com **sessão server-side**;
 - apenas o **hash SHA-256** do token é persistido na tabela `sessions`;
 - duração da sessão: **24 horas** (`expires_at` no banco e `Max-Age` do cookie alinhados a uma única fonte de verdade);
-- cookie configurado com `HttpOnly`, `SameSite=Lax` e `Path=/`; `Secure` habilitado somente em produção;
+- cookie configurado com `HttpOnly` e `Path=/`; em produção usa `SameSite=None` e `Secure` (necessário para o fluxo cross-site entre a Vercel e o Render), enquanto em desenvolvimento/teste usa `SameSite=Lax` sem `Secure`;
 - os endpoints de sessão estão documentados na seção [API](#-api).
 
 Fluxo de login:
@@ -784,6 +784,7 @@ O servidor carrega o `.env` a partir da raiz do projeto. As variáveis disponív
 | ------------- | ----------- | ------------- | ----------------------------------------------- |
 | `PORT`        | Não         | `3000`        | Porta em que o servidor escuta                  |
 | `NODE_ENV`    | Não         | `development` | Ambiente: `development`, `test` ou `production` |
+| `CLIENT_ORIGIN` | Não¹       | `http://localhost:5173` | Origem do frontend autorizada no CORS. Obrigatória em produção (URL do frontend, sem barra final). |
 | `DB_HOST`     | Sim         | —             | Host do MySQL                                   |
 | `DB_PORT`     | Sim         | —             | Porta do MySQL                                  |
 | `DB_USER`     | Sim         | —             | Usuário do MySQL                                |
@@ -796,6 +797,8 @@ O `NODE_ENV` define o ambiente de execução:
 - `development` (padrão): execução local;
 - `test`: utilizado pelos testes automatizados;
 - `production`: habilita a flag `Secure` no cookie de sessão (exige HTTPS).
+
+`CLIENT_ORIGIN` define a origem do frontend autorizada no CORS (¹ = opcional fora de produção, obrigatória em produção). Em desenvolvimento/teste, quando vazia, assume `http://localhost:5173`. Em produção deve apontar para a URL completa do frontend, **sem barra final** (ex.: `https://appclarity.vercel.app`).
 
 As variáveis do servidor:
 
