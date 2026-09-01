@@ -14,15 +14,29 @@ Uma aplicação **full stack de gerenciamento de tarefas**, desenvolvida com foc
 
 ## 📸 Preview
 
-As imagens da aplicação serão adicionadas após a finalização do deploy e captura das telas principais.
+### Landing page
 
-<!--
-![Landing Page](docs/images/landing-page.png)
+<p align="center">
+    <img src="docs/images/preview/landing-desktop.png" alt="Clarity - Landing page em desktop" width="720" />
+</p>
 
-![Área de tarefas](docs/images/tasks-page.png)
+### Gerenciamento de tarefas
 
-![Login](docs/images/login.png)
--->
+<p align="center">
+    <img src="docs/images/preview/tasks-desktop-top.png" alt="Clarity - Área autenticada e criação de tarefas em desktop" width="720" />
+</p>
+
+<p align="center">
+    <img src="docs/images/preview/tasks-desktop-bottom.png" alt="Clarity - Lista, filtros e gerenciamento de tarefas em desktop" width="720" />
+</p>
+
+### Responsividade
+
+<p align="center">
+    <img src="docs/images/preview/landing-mobile-bottom.png" alt="Clarity - Landing page no mobile" width="31%" />
+    <img src="docs/images/preview/tasks-mobile-top.png" alt="Clarity - Área autenticada no mobile" width="31%" />
+    <img src="docs/images/preview/tasks-mobile-bottom.png" alt="Clarity - Lista e filtros de tarefas no mobile" width="31%" />
+</p>
 
 ---
 
