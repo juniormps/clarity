@@ -7,14 +7,13 @@ export const SESSION_COOKIE_NAME = "sid";
 //o expires_at persistido no banco (auth.service) e o maxAge do cookie.
 export const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
-//Opções base do cookie de sessão. Em produção o cookie é marcado como Secure
-//e usa SameSite=None, necessário para que o navegador o envie em requisições
-//cross-site (frontend na Vercel e API no Render). Fora de produção usa
-//SameSite=Lax e Secure=false, apropriados ao fluxo local via proxy do Vite.
+//Opções base do cookie de sessão. O cookie usa SameSite=Lax porque tanto em
+//desenvolvimento quanto em produção o navegador acessa a API por caminhos
+//relativos no mesmo site, via proxy. Em produção também é marcado como Secure.
 function getSessionCookieBaseOptions(): CookieOptions {
     return {
         httpOnly: true,
-        sameSite: env.NODE_ENV === "production" ? "none" : "lax",
+        sameSite: "lax",
         secure: env.NODE_ENV === "production",
         path: "/",
     };

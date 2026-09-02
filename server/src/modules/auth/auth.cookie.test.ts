@@ -24,7 +24,7 @@ describe("getSessionCookieOptions", () => {
         expect(options.path).toBe("/");
     });
 
-    it("usa SameSite=None e Secure=true em produção", async () => {
+    it("usa SameSite=Lax e Secure=true em produção", async () => {
         vi.stubEnv("NODE_ENV", "production");
         vi.stubEnv("CLIENT_ORIGIN", "https://appclarity.vercel.app");
         const { getSessionCookieOptions } = await loadSessionCookieModule();
@@ -32,7 +32,7 @@ describe("getSessionCookieOptions", () => {
         const options = getSessionCookieOptions();
 
         expect(options.httpOnly).toBe(true);
-        expect(options.sameSite).toBe("none");
+        expect(options.sameSite).toBe("lax");
         expect(options.secure).toBe(true);
         expect(options.path).toBe("/");
     });
@@ -61,7 +61,7 @@ describe("getSessionCookieClearOptions", () => {
         expect(options.maxAge).toBeUndefined();
     });
 
-    it("mantém SameSite=None e Secure ao limpar o cookie em produção", async () => {
+    it("mantém SameSite=Lax e Secure ao limpar o cookie em produção", async () => {
         vi.stubEnv("NODE_ENV", "production");
         vi.stubEnv("CLIENT_ORIGIN", "https://appclarity.vercel.app");
         const { getSessionCookieClearOptions } = await loadSessionCookieModule();
@@ -69,7 +69,7 @@ describe("getSessionCookieClearOptions", () => {
         const options = getSessionCookieClearOptions();
 
         expect(options.httpOnly).toBe(true);
-        expect(options.sameSite).toBe("none");
+        expect(options.sameSite).toBe("lax");
         expect(options.secure).toBe(true);
         expect(options.path).toBe("/");
         expect(options.maxAge).toBeUndefined();
