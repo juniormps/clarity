@@ -13,11 +13,11 @@ const app = express();
 
 app.use(helmet());
 
-//CORS: autoriza apenas a origem do frontend (CLIENT_ORIGIN) e permite
-//credenciais (cookies) em requisições cross-origin. Usar um array (em vez de
-//uma string fixa) faz com que o middleware apenas reflita a origem quando ela
-//está autorizada; origens arbitrárias não recebem Access-Control-Allow-Origin.
-//O middleware cors trata automaticamente as requisições OPTIONS de preflight.
+//CORS: restringe requisições cross-origin à origem configurada do frontend.
+//O fluxo normal de produção usa `/api` via proxy da Vercel, mas a política
+//é mantida para proteger acessos diretos ao backend a partir de navegadores.
+//Credenciais são permitidas apenas para a origem autorizada, e o middleware
+//cors trata automaticamente as requisições OPTIONS de preflight.
 app.use(
     cors({
         origin: [env.CLIENT_ORIGIN],
