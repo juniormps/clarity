@@ -4,9 +4,11 @@ import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes, useOutletContext } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import authReducer from "../../features/auth/authSlice";
+import type { AuthState } from "../../features/auth/authSlice";
 import { useTasks } from "../../hooks/useTasks";
 import { makeTaskState } from "../../test/useTasksState";
 import type { Task } from "../../types/task";
+import type { User } from "../../types/user";
 import type { AppLayoutOutletContext } from "./AppLayoutContext";
 import AppLayout from "./AppLayout";
 
@@ -19,6 +21,17 @@ vi.mock("../../features/auth/LogoutButton", () => ({
 }));
 
 const mockedUseTasks = vi.mocked(useTasks);
+
+const user: User = {
+    id: 1,
+    firstName: "Márcio",
+    lastName: "Silva",
+    email: "marcio@example.com",
+    createdAt: "2024-01-01T00:00:00.000Z",
+    updatedAt: "2024-01-01T00:00:00.000Z",
+};
+
+const initialAuth: AuthState = { user, status: "authenticated" };
 
 const tasks: Task[] = [
     {
@@ -51,7 +64,10 @@ function TasksProbe() {
 }
 
 function renderAppLayout() {
-    const store = configureStore({ reducer: { auth: authReducer } });
+    const store = configureStore({
+        reducer: { auth: authReducer },
+        preloadedState: { auth: initialAuth },
+    });
 
     return render(
         <Provider store={store}>
@@ -84,11 +100,11 @@ describe("AppLayout", () => {
         expect(mockedUseTasks).toHaveBeenCalledTimes(1);
     });
 
-    it("compartilha o mesmo estado de tarefas entre Header e conteúdo", () => {
+    it("exibe o usuário no Header e compartilha as tarefas com o conteúdo", () => {
         renderAppLayout();
 
         expect(screen.getByRole("link", { name: "clarity" })).toBeInTheDocument();
-        expect(screen.getByText("1 tarefa pendente")).toBeInTheDocument();
+        expect(screen.getByText("Olá, Márcio!")).toBeInTheDocument();
         expect(screen.getByText("3 tarefas; 1 pendentes")).toBeInTheDocument();
     });
 

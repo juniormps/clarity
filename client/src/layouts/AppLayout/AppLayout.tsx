@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { Outlet } from "react-router-dom";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import AppHeader from "../../components/AppHeader/AppHeader";
 import SkipLink from "../../components/SkipLink/SkipLink";
-import { setUnauthenticated } from "../../features/auth/authSlice";
+import { selectAuthUser, setUnauthenticated } from "../../features/auth/authSlice";
 import { useTasks } from "../../hooks/useTasks";
 import { getTaskStats } from "../../utils/getTaskStats";
 import type { AppLayoutOutletContext } from "./AppLayoutContext";
@@ -11,6 +11,7 @@ import styles from "./AppLayout.module.css";
 
 function AppLayout() {
     const dispatch = useAppDispatch();
+    const user = useAppSelector(selectAuthUser);
 
     //Quando uma API protegida retorna 401 durante o uso, o estado global de
     //autenticação é invalidado e o ProtectedRoute redireciona para /login.
@@ -27,7 +28,7 @@ function AppLayout() {
         <div className={styles.shell}>
             <SkipLink />
 
-            <AppHeader pending={stats.pending} isLoading={taskState.isLoadingTasks} />
+            <AppHeader firstName={user?.firstName} />
 
             <div className={styles.content}>
                 <Outlet context={context} />

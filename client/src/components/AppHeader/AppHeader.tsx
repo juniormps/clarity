@@ -3,22 +3,12 @@ import LogoutButton from "../../features/auth/LogoutButton";
 import styles from "./AppHeader.module.css";
 
 interface AppHeaderProps {
-    pending: number;
-    isLoading: boolean;
+    firstName?: string;
 }
 
-function AppHeader({ pending, isLoading }: AppHeaderProps) {
-    let statusText: string;
-
-    if (isLoading) {
-        statusText = "Carregando tarefas...";
-    } else if (pending === 0) {
-        statusText = "Tudo em dia";
-    } else if (pending === 1) {
-        statusText = "1 tarefa pendente";
-    } else {
-        statusText = `${pending} tarefas pendentes`;
-    }
+function AppHeader({ firstName }: AppHeaderProps) {
+    const normalizedFirstName = firstName?.trim();
+    const greeting = normalizedFirstName ? `Olá, ${normalizedFirstName}!` : "Olá!";
 
     return (
         <header className={styles.header}>
@@ -45,9 +35,9 @@ function AppHeader({ pending, isLoading }: AppHeaderProps) {
                 </Link>
 
                 <div className={styles.actions}>
-                    <p className={styles.status} aria-live="polite">
-                        <span className={styles.statusDot} aria-hidden="true" />
-                        {statusText}
+                    <p className={styles.greeting}>
+                        <span className={styles.presenceDot} aria-hidden="true" />
+                        {greeting}
                     </p>
 
                     <LogoutButton />

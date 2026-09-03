@@ -48,7 +48,7 @@
   gap: var(--space-4);
 }
 
-.status {
+.greeting {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -57,10 +57,10 @@
   color: var(--color-text-muted);
 }
 
-.statusDot {
+.presenceDot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--color-accent);
+  background-color: var(--color-success);
   flex-shrink: 0;
 }
