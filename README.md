@@ -112,6 +112,7 @@ A aplicação foi construída utilizando uma arquitetura full stack separada ent
 ## 👤 Autenticação
 
 - Cadastro de novos usuários
+- Confirmação visual após cadastro bem-sucedido
 - Login
 - Logout
 - Recuperação da sessão atual
@@ -144,6 +145,7 @@ A aplicação foi construída utilizando uma arquitetura full stack separada ent
 
 ## 🧑‍💻 Experiência do usuário
 
+- Saudação personalizada na área autenticada
 - Estados de carregamento
 - Skeleton loading
 - Estados vazios
@@ -960,6 +962,8 @@ NODE_ENV=production node dist/server.js
    ```
 
    O TypeScript é compilado para `server/dist/`.
+
+   A build do servidor utiliza a configuração TypeScript específica `server/tsconfig.build.json`, que exclui arquivos `*.test.ts` e `*.spec.ts` do artefato de produção em `server/dist/`. Os testes continuam participando da verificação de tipos executada por `npm run typecheck`, enquanto o Vitest ignora `dist/`, evitando a coleta de cópias compiladas dos testes.
 3. Execute o artefato com `NODE_ENV=production`:
 
    ```bash
