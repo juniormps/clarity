@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
     createSession,
+    deleteExpiredSessions,
     deleteSessionByTokenHash,
     findUserByTokenHash,
 } from "./session.repository.js";
@@ -93,5 +94,25 @@ describe("deleteSessionByTokenHash", () => {
 
         expect(sql).toContain("DELETE FROM sessions");
         expect(params).toEqual([tokenHash]);
+    });
+});
+
+describe("deleteExpiredSessions", () => {
+    beforeEach(() => {
+        executeMock.mockReset();
+    });
+
+    it("remove todas as sessões cuja expiração já ocorreu", async () => {
+        executeMock.mockResolvedValueOnce([{ affectedRows: 3 }]);
+
+        await deleteExpiredSessions();
+
+        expect(executeMock).toHaveBeenCalledTimes(1);
+
+        const [sql, ...params] = executeMock.mock.calls[0];
+
+        expect(sql).toContain("DELETE FROM sessions");
+        expect(sql).toContain("expires_at <= CURRENT_TIMESTAMP");
+        expect(params).toEqual([]);
     });
 });

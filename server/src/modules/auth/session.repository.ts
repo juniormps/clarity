@@ -58,3 +58,8 @@ export async function deleteSessionByTokenHash(tokenHash: string): Promise<void>
     
     await pool.execute("DELETE FROM sessions WHERE token_hash = ?", [tokenHash]);
 }
+
+//Remove todas as sessões cuja expiração já ocorreu.
+export async function deleteExpiredSessions(): Promise<void> {
+    await pool.execute("DELETE FROM sessions WHERE expires_at <= CURRENT_TIMESTAMP");
+}
