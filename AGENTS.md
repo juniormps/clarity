@@ -268,8 +268,8 @@ Backend validation is mandatory and authoritative.
 
 ## Authentication
 
-Authentication will be introduced incrementally after the initial
-task CRUD is functional.
+Authentication is part of the application and uses server-side sessions.
+The session identifier is transported in an HttpOnly cookie.
 
 Passwords must never be stored in plain text.
 

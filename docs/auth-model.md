@@ -1,7 +1,7 @@
 # Modelo de Autenticação e Usuários
 
-Este documento registra as decisões de modelagem que orientarão a
-implementação de usuários e autenticação no Clarity.
+Este documento registra o modelo arquitetural atual de usuários,
+autenticação, sessões e propriedade de tarefas no Clarity.
 
 É um contrato arquitetural, não uma especificação de implementação.
 
@@ -15,7 +15,7 @@ User 1 ─────────── N Task
 
 - um usuário pode possuir várias tarefas;
 - cada tarefa pertence a exatamente um usuário;
-- no modelo final, uma tarefa não existe sem proprietário.
+- uma tarefa não existe sem proprietário.
 
 ---
 
@@ -50,7 +50,7 @@ O e-mail possui restrição de unicidade:
 UNIQUE (email)
 ```
 
-A migration será criada no Passo 25.
+A tabela é definida pela migration `database/migrations/002_create_users.sql`.
 
 ---
 
@@ -59,20 +59,20 @@ A migration será criada no Passo 25.
 ### FirstName
 
 - obrigatório;
-- armazenado sem espaços desnecessários nas extremidades;
-- limite máximo compatível com `VARCHAR(120)`;
+- deve ser uma string;
+- recebe `trim()` antes da persistência;
+- possui no máximo 120 caracteres;
 - preserva maiúsculas/minúsculas.
 
 ### LastName
 
 - obrigatório;
-- armazenado sem espaços desnecessários nas extremidades;
-- limite máximo compatível com `VARCHAR(120)`;
+- deve ser uma string;
+- recebe `trim()` antes da persistência;
+- possui no máximo 120 caracteres;
 - preserva maiúsculas/minúsculas;
 - o valor é o sobrenome completo informado pelo usuário, sem separação
   interna.
-
-A validação exata será implementada no Passo 25.
 
 ### Email
 
@@ -80,6 +80,8 @@ A validação exata será implementada no Passo 25.
 - normalizado pela aplicação antes da persistência;
 - `trim` aplicado;
 - armazenado em lowercase;
+- deve possuir formato válido;
+- possui no máximo 255 caracteres;
 - único.
 
 Exemplo conceitual:
@@ -90,45 +92,33 @@ Exemplo conceitual:
 "user@example.com"
 ```
 
-A aplicação tratará email duplicado adequadamente, mas a proteção final
-também deve existir no banco através de `UNIQUE`. A unicidade não deve
-depender apenas de uma consulta prévia.
+A aplicação trata email duplicado adequadamente, mas a proteção final
+também existe no banco através de `UNIQUE`. A unicidade não depende apenas de
+uma consulta prévia.
 
 ### Password
 
 A senha em texto puro:
 
-- nunca deve ser persistida;
-- nunca deve aparecer no modelo `User` retornado pela aplicação;
-- nunca deve ser incluída em respostas da API;
-- deve existir apenas durante o processamento necessário para
+- possui entre 8 e 128 caracteres;
+- não pode ser composta apenas por espaços;
+- exige confirmação obrigatória que corresponda exatamente à senha;
+- nunca é persistida;
+- nunca aparece no modelo `User` retornado pela aplicação;
+- nunca é incluída em respostas da API;
+- existe apenas durante o processamento necessário para
   criação/autenticação.
 
-O banco armazenará somente `password_hash`.
+O projeto usa Argon2id e o banco armazena somente `password_hash`.
 
-- Não haverá coluna `password`.
-- Não haverá coluna separada de `salt` neste momento.
-- O formato completo produzido pelo algoritmo de hash será armazenado
-  em `password_hash`.
-
-A escolha/instalação da biblioteca de hash pertence ao Passo 25.
+- Não existe coluna `password`.
+- Não existe coluna separada de `salt`.
+- O formato completo produzido pelo algoritmo de hash é armazenado em
+  `password_hash`.
 
 ---
 
-## Modelo alvo de `tasks`
-
-Tabela atual:
-
-```text
-tasks
-├── id
-├── title
-├── completed
-├── created_at
-└── updated_at
-```
-
-Modelo final:
+## Modelo da tabela `tasks`
 
 ```text
 tasks
@@ -140,49 +130,32 @@ tasks
 └── updated_at
 ```
 
-Conceitualmente:
+`user_id` é obrigatório e possui o seguinte tipo:
 
 ```sql
 user_id BIGINT UNSIGNED NOT NULL
 ```
 
-Com chave estrangeira:
+O índice `idx_tasks_user_id` atende às consultas por usuário. A chave
+estrangeira estabelece a relação:
 
 ```text
-tasks.user_id → users.id
+tasks.user_id → users.id (ON DELETE CASCADE)
 ```
 
-Relação final:
+Relação:
 
 ```text
 users.id 1 ─────────── N tasks.user_id
 ```
 
-`user_id` deve possuir índice apropriado para as consultas por usuário.
-
-A tabela `tasks` não será alterada neste passo.
+Toda tarefa pertence obrigatoriamente a um usuário. A migration
+`database/migrations/004_add_user_id_to_tasks.sql` materializa a coluna, o
+índice e a chave estrangeira.
 
 ---
 
-## Passo 28 — Tarefas vinculadas ao usuário autenticado (concretizado)
-
-A relação foi materializada no banco:
-
-```text
-User 1 ─────── N Task
-
-tasks.user_id
-      ↓
-users.id
-```
-
-- migration `004_add_user_id_to_tasks.sql` adiciona `user_id` com
-  `BIGINT UNSIGNED NOT NULL`, índice `idx_tasks_user_id` e foreign key
-  `tasks.user_id → users.id` com `ON DELETE CASCADE`;
-- as tarefas legadas (pré-sistema de usuários) foram descartadas durante
-  a migration, pois nenhuma tarefa anônima deveria ser preservada ou
-  atribuída artificialmente a um usuário;
-- `user_id` é obrigatório: nenhuma tarefa existe sem proprietário.
+## Tarefas vinculadas ao usuário autenticado
 
 A identidade usada nas operações de tarefas flui exclusivamente a partir
 da sessão:
@@ -203,7 +176,7 @@ repository
 WHERE user_id = ?
 ```
 
-- o frontend não informa a propriedade da tarefa; `userId` nunca é aceito
+- o frontend não informa a propriedade da tarefa; `userId` não é aceito
   de `req.body`, `req.params`, query string ou headers;
 - o isolamento é aplicado diretamente no SQL, com `WHERE user_id = ?`
   na listagem e `WHERE id = ? AND user_id = ?` nas atualizações e
@@ -211,17 +184,16 @@ WHERE user_id = ?
 - a criação associa automaticamente a tarefa ao usuário autenticado via
   `INSERT INTO tasks (user_id, title) VALUES (?, ?)`;
 - tentativas de editar/excluir tarefas de outro usuário resultam em
-  `404 Task not found.`, indistinguíveis de tarefas inexistentes;
-- os testes completos de isolamento entre contas pertencem ao Passo 29.
+  `404 Task not found.`, indistinguíveis de tarefas inexistentes.
 
 ---
 
 ## Regra de propriedade
 
-O `user_id` de uma tarefa **não será fornecido pelo cliente** como
-autoridade sobre a propriedade.
+O `user_id` de uma tarefa não é aceito como autoridade enviada pelo cliente.
 
-Fluxo no modelo final:
+O servidor obtém o `userId` a partir da sessão autenticada e limita todas as
+operações de tarefas a esse usuário:
 
 ```text
 requisição autenticada
@@ -235,7 +207,7 @@ service/repository
 query limitada ao usuário
 ```
 
-Exemplos conceituais futuros:
+Exemplos conceituais:
 
 ```sql
 SELECT ...
@@ -250,11 +222,9 @@ WHERE id = ?
   AND user_id = ?
 ```
 
-O frontend não poderá escolher arbitrariamente `{ "userId": 123 }` para
+O frontend não pode escolher arbitrariamente `{ "userId": 123 }` para
 definir o proprietário da tarefa. A identidade usada nas operações de
-tarefas virá da autenticação validada pelo servidor.
-
-A implementação pertence aos Passos 27 e 28.
+tarefas vem da autenticação validada pelo servidor.
 
 ---
 
@@ -269,17 +239,14 @@ ON DELETE CASCADE
 Justificativa:
 
 - tarefas são dados pertencentes ao usuário;
-- se futuramente um usuário for removido do sistema, suas tarefas não
-  devem permanecer órfãs.
-
-A exclusão de conta não será implementada neste passo. Apenas o
-comportamento referencial do modelo é definido aqui.
+- quando um usuário é removido do sistema, suas tarefas também são removidas
+  e não permanecem órfãs.
 
 ---
 
 ## Modelo de domínio `User`
 
-Representação segura conceitual de um usuário dentro da aplicação:
+`User` é a representação segura de um usuário dentro da aplicação:
 
 ```ts
 interface User {
@@ -292,25 +259,37 @@ interface User {
 }
 ```
 
-`password` e `passwordHash` não fazem parte do objeto público enviado
-ao frontend.
+`UserAuthenticationRecord` é a representação interna usada na autenticação e
+inclui `passwordHash`. `password` e `passwordHash` nunca fazem parte da
+resposta pública enviada ao frontend.
 
-Internamente, o repository poderá precisar de uma representação que
-inclua `passwordHash` para autenticação, mas essa estrutura permanecerá
-restrita ao backend.
-
-Esses tipos TypeScript ainda não serão criados; serão implementados
-quando necessários.
+Esses tipos estão definidos em `server/src/modules/users/user.types.ts`.
 
 ---
 
-## Autenticação: decisões fixadas
+## Autenticação
 
-- autenticação baseada em email + senha;
+A autenticação segue este fluxo:
+
+```text
+email + senha
+    ↓
+validação
+    ↓
+busca do usuário
+    ↓
+verificação Argon2id
+    ↓
+criação de sessão server-side
+    ↓
+cookie HttpOnly sid
+```
+
 - apenas o hash da senha é persistido;
 - a identidade autenticada é determinada pelo servidor;
-- rotas protegidas obterão `userId` da autenticação;
-- credenciais não devem ser usadas como propriedade enviada pelo frontend.
+- rotas protegidas obtêm o usuário da sessão;
+- credenciais ou `userId` enviados pelo frontend não determinam a
+  propriedade de recursos.
 
 ## Sessão
 
@@ -333,7 +312,7 @@ token original → cookie HttpOnly
 hash do token → tabela sessions
 ```
 
-Resumo das decisões concretizadas:
+Resumo das decisões:
 
 - tabela `sessions` armazena apenas o hash SHA-256 do token;
 - o token real existe somente no cookie `sid`;
@@ -378,7 +357,7 @@ validar payload
     ↓
 buscar usuário
     ↓
-verificar senha com Argon2
+verificar senha com Argon2id
     ↓
 credenciais válidas
     ↓
@@ -454,14 +433,13 @@ expirados ou com cookie abandonado podem permanecer na tabela até o próximo
 cleanup — por isso a tabela é descrita como "sessões server-side dos usuários"
 e não apenas como "sessões ativas".
 
-Os timestamps de sessão são armazenados em UTC (`NOW() = UTC_TIMESTAMP()`),
-sem necessidade de conversão para outro fuso horário.
-
-O middleware de autenticação reutilizável pertence ao Passo 27.
+`expires_at` é comparado com `CURRENT_TIMESTAMP`. Como a conexão MySQL não
+fixa explicitamente o timezone da sessão, este documento não estabelece UTC
+como uma garantia da aplicação.
 
 ---
 
-## Passo 27 — Middleware de autenticação (concretizado)
+## Middleware de autenticação
 
 Fluxo de uma rota protegida:
 
@@ -482,49 +460,6 @@ rota protegida
 - em sessão válida, disponibiliza `req.auth = { userId: user.id }`;
 - em sessão ausente, inválida ou expirada, encaminha `AppError` 401
   (`Authentication required.`) para o `errorHandler`;
-- `/api/tasks` agora exige autenticação (todas as rotas do módulo);
-- o isolamento das tarefas por `userId` ainda pertence ao Passo 28.
-
----
-
-## Estratégia para tarefas já existentes
-
-Atualmente há tarefas anônimas no banco, pois `tasks` ainda não possui
-`user_id`.
-
-> As tarefas atuais são dados de desenvolvimento anteriores ao sistema
-> de usuários. Quando a restrição obrigatória de propriedade
-> (`user_id NOT NULL`) for introduzida, essas tarefas legadas deverão
-> ser tratadas explicitamente. Como o Clarity ainda está em
-> desenvolvimento e não possui dados de produção, elas poderão ser
-> descartadas/resetadas durante essa transição, em vez de serem
-> atribuídas artificialmente a um usuário.
-
-O reset não será executado agora. A estratégia concreta será aplicada
-somente quando `tasks.user_id` for introduzido.
-
----
-
-## Sequenciamento das próximas etapas
-
-```text
-Passo 24
-Modelagem e decisões arquiteturais.
-
-Passo 25
-Criar users + cadastro + hash de senha.
-
-Passo 26
-Login + sessão/autenticação + /me + logout.
-
-Passo 27
-Middleware de autenticação.
-
-Passo 28
-Adicionar/vincular user_id às tarefas e restringir todas as queries ao usuário autenticado.
-
-Passo 29
-Testar isolamento entre usuários.
-```
-
-O modelo final é definido agora, mas será implementado incrementalmente.
+- `/api/tasks` exige autenticação em todas as rotas do módulo;
+- as operações de tarefas usam `req.auth.userId` para manter o isolamento por
+  usuário.
