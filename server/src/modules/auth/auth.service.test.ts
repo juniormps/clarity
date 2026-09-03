@@ -6,6 +6,7 @@ import { findByEmailForAuthentication } from "../users/user.repository.js";
 import { login, logout, me } from "./auth.service.js";
 import {
     createSession,
+    deleteExpiredSessions,
     deleteSessionByTokenHash,
     findUserByTokenHash,
 } from "./session.repository.js";
@@ -17,12 +18,14 @@ vi.mock("../users/user.repository.js", () => ({
 
 vi.mock("./session.repository.js", () => ({
     createSession: vi.fn(),
+    deleteExpiredSessions: vi.fn(),
     findUserByTokenHash: vi.fn(),
     deleteSessionByTokenHash: vi.fn(),
 }));
 
 const mockedFindByEmailForAuthentication = vi.mocked(findByEmailForAuthentication);
 const mockedCreateSession = vi.mocked(createSession);
+const mockedDeleteExpiredSessions = vi.mocked(deleteExpiredSessions);
 const mockedFindUserByTokenHash = vi.mocked(findUserByTokenHash);
 const mockedDeleteSessionByTokenHash = vi.mocked(deleteSessionByTokenHash);
 
@@ -39,6 +42,7 @@ describe("login", () => {
     beforeEach(() => {
         mockedFindByEmailForAuthentication.mockReset();
         mockedCreateSession.mockReset();
+        mockedDeleteExpiredSessions.mockReset();
     });
 
     it("lança AppError 400 quando a validação falha", async () => {
@@ -54,6 +58,7 @@ describe("login", () => {
 
         expect(mockedFindByEmailForAuthentication).not.toHaveBeenCalled();
         expect(mockedCreateSession).not.toHaveBeenCalled();
+        expect(mockedDeleteExpiredSessions).not.toHaveBeenCalled();
     });
 
     it("lança AppError 401 quando o email não existe", async () => {
@@ -71,6 +76,7 @@ describe("login", () => {
         }
 
         expect(mockedCreateSession).not.toHaveBeenCalled();
+        expect(mockedDeleteExpiredSessions).not.toHaveBeenCalled();
     });
 
     it("lança AppError 401 quando a senha está incorreta", async () => {
@@ -90,6 +96,7 @@ describe("login", () => {
         }
 
         expect(mockedCreateSession).not.toHaveBeenCalled();
+        expect(mockedDeleteExpiredSessions).not.toHaveBeenCalled();
     });
 
     it("autentica, cria a sessão e retorna usuário seguro + token", async () => {
@@ -106,6 +113,12 @@ describe("login", () => {
         expect(result.token).toBeTruthy();
 
         expect(mockedCreateSession).toHaveBeenCalledTimes(1);
+        expect(mockedDeleteExpiredSessions).toHaveBeenCalledTimes(1);
+
+        const cleanupCallOrder = mockedDeleteExpiredSessions.mock.invocationCallOrder[0];
+        const createSessionCallOrder = mockedCreateSession.mock.invocationCallOrder[0];
+
+        expect(cleanupCallOrder).toBeLessThan(createSessionCallOrder);
 
         const sessionInput = mockedCreateSession.mock.calls[0][0];
 

@@ -6,6 +6,7 @@ import type { LoginResult } from "./auth.types.js";
 import { validateLoginInput } from "./auth.validation.js";
 import {
     createSession,
+    deleteExpiredSessions,
     deleteSessionByTokenHash,
     findUserByTokenHash,
 } from "./session.repository.js";
@@ -33,6 +34,8 @@ export async function login(body: unknown): Promise<LoginResult> {
     if (!validPassword) {
         throw new AppError(401, "Invalid email or password.");
     }
+
+    await deleteExpiredSessions();
 
     const token = generateSessionToken();
     const tokenHash = hashSessionToken(token);
