@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import type { ComponentProps } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import authReducer from "../features/auth/authSlice";
 import { loginUser } from "../services/authService";
@@ -26,14 +27,16 @@ const mockUser: User = {
 
 type UserEventInstance = ReturnType<typeof userEvent.setup>;
 
-function renderLoginPage() {
+type InitialEntries = ComponentProps<typeof MemoryRouter>["initialEntries"];
+
+function renderLoginPage(initialEntries: InitialEntries = ["/login"]) {
     const store = configureStore({
         reducer: { auth: authReducer },
     });
 
     const view = render(
         <Provider store={store}>
-            <MemoryRouter initialEntries={["/login"]}>
+            <MemoryRouter initialEntries={initialEntries}>
                 <Routes>
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/app" element={<div>App mock</div>} />
@@ -68,6 +71,33 @@ describe("LoginPage — renderização", () => {
 
         expect(screen.getByRole("main")).toHaveAttribute("id", "conteudo-principal");
         expect(screen.getByRole("main")).toHaveAttribute("tabindex", "-1");
+    });
+});
+
+describe("LoginPage — confirmação de cadastro", () => {
+    it("exibe a mensagem de sucesso quando chega de um cadastro recém-concluído", () => {
+        renderLoginPage([
+            { pathname: "/login", state: { accountCreated: true } },
+        ]);
+
+        const status = screen.getByRole("status");
+
+        expect(status).toBeInTheDocument();
+        expect(
+            screen.getByText("Conta criada com sucesso!"),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText("Faça login para começar a organizar suas tarefas."),
+        ).toBeInTheDocument();
+    });
+
+    it("não exibe a mensagem de sucesso ao acessar /login normalmente", () => {
+        renderLoginPage();
+
+        expect(screen.queryByRole("status")).not.toBeInTheDocument();
+        expect(
+            screen.queryByText("Conta criada com sucesso!"),
+        ).not.toBeInTheDocument();
     });
 });
 

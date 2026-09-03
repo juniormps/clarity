@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { registerUser } from "../services/authService";
 import type { User } from "../types/user";
@@ -23,12 +23,25 @@ const mockUser: User = {
 
 type UserEventInstance = ReturnType<typeof userEvent.setup>;
 
+function LoginLocationProbe() {
+    const location = useLocation();
+    const state = location.state as { accountCreated?: boolean } | null;
+
+    return (
+        <div>
+            {state?.accountCreated === true
+                ? "accountCreated:true"
+                : "accountCreated:false"}
+        </div>
+    );
+}
+
 function renderRegisterPage() {
     return render(
         <MemoryRouter initialEntries={["/register"]}>
             <Routes>
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="/login" element={<div>LoginPage mock</div>} />
+                <Route path="/login" element={<LoginLocationProbe />} />
             </Routes>
         </MemoryRouter>,
     );
@@ -171,7 +184,7 @@ describe("RegisterPage — envio", () => {
             screen.getByRole("heading", { name: "Criar conta" }),
         ).toBeInTheDocument();
         expect(screen.getByLabelText("E-mail")).toHaveValue("john@example.com");
-        expect(screen.queryByText("LoginPage mock")).not.toBeInTheDocument();
+        expect(screen.queryByText("accountCreated:true")).not.toBeInTheDocument();
     });
 
     it("redireciona para /login após cadastro bem-sucedido", async () => {
@@ -182,6 +195,6 @@ describe("RegisterPage — envio", () => {
         await fillValidForm(user);
         await user.click(screen.getByRole("button", { name: "Criar conta" }));
 
-        expect(await screen.findByText("LoginPage mock")).toBeInTheDocument();
+        expect(await screen.findByText("accountCreated:true")).toBeInTheDocument();
     });
 });

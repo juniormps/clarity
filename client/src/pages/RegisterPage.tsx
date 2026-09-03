@@ -125,7 +125,12 @@ function RegisterPage() {
                 passwordConfirmation: values.passwordConfirmation,
             });
 
-            navigate("/login", { replace: true });
+            navigate("/login", {
+                replace: true,
+                state: {
+                    accountCreated: true,
+                },
+            });
             
         } catch (error) {
             setSubmitError(

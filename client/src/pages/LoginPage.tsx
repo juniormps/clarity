@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../app/hooks";
 import { setAuthenticatedUser } from "../features/auth/authSlice";
 import { loginUser } from "../services/authService";
@@ -21,6 +21,15 @@ const initialValues: LoginFormValues = {
     email: "",
     password: "",
 };
+
+//Identifica o estado efêmero enviado pelo cadastro ao redirecionar para o login.
+function hasAccountCreatedState(state: unknown): boolean {
+    if (typeof state !== "object" || state === null) {
+        return false;
+    }
+
+    return (state as { accountCreated?: unknown }).accountCreated === true;
+}
 
 //Valida os dados do formulário de login, espelhando as regras relevantes do backend.
 function validate(values: LoginFormValues): FieldErrors {
@@ -49,6 +58,9 @@ function validate(values: LoginFormValues): FieldErrors {
 function LoginPage() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const showAccountCreatedMessage = hasAccountCreatedState(location.state);
 
     const [values, setValues] = useState<LoginFormValues>(initialValues);
     const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -111,6 +123,15 @@ function LoginPage() {
         <main id="conteudo-principal" className={styles.main} tabIndex={-1}>
             <div className={styles.card}>
                 <h1 className={styles.title}>Entrar</h1>
+
+                {showAccountCreatedMessage && (
+                    <div className={styles.successMessage} role="status">
+                        <p className={styles.successMessageTitle}>
+                            Conta criada com sucesso!
+                        </p>
+                        <p>Faça login para começar a organizar suas tarefas.</p>
+                    </div>
+                )}
 
                 <form className={styles.form} onSubmit={handleSubmit} noValidate>
                     <div className={styles.field}>
