@@ -336,7 +336,7 @@ O banco possui três tabelas:
 | ------------ | ------------------------------------------------ |
 | **users**    | Contas de usuário (nome, e-mail e hash de senha) |
 | **tasks**    | Tarefas, cada uma vinculada a um usuário         |
-| **sessions** | Sessões ativas (hash do token por usuário)       |
+| **sessions** | Sessões server-side dos usuários (hash do token) |
 
 ```mermaid
 erDiagram
@@ -384,7 +384,7 @@ A relação principal é:
 - sessão baseada em **cookie HttpOnly** (`sid`) combinada com **sessão server-side**;
 - apenas o **hash SHA-256** do token é persistido na tabela `sessions`;
 - duração da sessão: **24 horas** (`expires_at` no banco e `Max-Age` do cookie alinhados a uma única fonte de verdade);
-- cookie configurado com `HttpOnly` e `Path=/`; em produção usa `SameSite=None` e `Secure` (necessário para o fluxo cross-site entre a Vercel e o Render), enquanto em desenvolvimento/teste usa `SameSite=Lax` sem `Secure`;
+- cookie configurado com `HttpOnly`, `SameSite=Lax` e `Path=/`; em produção, `Secure=true` (o cookie é first-party, pois o navegador acessa a API pela mesma origem via proxy da Vercel);
 - os endpoints de sessão estão documentados na seção [API](#-api).
 
 Fluxo de login:
@@ -401,6 +401,7 @@ sequenceDiagram
     DB-->>A: Dados do usuário
     A->>A: Verifica senha com Argon2
     alt Credenciais válidas
+        A->>DB: Remove sessões expiradas
         A->>DB: Cria sessão
         A-->>C: Cookie HttpOnly
         C-->>U: Usuário autenticado
@@ -432,6 +433,13 @@ Middleware de autenticação
             ↓
           401
 ```
+
+Sobre as sessões:
+
+- uma sessão só autentica enquanto `expires_at > CURRENT_TIMESTAMP`;
+- sessões expiradas são removidas durante o próximo login válido (`DELETE FROM sessions WHERE expires_at <= CURRENT_TIMESTAMP`);
+- um mesmo usuário pode manter várias sessões válidas simultaneamente (ex.: desktop e celular);
+- o logout remove somente a sessão correspondente ao token atual, preservando as demais.
 
 A documentação completa do modelo está em [`docs/auth-model.md`](docs/auth-model.md).
 
@@ -844,7 +852,7 @@ O client possui uma variável opcional, definida em `client/.env` (veja `client/
 
 | Variável       | Obrigatória | Padrão | Descrição                                                                                                     |
 | -------------- | ----------- | ------ | ------------------------------------------------------------------------------------------------------------- |
-| `VITE_API_URL` | Não         | vazio  | URL base da API. Vazio em desenvolvimento (usa o proxy `/api` do Vite). Em produção, defina a URL completa da API. |
+| `VITE_API_URL` | Não         | vazio  | URL base opcional da API. Quando vazia, o client usa caminhos relativos `/api` (proxy do Vite em desenvolvimento e proxy da Vercel em produção). |
 
 As variáveis do cliente:
 
@@ -855,8 +863,9 @@ As variáveis do cliente:
 
 Sobre `VITE_API_URL`:
 
-- **em desenvolvimento**, pode permanecer vazia — o client usa caminhos relativos `/api` e o Vite faz o proxy para `http://localhost:3000`;
-- **em produção**, deve apontar para a URL completa da API (ex.: `https://api.exemplo.com`);
+- **em desenvolvimento**, permanece vazia — o client usa caminhos relativos `/api` e o Vite faz o proxy para `http://localhost:3000`;
+- **em produção**, permanece vazia no deploy atual — a Vercel encaminha `/api` para o Render por proxy;
+- `VITE_API_URL` continua suportada pelo helper `apiUrl` como base opcional, mas não é necessária nem configurada no deploy atual;
 - seu valor é **definido no momento da build** e não pode ser alterado em tempo de execução.
 
 ---
@@ -966,16 +975,14 @@ NODE_ENV=production node dist/server.js
 O client incorpora as variáveis `VITE_*` no momento da build. O fluxo é:
 
 ```text
-client/.env
-    ↓
-VITE_API_URL
+client/.env (opcional: VITE_API_URL)
     ↓
 npm run build            (dentro de client/)
     ↓
 client/dist/
 ```
 
-1. Defina `VITE_API_URL` em `client/.env` apontando para a URL completa da API (veja as variáveis do cliente na seção [Instalação](#-instalação)).
+1. No deploy atual, `VITE_API_URL` não precisa ser definida: o client usa caminhos relativos `/api` (veja as variáveis do cliente na seção [Instalação](#-instalação)). Ela só é necessária se a API for acessada por uma origem diferente.
 2. Gere a build:
 
    ```bash
@@ -1003,18 +1010,18 @@ A topologia de produção utiliza os seguintes provedores:
 | Banco de dados | **Aiven**  | MySQL                          |
 
 ```text
-Frontend (React + Vite)
-        ↓
-      Vercel
-        ↓ HTTPS
-API (Node.js + Express)
-        ↓
-      Render
-        ↓ TLS
-   MySQL / Aiven
+Browser
+    ↓ (https://appclarity.vercel.app)
+Vercel (frontend estático)
+    ↓ /api (rewrite/proxy)
+Render (API Node.js + Express)
+    ↓
+MySQL / Aiven
 ```
 
-Em produção, a autenticação utiliza **cookie de sessão HttpOnly** e a comunicação cross-origin entre a Vercel e o Render é configurada com **CORS** e **credentials** (cookie de sessão enviado com `SameSite=None` e `Secure`).
+Para o navegador, frontend e API compartilham a mesma origem (`https://appclarity.vercel.app`): o client usa caminhos relativos `/api` e a Vercel encaminha essas requisições para o Render. O cookie de sessão é, portanto, **first-party**, usando `HttpOnly`, `SameSite=Lax`, `Path=/` e `Secure` em produção.
+
+O CORS permanece configurado no Express de forma restritiva, autorizando apenas a origem `CLIENT_ORIGIN` (`https://appclarity.vercel.app`), para proteger acessos cross-origin diretos ao backend. O frontend continua enviando `credentials: "include"` nas chamadas autenticadas.
 
 ---
 
@@ -1079,7 +1086,7 @@ As próximas etapas planejadas para o projeto são:
 
 A aplicação está disponível em produção em [https://appclarity.vercel.app/](https://appclarity.vercel.app/) e possui uma base full stack funcional, cobrindo as funcionalidades descritas acima — autenticação, CRUD de tarefas, isolamento de dados, testes automatizados, responsividade, acessibilidade e segurança.
 
-O deploy de produção foi concluído e validado ponta a ponta (Vercel, Render e Aiven), incluindo comunicação cross-origin, cookie de sessão HttpOnly e migrations no banco de produção.
+O deploy de produção foi concluído e validado ponta a ponta (Vercel, Render e Aiven), incluindo proxy `/api`, cookie de sessão HttpOnly e migrations no banco de produção.
 
 ---
 

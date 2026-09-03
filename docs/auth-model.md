@@ -337,15 +337,125 @@ Resumo das decisões concretizadas:
 
 - tabela `sessions` armazena apenas o hash SHA-256 do token;
 - o token real existe somente no cookie `sid`;
-- duração server-side da sessão: 24 horas;
+- duração server-side da sessão: 24 horas (86400 segundos);
 - cookie com `Max-Age` alinhado à duração da sessão (24 horas), a partir de
   uma única fonte de verdade (`SESSION_TTL_MS`);
-- cookie configurado com `HttpOnly`, `SameSite=Lax`, `Path=/` em
-  desenvolvimento/teste;
-- em produção, `SameSite=None` e `Secure`, necessários para o envio do cookie
-  em requisições cross-site (frontend na Vercel e API no Render);
+- uma sessão só autentica enquanto `expires_at > CURRENT_TIMESTAMP`;
 - endpoints: `POST /api/auth/login`, `GET /api/auth/me` e
   `POST /api/auth/logout`.
+
+### Política de cookie
+
+O cookie de sessão `sid` é configurado da seguinte forma, tanto em
+desenvolvimento quanto em produção:
+
+- `HttpOnly` — o identificador não é acessível via JavaScript;
+- `SameSite=Lax` — o navegador envia o cookie no mesmo site;
+- `Path=/`;
+- `Secure=true` em produção (exige HTTPS);
+- `Secure=false` fora de produção.
+
+Em produção, frontend e API são acessados pela mesma origem
+(`https://appclarity.vercel.app`): o client usa caminhos relativos `/api` e a
+Vercel encaminha essas requisições para o Render via proxy. O cookie é,
+portanto, first-party — não há envio cross-site entre Vercel e Render a partir
+do navegador.
+
+```text
+Browser
+    ↓
+Vercel
+    ↓ /api proxy
+Render
+```
+
+### Criação e limpeza de sessões
+
+O login segue a ordem:
+
+```text
+validar payload
+    ↓
+buscar usuário
+    ↓
+verificar senha com Argon2
+    ↓
+credenciais válidas
+    ↓
+remover sessões expiradas
+    ↓
+gerar novo token
+    ↓
+persistir hash da nova sessão
+    ↓
+enviar cookie HttpOnly
+```
+
+A limpeza de sessões expiradas executa, conceitualmente:
+
+```sql
+DELETE FROM sessions
+WHERE expires_at <= CURRENT_TIMESTAMP;
+```
+
+Ela ocorre somente após credenciais válidas e antes de criar a nova sessão.
+Tentativas inválidas de login não executam a limpeza.
+
+### Múltiplas sessões
+
+O modelo permite, intencionalmente:
+
+```text
+User 1 ─────── N Sessions
+```
+
+Um mesmo usuário pode possuir várias sessões válidas simultaneamente (ex.:
+Chrome desktop, Firefox, celular). Não existe restrição `UNIQUE(user_id)`. A
+limpeza de sessões expiradas depende exclusivamente de `expires_at`, e não do
+`user_id` — um novo login não invalida as demais sessões válidas do mesmo
+usuário.
+
+### Logout
+
+O logout remove apenas a sessão correspondente ao token atual:
+
+```sql
+DELETE FROM sessions
+WHERE token_hash = ?;
+```
+
+Portanto, a sessão A é removida no logout, enquanto uma sessão B do mesmo
+usuário permanece válida.
+
+### Sessões abandonadas e expiração
+
+Se o navegador perde o cookie sem executar logout — por exemplo, fechamento de
+janela anônima, cookies apagados ou remoção do perfil do navegador — o backend
+não recebe automaticamente uma notificação de encerramento:
+
+```text
+navegador perde sid
+    ↓
+registro permanece em sessions
+    ↓
+chega a expires_at
+    ↓
+torna-se expirado
+    ↓
+próximo login válido executa cleanup
+    ↓
+registro é removido
+```
+
+Há uma diferença entre "sessão não expirada" e "navegador efetivamente ainda
+utilizando aquela sessão": o servidor conhece `expires_at`, mas não sabe de
+imediato se o navegador descartou o cookie. Registros temporariamente
+expirados ou com cookie abandonado podem permanecer na tabela até o próximo
+cleanup — por isso a tabela é descrita como "sessões server-side dos usuários"
+e não apenas como "sessões ativas".
+
+Os timestamps de sessão são armazenados em UTC (`NOW() = UTC_TIMESTAMP()`),
+sem necessidade de conversão para outro fuso horário.
 
 O middleware de autenticação reutilizável pertence ao Passo 27.
 
